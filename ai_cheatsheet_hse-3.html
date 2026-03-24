@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Шпаргалка: работа с ИИ-сервисами — ФКН НИУ ВШЭ</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #f8fafc; --bg-card: #ffffff; --bg-gold: #fdfaf3; --bg-accent: #E5F0FA;
+  --text-main: #1A478A; --text-muted: #3a609d; --text-accent: #1A478A;
+  --border-color: #e2e8f0; --border-gold: #e8e6e0;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --radius-sm: 8px; --radius-md: 12px; --radius-xl: 16px;
+  --color-purple: #1A478A; --color-teal: #0e6750; --color-coral: #C4292B;
+  --color-blue: #1A478A; --color-amber: #854F0B; --color-green: #31600e;
+  --color-pink: #C4292B; --color-red: #C4292B;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif !important; }
+body {
+  background: var(--bg-main); color: var(--text-main);
+  padding: 2rem 1.5rem; max-width: 1000px; margin: 0 auto; line-height: 1.6;
+}
+.header {
+  padding: 1.5rem 0 2.5rem; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 1.5rem;
+}
+.header-text h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-main); line-height: 1.2; }
+.header-text p { font-size: 15px; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
+
+.golden-rules {
+  background: var(--bg-gold); border-radius: var(--radius-xl); border: 1px solid var(--border-gold);
+  padding: 1.5rem; margin-bottom: 2.5rem; box-shadow: var(--card-shadow);
+}
+.golden-rules h2 { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
+.rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.rule-chip {
+  background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: var(--radius-sm);
+  padding: 10px 12px; font-size: 13px; font-weight: 500; display: flex; align-items: flex-start; gap: 8px; transition: transform 0.2s;
+}
+.rule-chip:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+.rule-num { font-size: 12px; font-weight: 700; color: var(--color-purple); background: var(--bg-accent); padding: 2px 6px; border-radius: 6px; }
+
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
+.tab-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; font-size: 14px; font-weight: 500; font-family: inherit;
+  border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+  background: var(--bg-card); color: var(--text-muted); cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tab-btn:hover { background: #f1f5f9; color: var(--text-main); }
+.tab-btn.active {
+  background: var(--bg-accent); color: var(--text-accent);
+  border-color: #AFA9EC; box-shadow: 0 2px 8px rgba(83, 74, 183, 0.1);
+}
+
+.section { display: none; animation: fadeIn 0.4s ease; }
+.section.visible { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+.section-header { margin-bottom: 1.5rem; }
+.section-header h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.section-header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  padding: 1.25rem; transition: all 0.2s ease; position: relative; display: flex; flex-direction: column; height: 100%;
+}
+.card:hover { box-shadow: var(--hover-shadow); transform: translateY(-2px); border-color: #cbd5e1; }
+
+.card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px; }
+.purple { color: var(--color-purple); } .teal { color: var(--color-teal); } .coral { color: var(--color-coral); }
+.blue { color: var(--color-blue); } .amber { color: var(--color-amber); } .green { color: var(--color-green); }
+.pink { color: var(--color-pink); } .red { color: var(--color-red); }
+
+.prompt-box-wrap { position: relative; flex-grow: 1; margin-bottom: 12px; }
+.prompt-box {
+  background: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+  padding: 12px 14px; font-size: 14px; color: var(--text-main); line-height: 1.6;
+  font-family: 'Inter', sans-serif; white-space: pre-wrap; height: 100%;
+}
+.prompt-box em { color: var(--text-accent); background: #e2e8f0; padding: 2px 4px; border-radius: 4px; font-style: normal; font-size: 13px; }
+.copy-btn {
+  position: absolute; top: 8px; right: 8px; background: #fff; border: 1px solid var(--border-color);
+  border-radius: 6px; padding: 6px; cursor: pointer; color: var(--text-muted);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; opacity: 0; display: flex; align-items: center; justify-content: center;
+}
+.prompt-box-wrap:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: var(--bg-accent); color: var(--text-accent); border-color: #AFA9EC; }
+
+.tip { font-size: 13px; color: var(--text-muted); padding-top: 12px; border-top: 1px solid var(--border-color); margin-top: auto; }
+.tip strong { color: var(--text-main); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+
+.block-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+.block-divider { border: none; border-top: 1px solid var(--border-color); margin: 3rem 0; }
+
+/* Models List */
+.tier-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem; }
+.tier-header { padding: 8px 16px; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; }
+.tier-header.s-tier { background: var(--bg-accent); color: var(--color-purple); }
+.tier-header.a-tier { background: #e0f2fe; color: var(--color-blue); }
+.tier-header.b-tier { background: #fef3c7; color: var(--color-amber); }
+.tier-list { padding: 0 16px; }
+.tier-item { display: grid; grid-template-columns: 180px 1fr auto; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border-color); align-items: start; }
+.tier-item:last-child { border-bottom: none; }
+.model-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+.model-vendor { font-size: 12px; color: var(--text-muted); }
+.model-desc { font-size: 14px; color: var(--text-muted); }
+.model-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 99px; white-space: nowrap; }
+.badge-vpn { background: #fef3c7; color: var(--color-amber); }
+.badge-free { background: #dcfce7; color: var(--color-green); }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 24px; right: 24px; background: #1A478A; color: #fff;
+  padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: translateY(100px); opacity: 0; transition: all 0.3s;
+  display: flex; align-items: center; gap: 8px; z-index: 1000;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://cs.hse.ru/mirror/pubs/share/932023162.svg" alt="HSE FCS Logo" style="height: 60px;">
+  <div class="header-text">
+    <h1>Шпаргалка: работа с ИИ-сервисами</h1>
+    <p>НИУ ВШЭ · Факультет компьютерных наук · Административный персонал</p>
+  </div>
+</div>
+
+<div class="golden-rules">
+  <h2> Золотые правила составления промтов</h2>
+  <div class="rules-grid">
+    <div class="rule-chip"><span class="rule-num">1</span>Задайте роль (Например: Вы — опытный методист вуза)</div>
+    <div class="rule-chip"><span class="rule-num">2</span>Укажите формат, объем и целевую аудиторию</div>
+    <div class="rule-chip"><span class="rule-num">3</span>Прикрепите пример желаемого результата (референс)</div>
+    <div class="rule-chip"><span class="rule-num">4</span>Попросите рассуждать: «Думай пошагово и логично»</div>
+    <div class="rule-chip"><span class="rule-num">5</span>Обозначьте тон: деловой, дружелюбный, официальный</div>
+    <div class="rule-chip"><span class="rule-num">6</span>Итерируйте: первый ответ ИИ — это всегда черновик</div>
+  </div>
+</div>
+
+<div class="block-label"> Блок 1 — Промты и приёмы работы</div>
+<div class="tabs" id="prompts-tabs">
+  <button class="tab-btn active" onclick="showSection('text', this)">Текст</button>
+  <button class="tab-btn" onclick="showSection('brainstorm', this)">Белый лист</button>
+  <button class="tab-btn" onclick="showSection('teacher', this)">Режим учителя</button>
+  <button class="tab-btn" onclick="showSection('research', this)">Анализ</button>
+  <button class="tab-btn" onclick="showSection('data', this)">Данные</button>
+  <button class="tab-btn" onclick="showSection('email', this)">Рассылки</button>
+  <button class="tab-btn" onclick="showSection('image', this)">Медиа</button>
+  <button class="tab-btn" onclick="showSection('students', this)">Студенты</button>
+  <button class="tab-btn" onclick="showSection('docs', this)">Документы</button>
+  <button class="tab-btn" onclick="showSection('events', this)">Мероприятия</button>
+  <button class="tab-btn" onclick="showSection('planning', this)">Планирование</button>
+  <button class="tab-btn" onclick="showSection('compliance', this)">Безопасность</button>
+  <button class="tab-btn" onclick="showSection('personalize', this)">Персонализация</button>
+  <button class="tab-btn" onclick="showSection('bonus', this)">Бонус</button>
+</div>
+
+<!-- CONTAINER FOR SECTIONS -->
+<div id="sections-container">
+
+<!-- 1. ТЕКСТ -->
+<div id="text" class="section visible prompt-section">
+  <div class="section-header"><h2>Работа с текстом</h2><p>Саммаризация, редактура, стиль, структура</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label purple">Саммаризация</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ты ассистент руководителя факультета. Прочитай текст ниже и сделай краткое резюме на <em>[3 пункта / 5 предложений]</em>. Выдели: главную мысль, ключевые решения, необходимые действия.
+
+<em>[Текст здесь]</em></div></div>
+      <div class="tip"><strong> Лайфхак:</strong> добавь «для человека, который не читал источник»</div>
+    </div>
+    <div class="card"><div class="card-label teal">Улучшение структуры</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Перепиши этот текст: сделай логичную структуру с подзаголовками, убери воду, сохрани смысл. Объём — не более <em>[одной страницы A4]</em>. Не меняй факты и цифры.
+
+<em>[Текст здесь]</em></div></div>
+      <div class="tip"><strong> Лайфхак:</strong> укажи «Не меняй факты» — ИИ не будет фантазировать.</div>
+    </div>
+    <div class="card"><div class="card-label blue">Смена тональности</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Перепиши письмо в <em>[официальном / дружелюбном / нейтральном]</em> тоне. Адресат: <em>[студент / партнёр / декан]</em>. Сохрани все факты из оригинала.
+
+<em>[Текст здесь]</em></div></div>
+      <div class="tip"><strong> Лайфхак:</strong> «Тон как у официального документа Минобрнауки»</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. БЕЛЫЙ ЛИСТ -->
+<div id="brainstorm" class="section prompt-section">
+  <div class="section-header"><h2>Решение проблемы белого листа</h2><p>Мозговой штурм, структура, генерация идей</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label coral">Структура документа</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Мне нужно написать <em>[регламент / отчёт / письмо]</em> на тему <em>[тема]</em>. Предложи 3 варианта структуры с кратким описанием каждого раздела.</div></div>
+    </div>
+    <div class="card"><div class="card-label amber">Мозговой штурм в команде</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Представь, что ты команда из 4 человек: методист, строгий юрист, пиарщик и вечно недовольный студент. Вы обсуждаете задачу: <em>[тема]</em>. Выдай мнение каждого кратко.</div></div>
+    </div>
+    <div class="card"><div class="card-label green">Разбивка на шаги</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Разбей задачу <em>[задача]</em> на пошаговый план действий. Для каждого шага укажи: время выполнения и что может пойти не так (риски). Действуй как experienced Project Manager.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. УЧИТЕЛЬ -->
+<div id="teacher" class="section prompt-section">
+  <div class="section-header"><h2>Режим учителя</h2><p>Обучение, проверка знаний, наставничество</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label purple">Простое объяснение</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Объясни мне <em>[тема]</em> простыми словами, как будто я никогда этим не занимался. Используй аналогии из повседневной жизни. В конце задай 3 проверочных вопроса.</div></div>
+    </div>
+    <div class="card"><div class="card-label blue">Сократовский диалог</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Я хочу разобраться в: <em>[тема]</em>. Задавай мне по одному наводящему вопросу. Не объясняй сразу — помогай мне прийти к правильному ответу самостоятельно.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. ИССЛЕДОВАНИЕ -->
+<div id="research" class="section prompt-section">
+  <div class="section-header"><h2>Поиск и Анализ</h2><p>Research, сравнение, фактчекинг</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label teal">Глубокий анализ</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Проведи исследование по теме: <em>[тема]</em>. Формат вывода:
+1. Суть проблемы
+2. Ключевые факты (bullet-points)
+3. 2 полярные экспертные точки зрения
+Укажи, какие данные могут быть спорными.</div></div>
+    </div>
+    <div class="card"><div class="card-label amber">Сравнительный анализ</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Сравни <em>[вариант А]</em> и <em>[вариант Б]</em> по критериям: <em>[критерий 1, критерий 2]</em>. Оформи результат в Markdown-таблицу. Ниже таблицы напиши обоснованную рекомендацию.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. ДАННЫЕ И EXCEL -->
+<div id="data" class="section prompt-section">
+  <div class="section-header"><h2>Работа с данными и Excel</h2><p>Формулы, выводы из таблиц, очистка</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label green">Генерация Формул</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши формулу Excel. Задача: <em>[опиши своими словами, напр. найти сумму всех з/п больше 50к]</em>. Данные лежат в столбцах <em>[A и B]</em>. Добавь краткое пояснение, как она работает.</div></div>
+    </div>
+    <div class="card"><div class="card-label purple">Анализ выгрузки</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ниже сырые данные из выгрузки. Найди: 1) аномалии/ошибки, 2) главный тренд, 3) 3 вывода для руководителя без перегрузки статистикой.
+
+<em>[Вставьте скопированную таблицу]</em></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. РАССЫЛКИ -->
+<div id="email" class="section prompt-section">
+  <div class="section-header"><h2>Email-рассылки</h2><p>Написание писем, HTML-вёртка, дайджесты</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label coral">HTML-верстка письма</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Сверстай карточку мероприятия для Email. Данные: Дата <em>[дата]</em>, Название <em>[название]</em>. Используй ТОЛЬКО inline-стили (никаких &lt;style&gt; или внешних CSS). Цветовая гамма: корпоративный синий и белый. Сделай код валидным для Outlook.</div></div>
+    </div>
+    <div class="card"><div class="card-label blue">Текст анонса</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши письмо-анонс для <em>[аудитория]</em> о <em>[новость]</em>. Напиши 3 цепляющих темы письма на выбор. Текст письма до 100 слов, в конце — призыв к действию (CTA).</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. МЕДИА -->
+<div id="image" class="section prompt-section">
+  <div class="section-header"><h2>Генерация изображений</h2><p>Промты для Midjourney, DALL-E, и других сетей</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label pink">Формула Промта</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Создай 3 промта на английском для Midjourney v6 / DALL-E 3 по следующей идее: <em>[идея]</em>.
+Учитывай структуру: [Субъект] + [Детали окружения] + [Освещение] + [Палитра] + [Стиль/Камера].</div></div>
+    </div>
+    <div class="card"><div class="card-label teal">Редактура изображений</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box"><em>(Для работы с загруженной картинкой в GPT-4o)</em>
+Опиши, что изображено на картинке в мельчайших деталях, чтобы я мог использовать этот текст как промт для восстановления этой картинки в другой нейросети.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- СТУДЕНТЫ (НОВОЕ) -->
+<div id="students" class="section prompt-section">
+  <div class="section-header"><h2>Коммуникация со студентами</h2><p>Письма должникам, FAQ, анонсы в TG</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label red">Письмо должнику</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ты куратор ВШЭ. Напиши эмпатичное, но твердое письмо студенту, пропустившему дедлайн. Напомни о правилах ВШЭ, сроках пересдач и предложи форму связи. Тон: поддерживающий, официальный.</div></div>
+    </div>
+    <div class="card"><div class="card-label blue">Анонс в Telegram</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Составь анонс старта сессии для студенческого Telegram-канала. Укажи даты, формат (офлайн/онлайн) и ссылку на расписание. Используй списки и пару уместных эмодзи. Без панибратства.</div></div>
+    </div>
+    <div class="card"><div class="card-label green">Генерация FAQ</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Я собрал сырые вопросы студентов по практике: <em>[вставь текст]</em>. Сгруппируй их по логичным темам и напиши четкий FAQ (Вопрос-Ответ) для публикации в LMS. Пиши понятным языком без канцелярита.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ДОКУМЕНТЫ (НОВОЕ) -->
+<div id="docs" class="section prompt-section">
+  <div class="section-header"><h2>Документы и финансы</h2><p>Регламенты, выжимки, служебки</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label purple">Выжимка из регламента</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Прочитай этот юридический регламент НИУ ВШЭ. Сделай краткую выжимку (буллетами) для преподавателей. Выдели строго: 1) новые обязанности, 2) ключевые сроки, 3) штрафные санкции.
+      
+<em>[Вставь регламент]</em></div></div>
+    </div>
+    <div class="card"><div class="card-label amber">Служебная записка</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши официальную служебную записку на имя декана с обоснованием закупки <em>[название ПО]</em> для образовательной программы. Аргументируй потребность соответствием современным ИТ-стандартам обучения.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- МЕРОПРИЯТИЯ (НОВОЕ) -->
+<div id="events" class="section prompt-section">
+  <div class="section-header"><h2>Мероприятия</h2><p>Программы, приглашения спикеров, чек-листы</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label coral">Программа события</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Сгенерируй тайминг-структуру для научной 1-дневной конференции на тему: <em>[тема]</em>. Время: 10:00 – 18:00. Включи приветственное слово, 2 панели, кофе-брейки (по 30 мин) и обед.</div></div>
+    </div>
+    <div class="card"><div class="card-label teal">Приглашение спикеру</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Составь email-приглашение для отраслевого эксперта выступить на нашем мастер-классе. Опиши аудиторию (студенты 3 курса) и ценность выступления для него (PR, найм). Тон: глубоко уважительный.</div></div>
+    </div>
+    <div class="card"><div class="card-label blue">Чек-лист организатора</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Создай детальный чек-лист координатора за 2 дня до проведения Дня Открытых Дверей на 200 человек (офлайн). Раздели задачи по зонам: техника/IT, кейтеринг, навигация, спикеры.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ПЛАНИРОВАНИЕ (НОВОЕ) -->
+<div id="planning" class="section prompt-section">
+  <div class="section-header"><h2>Нагрузка и планирование</h2><p>Таблицы распределения, графики проектов</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label purple">Распределение часов</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Помоги оптимально распределить 400 часов нагрузки между преподавателями: Профессор (только лекции), Доцент, Ассистент (только семинары). Предложи логику распределения и таблицу в процентах.</div></div>
+    </div>
+    <div class="card"><div class="card-label amber">Календарный план</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Выступи в роли Project-менеджера. Составь календарный план-график проекта по запуску нового ДПО-курса на 4 месяца. Выдели 5 ключевых майлстоунов и ответственные роли.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- БЕЗОПАСНОСТЬ (НОВОЕ) -->
+<div id="compliance" class="section prompt-section">
+  <div class="section-header"><h2>Ограничения и безопасность</h2><p>Персданные, ФЗ, анонимизация</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label green">Деперсонализация</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Очисти этот текст от любых ПДн (ФИО, телефоны, email) и замени их на плейсхолдеры [ДАННЫЕ СКРЫТЫ], сохранив контекст. Сделай текст безопасным для публикации в открытом источнике.
+      
+<em>[Текст здесь]</em></div></div>
+    </div>
+    <div class="card"><div class="card-label red">Генерация NDA памятки</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Составь памятку на 1 страницу для внешних подрядчиков ФКН по правилам обращения с конфиденциальными данными. Включи запрет на передачу данных 3-м лицам и использование публичных нейросетей.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ПЕРСОНАЛИЗАЦИЯ (НОВОЕ) -->
+<div id="personalize" class="section prompt-section">
+  <div class="section-header"><h2>Персонализация</h2><p>Адаптация ИИ под свой стиль, Custom Instructions</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label blue">Custom Instructions</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши идеальный текст для 'Системного промта' ChatGPT, учитывая мой профиль (администратор ОП НИУ ВШЭ). Я хочу, чтобы ИИ всегда отвечал структурированно, академично и без расшаркиваний.</div></div>
+    </div>
+    <div class="card"><div class="card-label pink">Повтори мой стиль</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Проанализируй мои 3 прошлых ответа на письма (ниже). Выдели мой индивидуальный 'tone of voice', словарный запас и уровень формальности. Следующий ответ (опишу ниже) напиши точно в таком же стиле.</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="bonus" class="section prompt-section">
+  <div class="section-header"><h2>Бонус: полезные макро-промты</h2><p>Итерация и улучшение</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label teal">Итерации (Улучшения)</div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Используйте короткие команды для доработки ответа:
+• «Сделай более формальным и добавь вводные конструкции»
+• «Сократи на 30%, убери прилагательные»
+• «Перемести акцент на второй пункт»
+• «Сыграй адвоката дьявола и раскритикуй этот текст»</div></div>
+    </div>
+  </div>
+</div>
+
+</div> <!-- /sections-container -->
+
+<hr class="block-divider">
+
+<div class="block-label"> Блок 2 — Инструменты и Модели</div>
+<div class="tabs" id="tools-tabs">
+  <button class="tab-btn active" onclick="showTierSection('tierlist', this)">Тир-лист LLM</button>
+  <button class="tab-btn" onclick="showTierSection('specialtools', this)">Спец-инструменты</button>
+</div>
+
+<!-- TIER LIST -->
+<div id="tierlist" class="section visible tier-section">
+  <div class="section-header"><h2>Тир-лист текстовых нейросетей</h2><p>Актуально: 2026 год</p></div>
+
+  <!-- S-Tier -->
+  <div class="tier-box">
+    <div class="tier-header s-tier"><span style="font-size:20px;font-weight:700;">S</span> Универсальные флагманы</div>
+    <div class="tier-list">
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://chatgpt.com" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">ChatGPT</a></div><div class="model-vendor">OpenAI</div></div>
+        <div class="model-desc">Абсолютный лидер для большинства офисных задач. Идеально решает логические и структурные задачи. Обладает великолепным русским языком.</div>
+        <div><span class="model-badge badge-vpn">VPN / Агрегатор</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://claude.ai" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Claude</a></div><div class="model-vendor">Anthropic</div></div>
+        <div class="model-desc">Золотой стандарт для работы с длинными академическими текстами и кодом. Почти не галлюцинирует в фактах, идеально форматирует таблицы и резюмирует ПУДы.</div>
+        <div><span class="model-badge badge-vpn">VPN / Агрегатор</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://chat.deepseek.com" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">DeepSeek</a></div><div class="model-vendor">DeepSeek</div></div>
+        <div class="model-desc">Китайский флагман. Гениален в программировании, Excel-формулах и математической логике. Отличное понимание русского языка.</div>
+        <div><span class="model-badge badge-free">Без VPN</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://www.perplexity.ai" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Perplexity</a></div><div class="model-vendor">Perplexity AI</div></div>
+        <div class="model-desc">ИИ-поисковик. Незаменим для быстрого поиска свежей информации и фактчекинга со ссылками на первоисточники.</div>
+        <div><span class="model-badge badge-vpn">Частично без VPN</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://chat.qwenlm.ai" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Qwen</a></div><div class="model-vendor">Alibaba</div></div>
+        <div class="model-desc">Мультимодальная нейросеть. Умеет генерировать подкасты, изображения, видео, проводить глубинные исследования, а также мастерски работать с документами и текстами.</div>
+        <div><span class="model-badge badge-free">Без VPN</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- A-Tier -->
+  <div class="tier-box">
+    <div class="tier-header a-tier"><span style="font-size:20px;font-weight:700;">A</span> Мощные альтернативы (Работают в РФ)</div>
+    <div class="tier-list">
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://ya.ru/alice_pro" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">YandexGPT</a></div><div class="model-vendor">Яндекс</div></div>
+        <div class="model-desc">Глубочайшее понимание специфики российского документооборота и законов РФ. Незаменим при работе со специфическим русским бюрократическим языком.</div>
+        <div><span class="model-badge badge-free">Встроено в сервисы Яндекса</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://giga.chat" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">GigaChat</a></div><div class="model-vendor">Сбер</div></div>
+        <div class="model-desc">Высокая безопасность данных (соответствие ФЗ-152). Рисует изображения Kandinsky. Подходит для служебного использования без риска утечки на Запад.</div>
+        <div><span class="model-badge badge-free">Без VPN</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPECIAL TOOLS -->
+<div id="specialtools" class="section tier-section">
+  <div class="section-header"><h2>Спец-инструменты</h2><p>Нишевые ИИ под конкретные задачи</p></div>
+  <div class="cards-grid">
+    <div class="card"><div class="card-label purple">Академический Research</div>
+      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
+        <li><a href="https://consensus.app" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Consensus.app</a> — поисковик исключительно по базам научных статей. Дает ИИ-выжимки из abstracts.</li>
+        <li><a href="https://typeset.io" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">SciSpace (typeset.io)</a> — загрузка PDF статей, ИИ-копайлот, сравнение источников и методологий.</li>
+        <li><a href="https://elicit.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Elicit.com</a> — анализ и поиск по научным базам (есть бесплатная и платная версия).</li>
+      </ul>
+    </div>
+    <div class="card"><div class="card-label blue">Презентации</div>
+      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
+        <li><a href="https://gamma.app" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Gamma.app</a> — генерация стильных веб-презентаций и отчетов с красивым форматированием (добавлен ИИ-ассистент).</li>
+        <li><a href="https://www.kimi.com/slides" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Kimi slides</a> — отличный генератор презентаций (3 презентации бесплатно, далее за оплату).</li>
+      </ul>
+    </div>
+    <div class="card"><div class="card-label amber">Музыка и Видео</div>
+      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
+        <li><a href="https://udio.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Udio</a> / <a href="https://suno.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Suno.com</a> — генерация профессиональной музыки/песен с вокалом для видеороликов или мероприятий.</li>
+        <li><a href="https://klingai.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Kling AI</a> / <a href="https://openai.com/sora" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Sora</a> — генерация реалистичного видео по текстовому промту (b-roll, фоны).</li>
+      </ul>
+    </div>
+    <div class="card"><div class="card-label green">Агрегаторы</div>
+      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
+        <li style="margin-bottom:6px;"><a href="https://gptunnel.ru" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">GPTunnel</a>, <a href="https://study24.ai" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Study AI</a>, <a href="https://mashagpt.ru" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">MashaGPT</a> — российские агрегаторы с доступом к платным нейросетям без VPN. <strong style="color:var(--color-green);">Оплата картой РФ доступна.</strong></li>
+        <li><a href="https://higgsfield.ai" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Higgsfield</a> — продвинутый генератор видео. <strong style="color:var(--color-red);">Оплата из РФ напрямую недоступна (нужна иностр. карта).</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">Промт скопирован в буфер!</div>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('.prompt-section').forEach(el => el.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  document.getElementById('prompts-tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function showTierSection(id, btn) {
+  document.querySelectorAll('.tier-section').forEach(el => el.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  document.getElementById('tools-tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.nextElementSibling.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  });
+});
+</script>
+</body>
+</html>
