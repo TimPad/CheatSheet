@@ -136,12 +136,12 @@ body {
 <div class="golden-rules">
   <h2> Золотые правила составления промтов</h2>
   <div class="rules-grid">
-    <div class="rule-chip"><span class="rule-num">1</span>Задайте роль (Например: Вы — опытный методист вуза)</div>
-    <div class="rule-chip"><span class="rule-num">2</span>Укажите формат, объем и целевую аудиторию</div>
-    <div class="rule-chip"><span class="rule-num">3</span>Прикрепите пример желаемого результата (референс)</div>
-    <div class="rule-chip"><span class="rule-num">4</span>Попросите рассуждать: «Думай пошагово и логично»</div>
-    <div class="rule-chip"><span class="rule-num">5</span>Обозначьте тон: деловой, дружелюбный, официальный</div>
-    <div class="rule-chip"><span class="rule-num">6</span>Итерируйте: первый ответ ИИ — это всегда черновик</div>
+    <div class="rule-chip"><span class="rule-num">1</span>Дайте задаче имя и одно предложение контекста</div>
+    <div class="rule-chip"><span class="rule-num">2</span>Опишите структуру, а не объём</div>
+    <div class="rule-chip"><span class="rule-num">3</span>Назовите читателя конкретно</div>
+    <div class="rule-chip"><span class="rule-num">4</span>Скажите, чего не надо делать (отрицательные промты)</div>
+    <div class="rule-chip"><span class="rule-num">5</span>Дайте критерий успеха</div>
+    <div class="rule-chip"><span class="rule-num">6</span>Меняйте одну переменную за раз в итерациях</div>
   </div>
 </div>
 
@@ -171,7 +171,7 @@ body {
   <div class="section-header"><h2>Работа с текстом</h2><p>Саммаризация, редактура, стиль, структура</p></div>
   <div class="cards-grid">
     <div class="card"><div class="card-label purple">Саммаризация</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ты ассистент руководителя факультета. Прочитай текст ниже и сделай краткое резюме на <em>[3 пункта / 5 предложений]</em>. Выдели: главную мысль, ключевые решения, необходимые действия.
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ты ассистент руководителя факультета. Прочитай текст ниже и сделай краткое резюме на <em>[3 пункта / 5 предложений]</em>. Выдели: главную мысль, ключевые решения, необходимые действия. Не додумывай то, чего нет в тексте. Если данных не хватает — напиши [данных нет].
 
 <em>[Текст здесь]</em></div></div>
       <div class="tip"><strong> Лайфхак:</strong> добавь «для человека, который не читал источник»</div>
@@ -245,7 +245,7 @@ body {
       <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши формулу Excel. Задача: <em>[опиши своими словами, напр. найти сумму всех з/п больше 50к]</em>. Данные лежат в столбцах <em>[A и B]</em>. Добавь краткое пояснение, как она работает.</div></div>
     </div>
     <div class="card"><div class="card-label purple">Анализ выгрузки</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ниже сырые данные из выгрузки. Найди: 1) аномалии/ошибки, 2) главный тренд, 3) 3 вывода для руководителя без перегрузки статистикой.
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ниже сырые данные из выгрузки. Найди: 1) аномалии/ошибки, 2) главный тренд, 3) 3 вывода для руководителя без перегрузки статистикой. Не интерпретируй пустые ячейки как нули. Если данных недостаточно для вывода — так и напиши.
 
 <em>[Вставьте скопированную таблицу]</em></div></div>
     </div>
@@ -306,7 +306,7 @@ body {
 <em>[Вставь регламент]</em></div></div>
     </div>
     <div class="card"><div class="card-label amber">Служебная записка</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши официальную служебную записку на имя декана с обоснованием закупки <em>[название ПО]</em> для образовательной программы. Аргументируй потребность соответствием современным ИТ-стандартам обучения.</div></div>
+      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши официальную служебную записку на имя декана с обоснованием закупки <em>[название ПО]</em> для образовательной программы. Аргументируй потребность соответствием современным ИТ-стандартам обучения. Не используй слова «в целях», «во исполнение», «настоящим» и другой канцелярит.</div></div>
     </div>
   </div>
 </div>
@@ -374,8 +374,8 @@ body {
     <div class="card"><div class="card-label teal">Итерации (Улучшения)</div>
       <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Используйте короткие команды для доработки ответа:
 • «Сделай более формальным и добавь вводные конструкции»
-• «Сократи на 30%, убери прилагательные»
-• «Перемести акцент на второй пункт»
+• «Убери всё, что ты додумал сверх исходника»
+• «Перепиши так, чтобы это звучало как живой человек, а не нейросеть»
 • «Сыграй адвоката дьявола и раскритикуй этот текст»</div></div>
     </div>
   </div>
@@ -393,36 +393,44 @@ body {
 
 <!-- TIER LIST -->
 <div id="tierlist" class="section visible tier-section">
-  <div class="section-header"><h2>Тир-лист текстовых нейросетей</h2><p>Актуально: 2026 год</p></div>
+  <div class="section-header">
+    <h2>Тир-лист нейросетей</h2>
+    <p style="margin-top:8px;">Актуально: 2026 год. <br><strong>Общий принцип:</strong> проверяйте рейтинг на <a href="https://lmarena.ai" target="_blank" rel="noopener" style="color: var(--color-blue); text-decoration: underline;">lmarena.ai</a> — там живое голосование по качеству ответов.</p>
+  </div>
 
   <!-- S-Tier -->
   <div class="tier-box">
     <div class="tier-header s-tier"><span style="font-size:20px;font-weight:700;">S</span> Универсальные флагманы</div>
     <div class="tier-list">
       <div class="tier-item">
-        <div><div class="model-name"><a href="https://chatgpt.com" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">ChatGPT</a></div><div class="model-vendor">OpenAI</div></div>
-        <div class="model-desc">Абсолютный лидер для большинства офисных задач. Идеально решает логические и структурные задачи. Обладает великолепным русским языком.</div>
+        <div><div class="model-name"><a href="https://chatgpt.com" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">ChatGPT</a></div><div class="model-vendor">OpenAI</div></div>
+        <div class="model-desc">Универсальный инструмент для большинства офисных задач. Сильный русский язык, логика, структура.</div>
         <div><span class="model-badge badge-vpn">VPN / Агрегатор</span></div>
       </div>
       <div class="tier-item">
-        <div><div class="model-name"><a href="https://claude.ai" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Claude</a></div><div class="model-vendor">Anthropic</div></div>
-        <div class="model-desc">Золотой стандарт для работы с длинными академическими текстами и кодом. Почти не галлюцинирует в фактах, идеально форматирует таблицы и резюмирует ПУДы.</div>
-        <div><span class="model-badge badge-vpn">VPN / Агрегатор</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://chat.deepseek.com" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">DeepSeek</a></div><div class="model-vendor">DeepSeek</div></div>
-        <div class="model-desc">Китайский флагман. Гениален в программировании, Excel-формулах и математической логике. Отличное понимание русского языка.</div>
+        <div><div class="model-name"><a href="https://chat.deepseek.com" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">DeepSeek</a></div><div class="model-vendor">DeepSeek</div></div>
+        <div class="model-desc">Лучший выбор для Excel-формул, логических и аналитических задач. Бесплатен, без VPN.</div>
         <div><span class="model-badge badge-free">Без VPN</span></div>
       </div>
       <div class="tier-item">
-        <div><div class="model-name"><a href="https://www.perplexity.ai" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Perplexity</a></div><div class="model-vendor">Perplexity AI</div></div>
+        <div><div class="model-name"><a href="https://chat.qwenlm.ai" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Qwen</a></div><div class="model-vendor">Alibaba</div></div>
+        <div class="model-desc">Силён в длинных документах, таблицах и глубинном поиске по теме. Без VPN, бесплатно.</div>
+        <div><span class="model-badge badge-free">Без VPN</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://claude.ai" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Claude</a></div><div class="model-vendor">Anthropic</div></div>
+        <div class="model-desc">Оптимален для работы с большими документами и академическими текстами. Минимум выдуманных фактов.</div>
+        <div><span class="model-badge badge-vpn">VPN / Агрегатор</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://gemini.google.com" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Gemini</a></div><div class="model-vendor">Google</div></div>
+        <div class="model-desc">Рекордный контекст (целая книга за раз), глубокий анализ PDF-файлов и изображений. Частично без VPN.</div>
+        <div><span class="model-badge badge-vpn">VPN / Частично без</span></div>
+      </div>
+      <div class="tier-item">
+        <div><div class="model-name"><a href="https://www.perplexity.ai" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Perplexity</a></div><div class="model-vendor">Perplexity AI</div></div>
         <div class="model-desc">ИИ-поисковик. Незаменим для быстрого поиска свежей информации и фактчекинга со ссылками на первоисточники.</div>
         <div><span class="model-badge badge-vpn">Частично без VPN</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://chat.qwenlm.ai" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Qwen</a></div><div class="model-vendor">Alibaba</div></div>
-        <div class="model-desc">Мультимодальная нейросеть. Умеет генерировать подкасты, изображения, видео, проводить глубинные исследования, а также мастерски работать с документами и текстами.</div>
-        <div><span class="model-badge badge-free">Без VPN</span></div>
       </div>
     </div>
   </div>
@@ -432,13 +440,13 @@ body {
     <div class="tier-header a-tier"><span style="font-size:20px;font-weight:700;">A</span> Мощные альтернативы (Работают в РФ)</div>
     <div class="tier-list">
       <div class="tier-item">
-        <div><div class="model-name"><a href="https://ya.ru/alice_pro" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">YandexGPT</a></div><div class="model-vendor">Яндекс</div></div>
-        <div class="model-desc">Глубочайшее понимание специфики российского документооборота и законов РФ. Незаменим при работе со специфическим русским бюрократическим языком.</div>
+        <div><div class="model-name"><a href="https://ya.ru/alice_pro" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">YandexGPT</a></div><div class="model-vendor">Яндекс</div></div>
+        <div class="model-desc">Российская модель. Понимает специфику отечественного документооборота и ФЗ РФ.</div>
         <div><span class="model-badge badge-free">Встроено в сервисы Яндекса</span></div>
       </div>
       <div class="tier-item">
-        <div><div class="model-name"><a href="https://giga.chat" target="_blank" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">GigaChat</a></div><div class="model-vendor">Сбер</div></div>
-        <div class="model-desc">Высокая безопасность данных (соответствие ФЗ-152). Рисует изображения Kandinsky. Подходит для служебного использования без риска утечки на Запад.</div>
+        <div><div class="model-name"><a href="https://giga.chat" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">GigaChat</a></div><div class="model-vendor">Сбер</div></div>
+        <div class="model-desc">Российская модель. Понимает специфику отечественного документооборота и ФЗ РФ. Рисует изображения.</div>
         <div><span class="model-badge badge-free">Без VPN</span></div>
       </div>
     </div>
