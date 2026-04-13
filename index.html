@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Шпаргалка: работа с ИИ-сервисами — ФКН НИУ ВШЭ</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg-main: #f8fafc; --bg-card: #ffffff; --bg-gold: #fdfaf3; --bg-accent: #E5F0FA;
@@ -112,6 +113,115 @@ body {
 .model-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 99px; white-space: nowrap; }
 .badge-vpn { background: #fef3c7; color: var(--color-amber); }
 .badge-free { background: #dcfce7; color: var(--color-green); }
+
+/* ══════════════════════════════════════════════
+   Mind Map — Block 3 (scoped to .mm-*)
+══════════════════════════════════════════════ */
+.mm-block {
+  background-color: var(--bg-main);
+  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-size: 26px 26px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  padding: 16px 0 24px;
+  margin-bottom: 2rem;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+}
+.mm-block * { font-family: 'Inter', system-ui, sans-serif !important; }
+.mm-block-header { text-align: center; padding: 4px 24px 12px; }
+.mm-block-header p { font-size: 13px; color: var(--text-muted); font-weight: 500; opacity: 0.9; }
+.mm-legend {
+  display: flex; flex-wrap: wrap; gap: 10px 20px;
+  justify-content: center; padding: 0 24px 18px;
+}
+.mm-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-main); font-weight: 500; }
+.mm-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.mm-scroll { overflow-x: auto; padding: 0 20px 8px; scrollbar-width: thin; scrollbar-color: #94a3b8 transparent; }
+#mm-mindmap { position: relative; }
+svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+.mm-node {
+  position: absolute; text-align: center; line-height: 1.5;
+  transform: translate(-50%, -50%); cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 1; user-select: none;
+}
+.mm-node:hover { transform: translate(-50%, -50%) scale(1.05); z-index: 20; filter: drop-shadow(0 8px 24px rgba(26,71,138,0.15)); }
+.mm-node:active { transform: translate(-50%, -50%) scale(0.98); }
+.mm-node::after {
+  content: ''; position: absolute; top: -4px; right: -4px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #3b82f6; border: 1.5px solid #fff; opacity: 0; transition: opacity 0.2s;
+}
+.mm-node:hover::after { opacity: 1; }
+.mm-node-0 {
+  background: linear-gradient(135deg, var(--color-purple), #2b6cb0); color:#fff;
+  font-size:17px; font-weight:700; padding:13px 28px; border-radius:16px;
+  box-shadow:0 6px 20px rgba(26, 71, 138, .3); letter-spacing:-.025em; white-space:nowrap;
+}
+.mm-node-1 {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6); color:#fff;
+  font-size:14px; font-weight:600; padding:9px 20px; border-radius:12px;
+  box-shadow:0 3px 12px rgba(59, 130, 246, .25); white-space:nowrap;
+}
+.mm-node-2 {
+  background:#eff6ff; color:#1e3a8a; border:2px solid #bfdbfe;
+  font-size:13px; font-weight:600; padding:7px 16px; border-radius:10px; white-space:nowrap;
+}
+.mm-node-3 {
+  background:#f8fafc; color:#1e40af; border:1.5px solid #e2e8f0;
+  font-size:12px; font-weight:500; padding:6px 14px; border-radius:9px; max-width:210px;
+}
+.mm-node-4 {
+  background:#ffffff; color:#2563eb; border:1.5px solid #cbd5e1;
+  font-size:11.5px; font-weight:500; padding:5px 13px; border-radius:8px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.05); max-width:190px;
+}
+.mm-sub { font-size:.88em; opacity:.8; font-weight:400; }
+
+/* Mind Map Modal */
+.mm-overlay {
+  position:fixed; inset:0; background:rgba(15, 23, 42, .6);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  z-index:2000; display:flex; align-items:center; justify-content:center;
+  padding:20px; opacity:0; pointer-events:none; transition:opacity .22s ease;
+}
+.mm-overlay.open { opacity:1; pointer-events:all; }
+.mm-modal {
+  background:#fff; border-radius:20px;
+  box-shadow:0 24px 64px rgba(26, 71, 138,.18);
+  max-width:560px; width:100%; max-height:80vh; overflow-y:auto;
+  transform:translateY(16px) scale(.97); transition:transform .22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  scrollbar-width:thin; scrollbar-color:#cbd5e1 transparent;
+  font-family:'Inter',system-ui,sans-serif !important;
+}
+.mm-overlay.open .mm-modal { transform:translateY(0) scale(1); }
+.mm-modal-header {
+  padding:22px 24px 16px; border-bottom:1px solid var(--border-color);
+  display:flex; align-items:flex-start; gap:14px;
+}
+.mm-modal-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.mm-modal-title-wrap { flex:1; min-width:0; }
+.mm-modal-title { font-size:16px; font-weight:700; color:var(--text-main); line-height:1.3; letter-spacing:-.02em; font-family:'Inter',system-ui,sans-serif !important; }
+.mm-modal-subtitle { font-size:12px; color:var(--text-muted); margin-top:3px; opacity:.9; font-family:'Inter',system-ui,sans-serif !important; font-weight: 500; }
+.mm-modal-close {
+  width:32px; height:32px; border-radius:8px; border:none;
+  background:#f1f5f9; color:#64748b; font-size:18px; line-height:1;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:all .2s; outline:none;
+}
+.mm-modal-close:hover { background:#e2e8f0; color:#0f172a; }
+.mm-modal-body { padding:20px 24px 24px; font-family:'Inter',system-ui,sans-serif !important; }
+.mm-modal-body p { font-size:13.5px; color:#475569; line-height:1.65; margin-bottom:14px; font-family:'Inter',system-ui,sans-serif !important; }
+.mm-modal-body p:last-child { margin-bottom:0; }
+.mm-stitle { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; margin:18px 0 8px; }
+.mm-list { list-style:none; display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.mm-list li { font-size:13px; color:#334155; line-height:1.55; display:flex; gap:8px; font-family:'Inter',system-ui,sans-serif !important; }
+.mm-list li::before { content:'▸'; color:#3b82f6; flex-shrink:0; margin-top:1px; }
+.mm-table { width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:14px; }
+.mm-table th { background:#f8fafc; color:var(--text-main); font-weight:600; padding:8px 10px; text-align:left; border-bottom:1px solid var(--border-color); font-family:'Inter',system-ui,sans-serif !important; }
+.mm-table td { padding:8px 10px; color:#475569; border-bottom:1px solid #f1f5f9; vertical-align:top; font-family:'Inter',system-ui,sans-serif !important; }
+.mm-table tr:last-child td { border-bottom:none; }
+.mm-code { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:12px 14px; font-size:12px; line-height:1.6; margin-bottom:14px; white-space:pre-wrap; overflow-x:auto; font-family:'Fira Code',monospace !important; }
+.mm-tag { display:inline-block; background:#e0f2fe; color:#0369a1; border-radius:6px; padding:2px 8px; font-size:11.5px; font-weight:600; margin:2px 2px 2px 0; }
 
 /* Toast */
 #toast {
@@ -485,6 +595,39 @@ body {
   </div>
 </div>
 
+<hr class="block-divider">
+<div class="block-label">🗺 Блок 3 — Карта промпт-инженерии</div>
+<div class="mm-block">
+  <div class="mm-block-header">
+    <p>Нажмите на любой узел, чтобы увидеть пояснение</p>
+  </div>
+  <div class="mm-legend">
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:linear-gradient(135deg, var(--color-purple), #2b6cb0)"></div>Корень</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:linear-gradient(135deg, #1d4ed8, #3b82f6)"></div>Раздел 1-го уровня</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:#eff6ff;border:2px solid #bfdbfe"></div>Раздел 2-го уровня</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:#f8fafc;border:1.5px solid #e2e8f0"></div>Раздел 3-го уровня</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:#ffffff;border:1.5px solid #cbd5e1"></div>Раздел 4-го уровня</div>
+  </div>
+  <div class="mm-scroll">
+    <div id="mm-mindmap"><svg id="mm-svg-lines"></svg></div>
+  </div>
+</div>
+
+<!-- Mind Map Modal -->
+<div class="mm-overlay" id="mm-overlay">
+  <div class="mm-modal" id="mm-modal">
+    <div class="mm-modal-header">
+      <div class="mm-modal-icon" id="mm-icon"></div>
+      <div class="mm-modal-title-wrap">
+        <div class="mm-modal-title" id="mm-title"></div>
+        <div class="mm-modal-subtitle" id="mm-subtitle"></div>
+      </div>
+      <button class="mm-modal-close" id="mm-close" aria-label="Закрыть">×</button>
+    </div>
+    <div class="mm-modal-body" id="mm-body"></div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast">Промт скопирован в буфер!</div>
 
@@ -511,6 +654,343 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
     });
   });
 });
+</script>
+
+<script>
+(function() {
+  /* ── INFO ─────────────────────────────────────────────────── */
+  const INFO = {
+    root: { icon:'🧠', title:'Промпт-инженерия', subtitle:'Что это и зачем нужно',
+      body:`<p>Промпт-инжиниринг — искусство составлять промпты так, чтобы получать стабильно ожидаемый результат. Превращает случайное угадывание в <strong>осознанное проектирование инструкции</strong>.</p>
+      <div class="mm-stitle">Что даёт</div>
+      <ul class="mm-list"><li><strong>Предсказуемость</strong> — одинаковые промпты дают стабильные результаты</li><li><strong>Эффективность</strong> — меньше итераций уточнения</li><li><strong>Воспроизводимость</strong> — решения можно тиражировать</li><li><strong>Экономию токенов</strong> — правильная техника снижает потребление</li></ul>`
+    },
+    why: { icon:'💡', title:'Зачем нужен промпт-инжиниринг', subtitle:'Ценность системного подхода',
+      body:`<p>Без системного подхода модель достраивает недостающие элементы самостоятельно — это приводит к вариативности ответов.</p>
+      <div class="mm-stitle">Проблемы без него</div>
+      <ul class="mm-list"><li>Непредсказуемость результата от запроса к запросу</li><li>Множество итераций для получения нужного ответа</li><li>Невозможность тиражировать удачные решения</li><li>Перерасход токенов на уточнения</li></ul>`
+    },
+    howformat: { icon:'📐', title:'Как оформлять', subtitle:'Форматирование и структура промпта',
+      body:`<p>Оформление промпта влияет на качество ответа не меньше, чем содержание. Хорошо оформленный промпт снижает вероятность пропуска важных требований.</p>
+      <div class="mm-stitle">Два ключевых аспекта</div>
+      <ul class="mm-list"><li><strong>Форматирование</strong> — Markdown для визуальной структуры</li><li><strong>Структура</strong> — логическое деление на части: задача, роль, контекст, формат, ограничения</li></ul>`
+    },
+    formatting: { icon:'✍️', title:'Форматирование', subtitle:'Markdown как инструмент промпта',
+      body:`<p>Markdown — основной инструмент форматирования промптов. Поддерживается большинством моделей.</p>
+      <div class="mm-stitle">Основные элементы</div>
+      <table class="mm-table"><tr><th>Элемент</th><th>Применение</th></tr>
+      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px"># Заголовок</code></td><td>Разделение роли, задачи, контекста</td></tr>
+      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">**жирный**</code></td><td>Ключевые термины, важные требования</td></tr>
+      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">\`код\`</code></td><td>Функции, команды, технологии</td></tr>
+      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">- список</code></td><td>Требования, шаги, критерии</td></tr>
+      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">| таблица |</code></td><td>Сравнение вариантов, спецификации</td></tr></table>`
+    },
+    structure: { icon:'🧱', title:'Структура промпта', subtitle:'Базовые принципы составления',
+      body:`<p>Без структуры модель вынуждена достраивать недостающие элементы самостоятельно, что приводит к вариативности ответов.</p>
+      <div class="mm-stitle">Части промпта</div>
+      <table class="mm-table"><tr><th>Часть</th><th>Обязательность</th><th>Назначение</th></tr>
+      <tr><td><strong>Задача</strong></td><td>✅ Обязательно</td><td>Конкретное действие или результат</td></tr>
+      <tr><td>Роль</td><td>Опционально</td><td>Позиция, экспертиза, стиль ответа</td></tr>
+      <tr><td>Контекст</td><td>Опционально</td><td>Условия, входные данные, среда</td></tr>
+      <tr><td>Формат вывода</td><td>Опционально</td><td>Структура и форма ответа</td></tr>
+      <tr><td>Ограничения</td><td>Опционально</td><td>Запреты и границы решения</td></tr></table>`
+    },
+    role: { icon:'🎭', title:'Роль', subtitle:'Компонент промпта',
+      body:`<p>Роль задаёт позицию, с которой модель отвечает: стиль, глубину экспертизы и терминологию. Без роли — нейтральная позиция для широкой аудитории.</p>
+      <div class="mm-stitle">Три функции</div>
+      <ul class="mm-list"><li><strong>Экспертная фильтрация</strong> — модель использует релевантные знания</li><li><strong>Стилевая настройка</strong> — уровень детализации и форма подачи</li><li><strong>Терминологическая фокусировка</strong> — профессиональный или общий язык</li></ul>
+      <div class="mm-stitle">Формат указания</div>
+      <div class="mm-code">Ты — [роль]
+Действуй как [роль]
+Твоя роль: [роль]</div>
+      <p>Принцип специфичности: «Senior SRE с фокусом на надёжность» лучше, чем «инженер».</p>`
+    },
+    task: { icon:'🎯', title:'Задача', subtitle:'Единственный обязательный компонент',
+      body:`<p>Задача — центральный компонент промпта. Единственный обязательный элемент. Все остальные компоненты лишь уточняют пространство решений.</p>
+      <div class="mm-stitle">4 критерия хорошей задачи</div>
+      <table class="mm-table"><tr><th>Критерий</th><th>Плохо</th><th>Хорошо</th></tr>
+      <tr><td><strong>Конкретность</strong></td><td>«Помоги с загрузкой»</td><td>«Напиши скрипт загрузки 850 записей из CSV в PostgreSQL»</td></tr>
+      <tr><td><strong>Измеримость</strong></td><td>«Сделай код лучше»</td><td>«Рефактори: убери дублирование, добавь type hints»</td></tr>
+      <tr><td><strong>Однозначность</strong></td><td>«Обработай данные»</td><td>«Удали строки с пустыми значениями в колонке email»</td></tr>
+      <tr><td><strong>Атомарность</strong></td><td>«Спроектируй, напиши и разверни»</td><td>Отдельные задачи на каждое действие</td></tr></table>`
+    },
+    ctx: { icon:'🌍', title:'Контекст', subtitle:'При каких условиях выполняется задача',
+      body:`<p>Контекст описывает условия выполнения задачи. Без него модель делает предположения о среде, форматах и параметрах.</p>
+      <div class="mm-stitle">Виды контекста</div>
+      <ul class="mm-list"><li><strong>Входные данные</strong> — что именно нужно обработать</li><li><strong>Техническое окружение</strong> — стек, версии, платформа</li><li><strong>Бизнес-ограничения</strong> — бюджет, сроки, SLA</li><li><strong>Существующая архитектура</strong> — уже реализованные компоненты</li><li><strong>Предыстория</strong> — что уже пробовали</li><li><strong>Аудитория</strong> — кто будет читать результат</li></ul>
+      <div class="mm-stitle">Отличие от ограничений</div>
+      <p>Контекст описывает <em>факты</em>. Ограничения задают <em>правила</em>.</p>`
+    },
+    outfmt: { icon:'📄', title:'Формат вывода', subtitle:'Как должен выглядеть ответ',
+      body:`<p>Без явного указания модель выбирает формат на своё усмотрение — ответы неоднородны.</p>
+      <div class="mm-stitle">Виды форматов</div>
+      <table class="mm-table"><tr><th>Вид</th><th>Когда использовать</th></tr>
+      <tr><td><strong>Код</strong></td><td>«Верни Python с type hints»</td></tr>
+      <tr><td><strong>JSON</strong></td><td>Машинная обработка, интеграция</td></tr>
+      <tr><td><strong>Таблица</strong></td><td>Сравнение, метрики</td></tr>
+      <tr><td><strong>Список</strong></td><td>Шаги, требования</td></tr>
+      <tr><td><strong>Mermaid</strong></td><td>Архитектура, схемы</td></tr>
+      <tr><td><strong>Краткий ответ</strong></td><td>«Ответь только числом»</td></tr></table>
+      <div class="mm-stitle">Пример детализации</div>
+      <div class="mm-code">Верни JSON:
+{ "total": число, "processed": число,
+  "errors": [{"id": строка, "reason": строка}] }</div>`
+    },
+    limits: { icon:'⛔', title:'Ограничения', subtitle:'Чего нельзя делать',
+      body:`<p>Ограничения сужают пространство решений, исключая недопустимые варианты.</p>
+      <div class="mm-stitle">Виды ограничений</div>
+      <ul class="mm-list"><li><strong>Технологические</strong> — запрет/требование конкретных библиотек</li><li><strong>Ресурсные</strong> — время выполнения, потребление памяти</li><li><strong>Архитектурные</strong> — паттерны, структура кода</li><li><strong>Безопасности</strong> — защита данных, обработка секретов</li><li><strong>Бизнес-правила</strong> — логика предметной области</li><li><strong>Стилистические</strong> — код-стайл, нейминг, документация</li></ul>
+      <div class="mm-stitle">Принципы формулировки</div>
+      <ul class="mm-list"><li><strong>Явность</strong> — не «будь аккуратен», а «не более 100 MB»</li><li><strong>Проверяемость</strong> — не «сделай быстро», а «не более 200 мс»</li><li><strong>Непротиворечивость</strong> — ограничения не должны конфликтовать</li></ul>`
+    },
+    howcompose: { icon:'🛠️', title:'Как составлять', subtitle:'Принципы, подходы и техники',
+      body:`<p>Раздел посвящён практике написания промптов: от базовых принципов до специализированных техник рассуждений.</p>
+      <div class="mm-stitle">Что входит</div>
+      <ul class="mm-list"><li><strong>Принципы</strong> — 6 правил качественного промпта</li><li><strong>Подходы</strong> — 7 стратегий составления</li><li><strong>Техники рассуждений</strong> — CoT, PoT, Few-shot и другие</li><li><strong>Пример</strong> — полный промпт со всеми принципами</li></ul>`
+    },
+    principles: { icon:'📏', title:'Принципы', subtitle:'6 правил хорошего промпта',
+      body:`<table class="mm-table"><tr><th>Принцип</th><th>Суть</th><th>Ключевой вопрос</th></tr>
+      <tr><td><strong>Ясность</strong></td><td>Исключить двусмысленность</td><td>Можно ли истолковать иначе?</td></tr>
+      <tr><td><strong>Достаточность</strong></td><td>Оптимальный объём информации</td><td>Каждый ли факт влияет на решение?</td></tr>
+      <tr><td><strong>Структурированность</strong></td><td>Иерархическая организация</td><td>Использованы ли списки и заголовки?</td></tr>
+      <tr><td><strong>Специфичность</strong></td><td>Конкретные, измеримые требования</td><td>Можно ли проверить выполнение?</td></tr>
+      <tr><td><strong>Итеративность</strong></td><td>Постепенное уточнение</td><td>Начинаю ли я с простого?</td></tr>
+      <tr><td><strong>Единообразие</strong></td><td>Согласованность терминов</td><td>Одинаково ли я называю сущности?</td></tr></table>
+      <div class="mm-stitle">Чек-лист перед отправкой</div>
+      <ul class="mm-list"><li>Задача сформулирована явно и стоит первой</li><li>Контекст содержит только релевантные факты</li><li>Формат вывода описан конкретно</li><li>Нет двусмысленных формулировок</li><li>Терминология едина на протяжении промпта</li></ul>`
+    },
+    approaches: { icon:'🗺️', title:'Подходы', subtitle:'7 стратегий составления промптов',
+      body:`<table class="mm-table"><tr><th>Подход</th><th>Когда использовать</th><th>Ключевая фраза</th></tr>
+      <tr><td><strong>Пошаговый</strong></td><td>Логика, математика, отладка</td><td>«Реши пошагово»</td></tr>
+      <tr><td><strong>Ролевой</strong></td><td>Важен стиль, экспертиза</td><td>«Ты — [роль]»</td></tr>
+      <tr><td><strong>Структурированный</strong></td><td>Единообразный ответ, парсинг</td><td>«Оформи в формате:...»</td></tr>
+      <tr><td><strong>Контекстно-ограничивающий</strong></td><td>Жёсткие технические рамки</td><td>«Используй только... Без...»</td></tr>
+      <tr><td><strong>Итеративный</strong></td><td>Сложные, плохо формализуемые задачи</td><td>Начинай с простого</td></tr>
+      <tr><td><strong>Примеро-ориентированный</strong></td><td>Сложно описать словами</td><td>«Вот пример. Следуй формату»</td></tr>
+      <tr><td><strong>Критериальный</strong></td><td>Важна оценка качества</td><td>«Оптимизируй по критериям:...»</td></tr></table>
+      <p>Наиболее эффективные промпты комбинируют несколько подходов одновременно.</p>`
+    },
+    techniques: { icon:'⚙️', title:'Техники рассуждений', subtitle:'Как управлять мышлением модели',
+      body:`<p>Техники управляют тем, <em>как</em> модель думает, а не только <em>что</em> делает. Правильная техника повышает точность и снижает галлюцинации.</p>
+      <div class="mm-stitle">Обзор</div>
+      <ul class="mm-list"><li><strong>Chain of Thought</strong> — пошаговое рассуждение вслух</li><li><strong>Program of Thought</strong> — делегирование вычислений коду</li><li><strong>Zero-shot / Few-shot</strong> — без примеров или с примерами</li><li><strong>Contrastive Reasoning</strong> — анализ ошибочных путей</li><li><strong>Knowledge Tree</strong> — иерархическое дерево рассуждений</li><li><strong>Chain of Draft</strong> — сжатые конспективные заметки</li></ul>`
+    },
+    cot: { icon:'🔗', title:'Цепочка рассуждений', subtitle:'Chain of Thought (CoT)',
+      body:`<p>Просите модель рассуждать пошагово. Повышает точность на сложных задачах — модель «думает вслух» вместо прямого прыжка к ответу.</p>
+      <div class="mm-stitle">Когда использовать</div>
+      <ul class="mm-list"><li>Многошаговые логические задачи</li><li>Математические и алгоритмические проблемы</li><li>Отладка с неочевидной причиной</li></ul>
+      <div class="mm-stitle">Пример</div>
+      <div class="mm-code">Реши задачу пошагово. Для каждого шага
+объясни, что ты делаешь и почему.
+
+API с rate limit 100 req/min,
+нужно загрузить 850 записей.</div>
+      <p>Быстрый способ: добавьте <span class="mm-tag">«думай пошагово»</span> или <span class="mm-tag">«рассуждай вслух»</span>.</p>`
+    },
+    pot: { icon:'💻', title:'Рассуждения через код', subtitle:'Program of Thought (PoT)',
+      body:`<p>Модель генерирует исполняемый Python-код для вычислений вместо рассуждения на естественном языке. Делегирует точные вычисления интерпретатору — избегает галлюцинаций в математике.</p>
+      <div class="mm-stitle">Когда использовать</div>
+      <ul class="mm-list"><li>Сложные математические расчёты</li><li>Операции с датами и временем</li><li>Обработка данных (JSON, CSV)</li><li>Задачи, где CoT ошибается в арифметике</li></ul>
+      <div class="mm-stitle">Пример</div>
+      <div class="mm-code">basket = 120
+minutes = 0
+while basket > 0:
+    basket -= 7
+    minutes += 1
+    if basket > 0:
+        basket += 3
+print(minutes)  # → 25</div>
+      <p>Быстрый способ: <span class="mm-tag">«Напиши Python-программу для решения и верни результат»</span></p>`
+    },
+    shotex: { icon:'📚', title:'Рассуждения с примерами', subtitle:'Zero-shot / Few-shot',
+      body:`<div class="mm-stitle">Zero-shot</div>
+      <p>Прямой запрос без примеров. Модель использует встроенные знания. Для простых, однозначных задач.</p>
+      <div class="mm-code">Напиши SQL: выбрать пользователей,
+зарегистрированных после 1 января 2024.</div>
+      <div class="mm-stitle">Few-shot</div>
+      <p>Даёте 2–3 примера входа и выхода — модель улавливает паттерн.</p>
+      <div class="mm-code">Преобразуй в kebab-case:
+"Hello World"  → "hello-world"
+"My Component" → "my-component"
+"UserProfile"  → ?</div>
+      <p>2–3 примера обычно достаточно. Больше 5 редко улучшает результат, но увеличивает токены.</p>`
+    },
+    contrastive: { icon:'⚖️', title:'Контрастное размышление', subtitle:'Contrastive Reasoning',
+      body:`<p>Модель анализирует ошибочные варианты и сравнивает с верным. Выявляет скрытые допущения и повышает надёжность выводов.</p>
+      <div class="mm-stitle">Когда использовать</div>
+      <ul class="mm-list"><li>Задачи с неоднозначными условиями</li><li>Принятие решений с обоснованием выбора</li><li>Проверка гипотез и верификация логики</li><li>Обучение — показ типичных ошибок</li></ul>
+      <div class="mm-stitle">Структура ответа</div>
+      <div class="mm-code">❌ Неверный подход: [объяснение ошибки]
+✅ Правильное решение: [решение]
+🔑 Ключевое различие: [в чём разница]</div>
+      <p>Быстрый способ: <span class="mm-tag">«Сначала рассмотри типичную ошибку. Затем — правильное решение»</span></p>`
+    },
+    ktree: { icon:'🌳', title:'Дерево знаний', subtitle:'Knowledge Tree',
+      body:`<p>Структурирует информацию в виде иерархического дерева — от корневой проблемы к подвопросам, фактам и выводам.</p>
+      <div class="mm-stitle">Когда использовать</div>
+      <ul class="mm-list"><li>Сложные аналитические задачи</li><li>Root cause analysis</li><li>Подготовка структуры документов</li><li>Оценка достоверности версий</li></ul>
+      <div class="mm-stitle">Пример структуры</div>
+      <div class="mm-code">Конверсия упала
+├── Технические проблемы
+│   ├── Производительность
+│   └── Баги
+├── Изменения в продукте
+│   └── A/B-тест
+└── Внешние факторы</div>
+      <p>Быстрый способ: <span class="mm-tag">«Построй дерево знаний: корень → ключевые ветви → подвопросы → факты»</span></p>`
+    },
+    cod: { icon:'📝', title:'Цепочка заметок', subtitle:'Chain of Draft (CoD)',
+      body:`<p>Рассуждение в предельно сжатой форме — ключевые слова, символы, псевдокод вместо развёрнутых предложений. Снижает токен-потребление, сохраняя точность.</p>
+      <div class="mm-stitle">Когда использовать</div>
+      <ul class="mm-list"><li>Ограниченный бюджет токенов</li><li>Real-time приложения — важна скорость</li><li>Промежуточные вычисления без пояснений</li><li>Многошаговые задачи, где CoT избыточен</li></ul>
+      <div class="mm-stitle">Пример (850 записей, 100 req/min)</div>
+      <div class="mm-code">rate: 100/мин → 100 req за 60с
+850/100 = ceil(8.5) = 9 мин полных
+остаток: 50 req в 10-ю минуту
+итого: ~10–11 мин → 1 req/0.6с</div>
+      <p>Быстрый способ: <span class="mm-tag">«Рассуждай коротко — ключевыми словами, без развёрнутых предложений»</span></p>`
+    },
+    example: { icon:'🚀', title:'Пример', subtitle:'Полный промпт со всеми принципами',
+      body:`<p>Пример административного промпта — демонстрирует применение всех компонентов одновременно.</p>
+      <div class="mm-stitle">Структура примера</div>
+      <table class="mm-table"><tr><th>Компонент</th><th>Содержание</th></tr>
+      <tr><td>📌 Задача</td><td>Написать email-рассылку и составить блок FAQ по выбору тем курсовых работ</td></tr>
+      <tr><td>🎭 Роль</td><td>Старший методист учебного офиса ФКН НИУ ВШЭ</td></tr>
+      <tr><td>🌍 Контекст</td><td>Студенты 2 и 3 курсов, разные правила подачи заявок, жесткий дедлайн 15 мая</td></tr>
+      <tr><td>📄 Формат</td><td>Письмо для LMS (до 150 слов) и Markdown-таблица с 3 частыми вопросами</td></tr>
+      <tr><td>⛔ Ограничения</td><td>Официально-деловой, но эмпатичный тон. Запрет на «канцелярит» (ввиду, во избежание) и сокращение «курсач»</td></tr>
+      <tr><td>🧠 Техника</td><td>Few-shot — предоставление 2 примеров того, как правильно отвечать на возражения студентов</td></tr></table>
+      <div class="mm-stitle">Почему это хороший промпт</div>
+      <ul class="mm-list"><li>Задача конкретна: четко разделена на письмо и таблицу FAQ</li><li>Роль задаёт необходимый уровень формальности и экспертизы учебного офиса</li><li>Ограничения проверяемы (нет канцелярита и сленга)</li><li>Контекст сужает рамки и избавляет модель от фантазирования дат и дедлайнов</li></ul>`
+    }
+  };
+
+  /* ── TREE ─────────────────────────────────────────────────── */
+  const LEAF_H  = 72;
+  const LEVEL_X = [90, 360, 620, 910, 1170];
+
+  const tree = {
+    id:'root', label:'Промпт-инженерия', level:0,
+    children:[
+      { id:'why', label:'Зачем нужен<br>промпт-инжиниринг', level:1 },
+      { id:'howformat', label:'Как оформлять', level:1, children:[
+        { id:'formatting', label:'Форматирование', level:2 },
+        { id:'structure', label:'Структура', level:2, children:[
+          { id:'role',   label:'Роль',          level:3 },
+          { id:'task',   label:'Задача',        level:3 },
+          { id:'ctx',    label:'Контекст',      level:3 },
+          { id:'outfmt', label:'Формат вывода', level:3 },
+          { id:'limits', label:'Ограничения',   level:3 },
+        ]},
+      ]},
+      { id:'howcompose', label:'Как составлять', level:1, children:[
+        { id:'principles', label:'Принципы', level:2 },
+        { id:'approaches', label:'Подходы',  level:2 },
+        { id:'techniques', label:'Техники рассуждений', level:2, children:[
+          { id:'cot',    label:'Цепочка рассуждений<br><span class="mm-sub">(Chain of Thought)</span>',     level:3 },
+          { id:'pot',    label:'Рассуждения через код<br><span class="mm-sub">(Program of Thought)</span>', level:3 },
+          { id:'shotex', label:'Рассуждения с примерами<br><span class="mm-sub">(Zero-shot / Few-shot)</span>', level:3, children:[
+            { id:'contrastive', label:'Контрастное<br>размышление',                                        level:4 },
+            { id:'ktree',       label:'Дерево знаний',                                                     level:4 },
+            { id:'cod',         label:'Цепочка заметок<br><span class="mm-sub">(Chain of Draft)</span>',   level:4 },
+          ]},
+        ]},
+        { id:'example', label:'Пример', level:2 },
+      ]},
+    ]
+  };
+
+  /* ── LAYOUT ───────────────────────────────────────────────── */
+  function countLeaves(n) {
+    return (!n.children || !n.children.length) ? 1 : n.children.reduce((s,c) => s + countLeaves(c), 0);
+  }
+  function assignPos(node, startY) {
+    const leaves = countLeaves(node);
+    node.x = LEVEL_X[node.level];
+    node.y = startY + (leaves * LEAF_H) / 2;
+    if (node.children) {
+      let cy = startY;
+      node.children.forEach(c => { assignPos(c, cy); cy += countLeaves(c) * LEAF_H; });
+    }
+  }
+  const PAD_Y = 56;
+  const totalLeaves = countLeaves(tree);
+  assignPos(tree, PAD_Y);
+
+  /* ── RENDER ───────────────────────────────────────────────── */
+  const wrapper = document.getElementById('mm-mindmap');
+  wrapper.style.width  = (LEVEL_X[4] + 210) + 'px';
+  wrapper.style.height = (totalLeaves * LEAF_H + PAD_Y * 2) + 'px';
+
+  function renderNodes(node) {
+    const el = document.createElement('div');
+    el.className = 'mm-node mm-node-' + node.level;
+    el.dataset.id = node.id;
+    el.style.left = node.x + 'px';
+    el.style.top  = node.y + 'px';
+    el.innerHTML  = node.label;
+    el.addEventListener('click', () => mmOpenModal(node.id));
+    wrapper.appendChild(el);
+    node._el = el;
+    if (node.children) node.children.forEach(renderNodes);
+  }
+  renderNodes(tree);
+
+  /* ── EDGES ────────────────────────────────────────────────── */
+  const STROKE_C = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'];
+  const STROKE_W = [2.5, 2, 1.5, 1.5];
+
+  function drawEdges(node) {
+    if (!node.children) return;
+    const svg   = document.getElementById('mm-svg-lines');
+    const wRect = wrapper.getBoundingClientRect();
+    const pRect = node._el.getBoundingClientRect();
+    const px = pRect.right - wRect.left;
+    const py = pRect.top   - wRect.top + pRect.height / 2;
+    node.children.forEach(child => {
+      const cRect = child._el.getBoundingClientRect();
+      const cx = cRect.left - wRect.left;
+      const cy = cRect.top  - wRect.top + cRect.height / 2;
+      const mx = (px + cx) / 2;
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d',            `M ${px} ${py} C ${mx} ${py}, ${mx} ${cy}, ${cx} ${cy}`);
+      path.setAttribute('fill',         'none');
+      path.setAttribute('stroke',       STROKE_C[node.level] ?? '#e9d5ff');
+      path.setAttribute('stroke-width', STROKE_W[node.level] ?? 1.5);
+      svg.appendChild(path);
+      drawEdges(child);
+    });
+  }
+  requestAnimationFrame(() => requestAnimationFrame(() => drawEdges(tree)));
+
+  /* ── MODAL ────────────────────────────────────────────────── */
+  const ICON_BG = { root:'#1e40af', why:'#2563eb', howformat:'#3b82f6', formatting:'#3b82f6', structure:'#3b82f6', role:'#60a5fa', task:'#60a5fa', ctx:'#60a5fa', outfmt:'#60a5fa', limits:'#60a5fa', howcompose:'#3b82f6', principles:'#60a5fa', approaches:'#60a5fa', techniques:'#60a5fa', cot:'#93c5fd', pot:'#93c5fd', shotex:'#93c5fd', contrastive:'#bfdbfe', ktree:'#bfdbfe', cod:'#bfdbfe', example:'#3b82f6' };
+
+  const overlay    = document.getElementById('mm-overlay');
+  const iconEl     = document.getElementById('mm-icon');
+  const titleEl    = document.getElementById('mm-title');
+  const subtitleEl = document.getElementById('mm-subtitle');
+  const bodyEl     = document.getElementById('mm-body');
+
+  function mmOpenModal(id) {
+    const info = INFO[id]; if (!info) return;
+    iconEl.textContent      = info.icon;
+    iconEl.style.background = (ICON_BG[id] || '#3b82f6') + '20';
+    titleEl.textContent     = info.title;
+    subtitleEl.textContent  = info.subtitle || '';
+    bodyEl.innerHTML        = info.body;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function mmCloseModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('mm-close').addEventListener('click', mmCloseModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) mmCloseModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') mmCloseModal(); });
+})();
 </script>
 </body>
 </html>
