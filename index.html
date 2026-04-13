@@ -18,6 +18,7 @@
   --color-blue: #1A478A; --color-amber: #854F0B; --color-green: #31600e;
   --color-pink: #C4292B; --color-red: #C4292B;
 }
+html { scroll-behavior: smooth; }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif !important; }
 body {
   background: var(--bg-main); color: var(--text-main);
@@ -55,6 +56,26 @@ body {
 .tab-btn.active {
   background: var(--bg-accent); color: var(--text-accent);
   border-color: #AFA9EC; box-shadow: 0 2px 8px rgba(83, 74, 183, 0.1);
+}
+
+.top-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(248, 250, 252, 0.85); /* Matches --bg-main with opacity */
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  padding: 12px 0; margin-bottom: 2rem;
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 10px -4px rgba(0,0,0,0.05);
+}
+.top-nav-link {
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  color: var(--text-muted); background: var(--bg-card);
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+.top-nav-link:hover {
+  background: #f1f5f9; color: var(--text-main); transform: translateY(-1px); box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
 }
 
 .section { display: none; animation: fadeIn 0.4s ease; }
@@ -243,6 +264,12 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
   </div>
 </div>
 
+<nav class="top-nav">
+  <a href="#block-1" class="top-nav-link">1. Промты и приёмы</a>
+  <a href="#block-2" class="top-nav-link">2. Инструменты и Модели</a>
+  <a href="#block-3" class="top-nav-link">3. Карта промпт-инженерии</a>
+</nav>
+
 <div class="golden-rules">
   <h2> Золотые правила составления промтов</h2>
   <div class="rules-grid">
@@ -255,7 +282,7 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
   </div>
 </div>
 
-<div class="block-label"> Блок 1 — Промты и приёмы работы</div>
+<div class="block-label" id="block-1" style="scroll-margin-top: 80px;"> Блок 1 — Промты и приёмы работы</div>
 <div class="tabs" id="prompts-tabs">
   <button class="tab-btn active" onclick="showSection('text', this)">Текст</button>
   <button class="tab-btn" onclick="showSection('brainstorm', this)">Белый лист</button>
@@ -495,7 +522,7 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
 
 <hr class="block-divider">
 
-<div class="block-label"> Блок 2 — Инструменты и Модели</div>
+<div class="block-label" id="block-2" style="scroll-margin-top: 80px;"> Блок 2 — Инструменты и Модели</div>
 <div class="tabs" id="tools-tabs">
   <button class="tab-btn active" onclick="showTierSection('tierlist', this)">Тир-лист LLM</button>
   <button class="tab-btn" onclick="showTierSection('specialtools', this)">Спец-инструменты</button>
@@ -596,7 +623,7 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
 </div>
 
 <hr class="block-divider">
-<div class="block-label">🗺 Блок 3 — Карта промпт-инженерии</div>
+<div class="block-label" id="block-3" style="scroll-margin-top: 80px;">🗺 Блок 3 — Карта промпт-инженерии</div>
 <div class="mm-block">
   <div class="mm-block-header">
     <p>Нажмите на любой узел, чтобы увидеть пояснение</p>
