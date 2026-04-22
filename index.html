@@ -44,25 +44,39 @@ body {
 .rule-chip:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 .rule-num { font-size: 12px; font-weight: 700; color: var(--color-purple); background: var(--bg-accent); padding: 2px 6px; border-radius: 6px; }
 
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0; }
 .tab-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 14px; font-size: 13px; font-weight: 500; font-family: inherit;
-  border-radius: var(--radius-sm); border: 1px solid var(--border-color);
-  background: var(--bg-card); color: var(--text-muted); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit;
+  border-radius: 20px; border: 1px solid var(--border-color);
+  background: var(--bg-main); color: var(--text-muted); cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
 }
-.tab-btn:hover { background: #e2e8f0; color: var(--text-main); }
+.tab-btn:hover { background: #dce5f0; color: var(--text-main); transform: translateY(-1px); }
 .tab-btn.active {
   background: var(--text-main); color: #ffffff;
   border-color: var(--text-main); box-shadow: 0 2px 8px rgba(26, 71, 138, 0.25);
+  transform: translateY(-1px);
 }
 
-.tab-group { margin-bottom: 8px; }
+#prompts-tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl); box-shadow: var(--card-shadow);
+  margin-bottom: 2rem; overflow: hidden;
+}
+.tab-group {
+  margin-bottom: 0; padding: 14px 18px;
+  border-bottom: 1px solid var(--border-color);
+}
+.tab-group:nth-child(odd) { border-right: 1px solid var(--border-color); }
+.tab-group:nth-last-child(-n+2) { border-bottom: none; }
+.tab-group:has(.tab-btn.active) { background: var(--bg-accent); }
 .tab-group-label {
-  font-size: 11px; font-weight: 600; color: var(--text-muted);
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin-bottom: 6px; padding-left: 2px;
+  font-size: 11px; font-weight: 700; color: var(--text-main);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 8px; padding-left: 2px;
 }
 
 .top-nav {
@@ -109,7 +123,7 @@ body {
 .blue { color: var(--color-blue); } .amber { color: var(--color-amber); } .green { color: var(--color-green); }
 .pink { color: var(--color-pink); } .red { color: var(--color-red); }
 
-.prompt-box-wrap { position: relative; flex-grow: 1; margin-bottom: 12px; }
+.prompt-box-wrap { display: flex; flex-direction: column; flex-grow: 1; margin-bottom: 12px; }
 .prompt-box {
   background: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);
   padding: 12px 14px; font-size: 14px; color: var(--text-main); line-height: 1.6;
@@ -117,12 +131,17 @@ body {
 }
 .prompt-box em { color: var(--text-accent); background: #e2e8f0; padding: 2px 4px; border-radius: 4px; font-style: normal; font-size: 13px; }
 .copy-btn {
-  position: absolute; top: 8px; right: 8px; background: #fff; border: 1px solid var(--border-color);
-  border-radius: 6px; padding: 6px; cursor: pointer; color: var(--text-muted);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; opacity: 0; display: flex; align-items: center; justify-content: center;
+  align-self: flex-end; order: 2; margin-top: 6px;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: 20px; padding: 5px 14px; cursor: pointer; color: var(--text-muted);
+  transition: all 0.25s; display: inline-flex; align-items: center;
+  font-size: 12px; font-weight: 600; font-family: inherit;
 }
-.prompt-box-wrap:hover .copy-btn { opacity: 1; }
-.copy-btn:hover { background: var(--bg-accent); color: var(--text-accent); border-color: #AFA9EC; }
+.copy-btn::before { content: "Копировать"; }
+.copy-btn.copied { background: #dcfce7; border-color: #86efac; color: #166534; }
+.copy-btn.copied::before { content: "Скопировано"; }
+.copy-btn:hover { background: var(--bg-accent); color: var(--text-accent); border-color: var(--text-main); }
+.prompt-box { order: 1; }
 
 .tip { font-size: 13px; color: var(--text-muted); padding-top: 12px; border-top: 1px solid var(--border-color); margin-top: auto; }
 .tip strong { color: var(--text-main); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
@@ -302,35 +321,35 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
   <div class="tab-group">
     <div class="tab-group-label">✏️ Текст и идеи</div>
     <div class="tabs">
-      <button class="tab-btn active" onclick="showSection('text', this)">Текст</button>
-      <button class="tab-btn" onclick="showSection('brainstorm', this)">Белый лист</button>
-      <button class="tab-btn" onclick="showSection('teacher', this)">Режим учителя</button>
-      <button class="tab-btn" onclick="showSection('research', this)">Анализ</button>
+      <button class="tab-btn active" onclick="showSection('text', this)">📝 Текст</button>
+      <button class="tab-btn" onclick="showSection('brainstorm', this)">💡 Белый лист</button>
+      <button class="tab-btn" onclick="showSection('teacher', this)">🎓 Режим учителя</button>
+      <button class="tab-btn" onclick="showSection('research', this)">🔍 Анализ</button>
     </div>
   </div>
   <div class="tab-group">
     <div class="tab-group-label">📊 Данные и коммуникации</div>
     <div class="tabs">
-      <button class="tab-btn" onclick="showSection('data', this)">Данные</button>
-      <button class="tab-btn" onclick="showSection('email', this)">Рассылки</button>
-      <button class="tab-btn" onclick="showSection('image', this)">Медиа</button>
-      <button class="tab-btn" onclick="showSection('students', this)">Студенты</button>
+      <button class="tab-btn" onclick="showSection('data', this)">📊 Данные</button>
+      <button class="tab-btn" onclick="showSection('email', this)">✉️ Рассылки</button>
+      <button class="tab-btn" onclick="showSection('image', this)">🎨 Медиа</button>
+      <button class="tab-btn" onclick="showSection('students', this)">🎒 Студенты</button>
     </div>
   </div>
   <div class="tab-group">
     <div class="tab-group-label">📋 Администрирование</div>
     <div class="tabs">
-      <button class="tab-btn" onclick="showSection('docs', this)">Документы</button>
-      <button class="tab-btn" onclick="showSection('events', this)">Мероприятия</button>
-      <button class="tab-btn" onclick="showSection('planning', this)">Планирование</button>
-      <button class="tab-btn" onclick="showSection('compliance', this)">Безопасность</button>
+      <button class="tab-btn" onclick="showSection('docs', this)">📄 Документы</button>
+      <button class="tab-btn" onclick="showSection('events', this)">🎤 Мероприятия</button>
+      <button class="tab-btn" onclick="showSection('planning', this)">📅 Планирование</button>
+      <button class="tab-btn" onclick="showSection('compliance', this)">🔒 Безопасность</button>
     </div>
   </div>
   <div class="tab-group">
     <div class="tab-group-label">⚡ Дополнительно</div>
     <div class="tabs">
-      <button class="tab-btn" onclick="showSection('personalize', this)">Персонализация</button>
-      <button class="tab-btn" onclick="showSection('bonus', this)">Бонус</button>
+      <button class="tab-btn" onclick="showSection('personalize', this)">⚙️ Персонализация</button>
+      <button class="tab-btn" onclick="showSection('bonus', this)">🎁 Бонус</button>
     </div>
   </div>
 </div>
@@ -710,6 +729,8 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const text = btn.nextElementSibling.innerText;
     navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 2000);
       const toast = document.getElementById('toast');
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2500);
