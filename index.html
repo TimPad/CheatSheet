@@ -14,10 +14,12 @@
 <script>
   (function () {
     try {
-      var saved = localStorage.getItem('theme');
-      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      var theme = saved || (prefersDark ? 'dark' : 'light');
+      var mode = localStorage.getItem('theme') || 'auto';
+      if (mode !== 'light' && mode !== 'dark' && mode !== 'auto') mode = 'auto';
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = mode === 'auto' ? (prefersDark ? 'dark' : 'light') : mode;
       document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-theme-mode', mode);
     } catch (e) {}
   })();
 </script>
@@ -234,10 +236,14 @@ mark {
   box-shadow: var(--card-shadow);
 }
 .theme-toggle:hover { transform: translateY(-1px); border-color: var(--accent); color: var(--accent); }
+.theme-toggle .icon-auto { display: none; }
 .theme-toggle .icon-dark { display: none; }
 .theme-toggle .icon-light { display: inline; }
 [data-theme="dark"] .theme-toggle .icon-dark { display: inline; }
 [data-theme="dark"] .theme-toggle .icon-light { display: none; }
+[data-theme-mode="auto"] .theme-toggle .icon-auto { display: inline; }
+[data-theme-mode="auto"] .theme-toggle .icon-light,
+[data-theme-mode="auto"] .theme-toggle .icon-dark { display: none; }
 
 /* ═══════════════════════════════════════════════════════════════
    GOLDEN RULES
@@ -855,6 +861,198 @@ mark {
   .local-table th, .local-table td { padding: 6px 7px; }
 }
 
+/* Local models cards */
+.models-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4px 0 0;
+}
+
+.models-section .section-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: var(--text-strong);
+  line-height: 1.15;
+}
+
+.models-controls {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) minmax(220px, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.models-filter,
+.models-search {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: var(--fs-base);
+  color: var(--text-body);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.models-filter:focus,
+.models-search:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+.models-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  min-width: 0;
+}
+
+.model-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  overflow: hidden;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  box-shadow: var(--card-shadow);
+}
+
+.model-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: var(--hover-shadow);
+}
+
+.model-title {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255,255,255,.06);
+  overflow-wrap: anywhere;
+}
+
+[data-theme="light"] .tag {
+  background: rgba(15, 40, 73, .06);
+}
+
+.tag.reasoning {
+  background: rgba(34,197,94,.15);
+  color: #15803d;
+}
+
+[data-theme="dark"] .tag.reasoning { color: #4ade80; }
+
+.tag.coding {
+  background: rgba(110,168,254,.15);
+  color: #1d4ed8;
+}
+
+[data-theme="dark"] .tag.coding { color: #93c5fd; }
+
+.tag.fast {
+  background: rgba(245,158,11,.15);
+  color: #b45309;
+}
+
+[data-theme="dark"] .tag.fast { color: #fbbf24; }
+
+.model-description {
+  color: var(--text-muted);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.hardware-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.spec-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  min-width: 0;
+}
+
+.spec-label {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.spec-value {
+  font-weight: 600;
+  color: var(--text-body);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.recommendation {
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(34,197,94,.08);
+  border: 1px solid rgba(34,197,94,.2);
+  font-size: 14px;
+  color: var(--text-body);
+}
+
+.model-card.is-hidden {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .models-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .models-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .spec-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .model-card {
+    padding: 18px;
+  }
+
+  .model-title {
+    font-size: 20px;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    BLOCK 3 — Mind map
    ═══════════════════════════════════════════════════════════════ */
@@ -1177,8 +1375,8 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
 <body>
 
 <div class="header">
-  <button class="theme-toggle" id="theme-toggle" aria-label="Переключить тему">
-    <span class="icon-light">🌙</span><span class="icon-dark">☀️</span>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Тема: авто" title="Тема: авто">
+    <span class="icon-auto">◐</span><span class="icon-light">🌙</span><span class="icon-dark">☀️</span>
   </button>
   <img src="logo.svg" alt="HSE FCS Logo">
   <div class="header-text">
@@ -1920,12 +2118,49 @@ window.MM_TREE = {
 
   /* ── theme toggle ──────────────────────────────────────────── */
   const themeToggle = document.getElementById('theme-toggle');
+  const systemTheme = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+  function getThemeMode() {
+    try {
+      const saved = localStorage.getItem('theme');
+      return ['auto', 'light', 'dark'].includes(saved) ? saved : 'auto';
+    } catch {
+      return 'auto';
+    }
+  }
+
+  function resolveTheme(mode) {
+    if (mode === 'auto') return systemTheme?.matches ? 'dark' : 'light';
+    return mode;
+  }
+
+  function setThemeMode(mode) {
+    const theme = resolveTheme(mode);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme-mode', mode);
+    themeToggle.setAttribute('aria-label', `Тема: ${mode === 'auto' ? 'авто' : theme === 'dark' ? 'тёмная' : 'светлая'}`);
+    themeToggle.title = themeToggle.getAttribute('aria-label');
+    try { localStorage.setItem('theme', mode); } catch {}
+  }
+
+  setThemeMode(getThemeMode());
+
   themeToggle.addEventListener('click', () => {
-    const cur = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = cur === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch {}
+    const modes = ['auto', 'light', 'dark'];
+    const cur = getThemeMode();
+    const next = modes[(modes.indexOf(cur) + 1) % modes.length];
+    setThemeMode(next);
   });
+
+  function handleSystemThemeChange() {
+    if (getThemeMode() === 'auto') setThemeMode('auto');
+  }
+
+  if (systemTheme?.addEventListener) {
+    systemTheme.addEventListener('change', handleSystemThemeChange);
+  } else if (systemTheme?.addListener) {
+    systemTheme.addListener(handleSystemThemeChange);
+  }
 
   /* ── render prompt tabs ────────────────────────────────────── */
   const tabsEl = document.getElementById('prompts-tabs');
@@ -2295,79 +2530,103 @@ window.MM_TREE = {
     wrap.className = 'section tier-section';
     wrap.id = 'localtools';
     wrap.innerHTML = `
-      <div class="section-header">
-        <h2>Локальные инструменты</h2>
-        <p>Запуск моделей прямо на своём компьютере — полная приватность, оффлайн, без подписок и VPN</p>
-      </div>
-      <div class="cards-grid">
-        <div class="card">
-          <div class="card-head"><div class="card-label purple">⚙️ Ollama — CLI / API</div></div>
-          <div class="local-body">
-            <p><strong>Что это.</strong> Open-source движок, который скачивает и запускает LLM на вашей машине. Команда в терминале + локальный HTTP-сервер на <code>localhost:11434</code> для интеграции с приложениями.</p>
-            <p><strong>Как использовать:</strong></p>
-            <ol class="local-list">
-              <li>Скачать с <a href="https://ollama.com" target="_blank" rel="noopener">ollama.com</a> (macOS, Windows, Linux).</li>
-              <li>В терминале: <code>ollama pull qwen3.5:9b</code> — скачает модель.</li>
-              <li><code>ollama run qwen3.5:9b</code> — чат прямо в терминале.</li>
-              <li>Для GUI поверх Ollama: <a href="https://openwebui.com" target="_blank" rel="noopener">Open WebUI</a> (Docker) или <a href="https://msty.app" target="_blank" rel="noopener">Msty</a>.</li>
-            </ol>
-            <p><strong>Кому подходит:</strong> разработчикам, для скриптов, интеграции с IDE и автоматизации.</p>
-          </div>
+      <section class="models-section">
+        <h2 class="section-title">Локальные модели</h2>
+        <div class="models-controls">
+          <select class="models-filter" id="models-filter" aria-label="Фильтр моделей">
+            <option value="all">Все модели</option>
+            <option value="reasoning">Reasoning</option>
+            <option value="coding">Coding</option>
+            <option value="fast">Fast</option>
+          </select>
+          <input class="models-search" id="models-search" type="text" placeholder="Поиск модели" autocomplete="off" aria-label="Поиск модели">
         </div>
+        <div class="models-grid">
+          <article class="model-card" data-tags="reasoning coding fast" data-model-name="Qwen3.5 27B">
+            <div class="model-title">Qwen3.5 27B</div>
+            <div class="tags">
+              <span class="tag reasoning">🧠 Reasoning</span>
+              <span class="tag coding">💻 Coding</span>
+              <span class="tag fast">⚡ Fast</span>
+            </div>
+            <div class="model-description">
+              Один из лучших универсальных локальных LLM-вариантов для reasoning, coding и agentic-задач.
+            </div>
+            <div class="hardware-box">
+              <div class="spec-row">
+                <div class="spec-label">RAM</div>
+                <div class="spec-value">48–64 GB</div>
+              </div>
+              <div class="spec-row">
+                <div class="spec-label">VRAM</div>
+                <div class="spec-value">RTX 4090 / 24 GB recommended</div>
+              </div>
+              <div class="spec-row">
+                <div class="spec-label">Quant</div>
+                <div class="spec-value">Q4_K_M / Q5_K_M</div>
+              </div>
+            </div>
+            <div class="recommendation">
+              ✅ Лучший вариант для мощных workstation
+            </div>
+          </article>
 
-        <div class="card">
-          <div class="card-head"><div class="card-label blue">🖥 LM Studio — GUI</div></div>
-          <div class="local-body">
-            <p><strong>Что это.</strong> Десктопное приложение с интерфейсом «как ChatGPT». Внутри — поиск моделей по Hugging Face, чат, история, локальный API.</p>
-            <p><strong>Как использовать:</strong></p>
-            <ol class="local-list">
-              <li>Скачать с <a href="https://lmstudio.ai" target="_blank" rel="noopener">lmstudio.ai</a> (macOS, Windows, Linux).</li>
-              <li>В каталоге внутри приложения найти модель (например, <em>qwen3.5:9b GGUF Q4_K_M</em>) и скачать.</li>
-              <li>Открыть вкладку <em>Chat</em> — пользоваться как привычным чат-ботом.</li>
-              <li>Вкладка <em>Local Server</em> — OpenAI-совместимый API для подключения внешних приложений.</li>
-            </ol>
-            <p><strong>Кому подходит:</strong> тем, кто предпочитает GUI без терминала; для нетехнических коллег.</p>
-          </div>
-        </div>
+          <article class="model-card" data-tags="reasoning fast" data-model-name="Gemma 4 12B">
+            <div class="model-title">Gemma 4 12B</div>
+            <div class="tags">
+              <span class="tag reasoning">🧠 Reasoning</span>
+              <span class="tag fast">⚡ Fast</span>
+            </div>
+            <div class="model-description">
+              Отличный баланс качества, скорости и потребления памяти.
+            </div>
+            <div class="hardware-box">
+              <div class="spec-row">
+                <div class="spec-label">RAM</div>
+                <div class="spec-value">24–32 GB</div>
+              </div>
+              <div class="spec-row">
+                <div class="spec-label">VRAM</div>
+                <div class="spec-value">12–16 GB</div>
+              </div>
+              <div class="spec-row">
+                <div class="spec-label">Quant</div>
+                <div class="spec-value">Q4_K_M</div>
+              </div>
+            </div>
+            <div class="recommendation">
+              ✅ Лучший баланс для большинства пользователей
+            </div>
+          </article>
 
-        <div class="card">
-          <div class="card-head"><div class="card-label amber">💻 Требования к железу</div></div>
-          <div class="local-body">
-            <table class="local-table">
-              <thead><tr><th>Размер модели</th><th>RAM</th><th>GPU (VRAM)</th><th>Диск</th><th>Для чего хватит</th></tr></thead>
-              <tbody>
-                <tr><td><strong>3–4B</strong> (Llama&nbsp;3.2&nbsp;3B, Phi-4&nbsp;mini)</td><td>8 ГБ</td><td>4 ГБ или CPU</td><td>~3 ГБ</td><td>Короткие тексты, простые ответы</td></tr>
-                <tr><td><strong>7–8B</strong> (Llama&nbsp;3.1&nbsp;8B, Qwen&nbsp;3&nbsp;8B, Mistral)</td><td>16 ГБ</td><td>6–8 ГБ</td><td>~5 ГБ</td><td>Большинство офисных задач</td></tr>
-                <tr><td><strong>13–14B</strong> (Qwen&nbsp;3&nbsp;14B, DeepSeek-V3 Lite)</td><td>32 ГБ</td><td>12 ГБ</td><td>~8 ГБ</td><td>Сложные тексты, код, длинные доки</td></tr>
-                <tr><td><strong>30–32B</strong></td><td>32–64 ГБ</td><td>24 ГБ (RTX 4090 / A6000)</td><td>~20 ГБ</td><td>Качество, близкое к ChatGPT-4-class</td></tr>
-                <tr><td><strong>70B+</strong></td><td>64+ ГБ</td><td>2× 24 ГБ или 48+ ГБ</td><td>~40 ГБ</td><td>Профессиональный уровень</td></tr>
-              </tbody>
-            </table>
-            <p class="local-note"><strong>Apple Silicon (M1/M2/M3/M4):</strong> unified memory считается одновременно как RAM и VRAM. 16 ГБ → 7B, 32 ГБ → 13B, 64 ГБ → 32B, 128 ГБ → 70B. Отлично подходит для локальных LLM.</p>
-            <p class="local-note"><strong>Без GPU тоже работает</strong> — Ollama и LM Studio умеют считать на CPU, но скорость падает в 5–10 раз. Для 7B модели на современном i7/Ryzen 7 — терпимо для коротких ответов.</p>
-            <p class="local-note"><strong>Подсказка:</strong> ищите модели в формате <em>GGUF</em> с квантованием <em>Q4_K_M</em> — лучший баланс качества и размера.</p>
-          </div>
+          <article class="model-card" data-tags="reasoning" data-model-name="DeepSeek-R1-Distill-Qwen-14B">
+            <div class="model-title">DeepSeek-R1-Distill-Qwen-14B</div>
+            <div class="tags">
+              <span class="tag reasoning">🧠 Reasoning</span>
+            </div>
+            <div class="model-description">
+              Сильная reasoning-модель для аналитики, сложных цепочек рассуждений и STEM-задач.
+            </div>
+            <div class="hardware-box">
+              <div class="spec-row">
+                <div class="spec-label">RAM</div>
+                <div class="spec-value">32–48 GB</div>
+              </div>
+              <div class="spec-row">
+                <div class="spec-label">VRAM</div>
+                <div class="spec-value">16–24 GB</div>
+              </div>
+              <div class="spec-row">
+                <div class="spec-label">Quant</div>
+                <div class="spec-value">Q5_K_M</div>
+              </div>
+            </div>
+            <div class="recommendation">
+              ✅ Лучший reasoning среди mid-range локальных моделей
+            </div>
+          </article>
         </div>
-
-        <div class="card">
-          <div class="card-head"><div class="card-label green">🎯 Что выбрать админу ФКН</div></div>
-          <div class="local-body">
-            <p><strong>Для административных задач</strong> (письма, регламенты, выжимки, FAQ) достаточно модели <strong>7–8B</strong>: Llama&nbsp;3.1&nbsp;8B, Qwen&nbsp;3&nbsp;8B, Mistral Nemo, GigaChat-Lite. Качество — сравнимо с бесплатными версиями облачных моделей.</p>
-            <p><strong>Когда обязательно локально:</strong></p>
-            <ul class="special-list">
-              <li>работа с персональными данными (ПДн, ФЗ-152) — данные не покидают устройство;</li>
-              <li>документы под NDA, внутренние регламенты, черновики приказов;</li>
-              <li>нет стабильного интернета, командировка, мероприятие вне сети.</li>
-            </ul>
-            <p><strong>Минимальная сборка для старта:</strong></p>
-            <ul class="special-list">
-              <li>MacBook Air M2/M3 16 ГБ — потянет 7–8B без напряжения;</li>
-              <li>или ПК: GeForce RTX 3060 / 4060 (8–12 ГБ VRAM) + 16 ГБ RAM + SSD;</li>
-              <li>ноутбук с iGPU и 16 ГБ RAM — тоже подойдёт для 3–7B на CPU.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      </section>
     `;
     tierContainer.appendChild(wrap);
   }
@@ -2375,6 +2634,26 @@ window.MM_TREE = {
   renderTierList();
   renderSpecialTools();
   renderLocalTools();
+
+  const modelsFilter = document.getElementById('models-filter');
+  const modelsSearch = document.getElementById('models-search');
+
+  function applyModelsFilter() {
+    if (!modelsFilter || !modelsSearch) return;
+    const selected = modelsFilter.value;
+    const query = modelsSearch.value.trim().toLowerCase();
+
+    document.querySelectorAll('#localtools .model-card').forEach(card => {
+      const tags = card.dataset.tags || '';
+      const searchable = card.textContent.toLowerCase();
+      const matchesTag = selected === 'all' || tags.includes(selected);
+      const matchesQuery = !query || searchable.includes(query);
+      card.classList.toggle('is-hidden', !matchesTag || !matchesQuery);
+    });
+  }
+
+  modelsFilter?.addEventListener('change', applyModelsFilter);
+  modelsSearch?.addEventListener('input', applyModelsFilter);
 
   document.getElementById('tools-tabs').addEventListener('click', e => {
     const btn = e.target.closest('.tab-btn');
