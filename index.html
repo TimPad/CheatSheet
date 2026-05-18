@@ -1,702 +1,1189 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Шпаргалка: работа с ИИ-сервисами — ФКН НИУ ВШЭ</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<meta name="description" content="Шпаргалка по работе с ИИ-сервисами для административного персонала ФКН НИУ ВШЭ: 40+ готовых промптов, актуальный тир-лист моделей и карта промпт-инженерии.">
+<meta name="theme-color" content="#1A478A">
+<meta property="og:title" content="Шпаргалка: работа с ИИ-сервисами — ФКН НИУ ВШЭ">
+<meta property="og:description" content="40+ готовых промптов, актуальный тир-лист моделей и карта промпт-инженерии для административного персонала.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
+/* ═══════════════════════════════════════════════════════════════
+   TOKENS — themes
+   ═══════════════════════════════════════════════════════════════ */
 :root {
-  --bg-main: #f8fafc; --bg-card: #ffffff; --bg-gold: #fdfaf3; --bg-accent: #E5F0FA;
-  --text-main: #1A478A; --text-muted: #3a609d; --text-accent: #1A478A;
-  --border-color: #e2e8f0; --border-gold: #e8e6e0;
-  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --radius-sm: 8px; --radius-md: 12px; --radius-xl: 16px;
-  --color-purple: #1A478A; --color-teal: #0e6750; --color-coral: #C4292B;
-  --color-blue: #1A478A; --color-amber: #854F0B; --color-green: #31600e;
-  --color-pink: #C4292B; --color-red: #C4292B;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-xl: 16px;
+
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-base: 14px;
+  --fs-lg: 15px;
+  --fs-xl: 20px;
+  --fs-2xl: 30px;
+
+  --hse-blue: #1A478A;
+  --hse-blue-strong: #103064;
 }
+
+:root[data-theme="light"] {
+  --bg-main: #f4f6fb;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-soft: #eef3fa;
+  --bg-accent: #E5F0FA;
+  --bg-gold: #fdfaf3;
+
+  --text-main: #1A478A;
+  --text-strong: #0f2849;
+  --text-muted: #4a6694;
+  --text-on-accent: #ffffff;
+  --text-body: #1a2840;
+
+  --border-color: #d9e1ee;
+  --border-strong: #b6c4dc;
+  --border-gold: #e8e6e0;
+
+  --accent: #1A478A;
+  --accent-soft: #E5F0FA;
+  --accent-hover: #103064;
+
+  --color-purple: #1A478A;
+  --color-teal:   #0e6750;
+  --color-coral:  #C4292B;
+  --color-blue:   #1A478A;
+  --color-amber:  #854F0B;
+  --color-green:  #31600e;
+  --color-pink:   #C4292B;
+  --color-red:    #C4292B;
+
+  --card-shadow: 0 2px 4px -1px rgba(15, 40, 73, 0.06), 0 4px 12px -4px rgba(15, 40, 73, 0.04);
+  --hover-shadow: 0 12px 28px -10px rgba(15, 40, 73, 0.18);
+  --focus-ring: 0 0 0 3px rgba(26, 71, 138, 0.28);
+
+  --mark-bg: #fff2a8;
+  --mark-fg: #5a4400;
+
+  --mm-bg-dots: #cbd5e1;
+  --mm-leaf-bg: #ffffff;
+  --mm-leaf-border: #cbd5e1;
+  --mm-leaf-text: #1e40af;
+  --mm-level2-bg: #eff6ff;
+  --mm-level2-border: #bfdbfe;
+  --mm-level3-bg: #f8fafc;
+  --mm-level3-border: #e2e8f0;
+
+  --modal-overlay: rgba(15, 23, 42, 0.55);
+}
+
+:root[data-theme="dark"] {
+  --bg-main: #0d1525;
+  --bg-card: #141d31;
+  --bg-elevated: #1a2540;
+  --bg-soft: #1a2540;
+  --bg-accent: #1e3a6c;
+  --bg-gold: #2a2415;
+
+  --text-main: #e8eef9;
+  --text-strong: #ffffff;
+  --text-muted: #98a8c8;
+  --text-on-accent: #ffffff;
+  --text-body: #d6dfee;
+
+  --border-color: #283556;
+  --border-strong: #3a4b75;
+  --border-gold: #3d3722;
+
+  --accent: #6aa3ff;
+  --accent-soft: #1e3a6c;
+  --accent-hover: #8fbcff;
+
+  --color-purple: #8fbcff;
+  --color-teal:   #6fd3a5;
+  --color-coral:  #f78b87;
+  --color-blue:   #8fbcff;
+  --color-amber:  #f0c97a;
+  --color-green:  #9fdf72;
+  --color-pink:   #f78b87;
+  --color-red:    #f78b87;
+
+  --card-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.3), 0 8px 16px -6px rgba(0, 0, 0, 0.35);
+  --hover-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.55);
+  --focus-ring: 0 0 0 3px rgba(106, 163, 255, 0.4);
+
+  --mark-bg: #6a5500;
+  --mark-fg: #fff5c4;
+
+  --mm-bg-dots: #2a3753;
+  --mm-leaf-bg: #1a2540;
+  --mm-leaf-border: #3a4b75;
+  --mm-leaf-text: #c0d3f5;
+  --mm-level2-bg: #1e3055;
+  --mm-level2-border: #3a5e9c;
+  --mm-level3-bg: #1a2540;
+  --mm-level3-border: #2e3e63;
+
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════════ */
 html { scroll-behavior: smooth; }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif !important; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  background: var(--bg-main); color: var(--text-main);
-  padding: 2rem 1.5rem; max-width: 1000px; margin: 0 auto; line-height: 1.6;
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-body);
+  padding: 1.5rem 1rem 4rem;
+  max-width: 1080px;
+  margin: 0 auto;
+  line-height: 1.6;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
+
+a { color: var(--accent); }
+a:hover { color: var(--accent-hover); }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 6px;
+}
+
+mark {
+  background: var(--mark-bg);
+  color: var(--mark-fg);
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════════════ */
 .header {
-  padding: 1.5rem 0 2.5rem; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 1.5rem;
+  position: relative;
+  padding: 1.25rem 0 2rem;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
 }
-.header-text h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-main); line-height: 1.2; }
-.header-text p { font-size: 15px; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
+.header img {
+  height: 60px;
+  filter: var(--logo-filter, none);
+}
+[data-theme="dark"] .header img { filter: brightness(0) invert(0.92); }
+.header-text h1 {
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text-strong);
+  line-height: 1.2;
+}
+.header-text p {
+  font-size: var(--fs-lg);
+  color: var(--text-muted);
+  margin-top: 8px;
+  font-weight: 500;
+}
+.theme-toggle {
+  position: absolute;
+  top: 1.25rem;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s;
+  box-shadow: var(--card-shadow);
+}
+.theme-toggle:hover { transform: translateY(-1px); border-color: var(--accent); color: var(--accent); }
+.theme-toggle .icon-dark { display: none; }
+.theme-toggle .icon-light { display: inline; }
+[data-theme="dark"] .theme-toggle .icon-dark { display: inline; }
+[data-theme="dark"] .theme-toggle .icon-light { display: none; }
 
+/* ═══════════════════════════════════════════════════════════════
+   GOLDEN RULES
+   ═══════════════════════════════════════════════════════════════ */
 .golden-rules {
-  background: var(--bg-gold); border-radius: var(--radius-xl); border: 1px solid var(--border-gold);
-  padding: 1.5rem; margin-bottom: 2.5rem; box-shadow: var(--card-shadow);
+  background: var(--bg-gold);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-gold);
+  padding: 1.25rem 1.25rem 1rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow);
 }
-.golden-rules h2 { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
-.rules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.golden-rules h2 {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
 .rule-chip {
-  background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: var(--radius-sm);
-  padding: 10px 12px; font-size: 13px; font-weight: 500; display: flex; align-items: flex-start; gap: 8px; transition: transform 0.2s;
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--text-body);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: transform 0.2s;
 }
-.rule-chip:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-.rule-num { font-size: 12px; font-weight: 700; color: var(--color-purple); background: var(--bg-accent); padding: 2px 6px; border-radius: 6px; }
+.rule-chip:hover { transform: translateY(-2px); }
+.rule-num {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 2px 7px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
 
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0; }
-.tab-btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 7px 12px; font-size: 13px; font-weight: 500; font-family: inherit;
-  border-radius: 20px; border: 1px solid var(--border-color);
-  background: var(--bg-main); color: var(--text-muted); cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* ═══════════════════════════════════════════════════════════════
+   TOP NAV + SEARCH (sticky)
+   ═══════════════════════════════════════════════════════════════ */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg-main) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 12px 0;
+  margin-bottom: 0.75rem;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 10px -6px rgba(0, 0, 0, 0.08);
+}
+.top-nav-link {
+  text-decoration: none;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
   white-space: nowrap;
 }
-.tab-btn:hover { background: #dce5f0; color: var(--text-main); transform: translateY(-1px); }
-.tab-btn.active {
-  background: var(--text-main); color: #ffffff;
-  border-color: var(--text-main); box-shadow: 0 2px 8px rgba(26, 71, 138, 0.25);
+.top-nav-link:hover {
+  background: var(--bg-soft);
+  color: var(--text-main);
   transform: translateY(-1px);
+}
+.top-nav-link.active {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(26, 71, 138, 0.25);
+}
+
+.search-bar {
+  position: sticky;
+  top: 60px;
+  z-index: 99;
+  background: color-mix(in srgb, var(--bg-main) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 10px 0 12px;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.search-input-wrap {
+  position: relative;
+  max-width: 540px;
+  margin: 0 auto;
+}
+.search-input {
+  width: 100%;
+  padding: 11px 38px 11px 40px;
+  font-size: var(--fs-base);
+  font-family: inherit;
+  background: var(--bg-card);
+  color: var(--text-body);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+.search-input::placeholder { color: var(--text-muted); }
+.search-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: 16px;
+}
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 18px;
+  border-radius: 6px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.search-input:not(:placeholder-shown) ~ .search-clear { display: inline-flex; }
+.search-clear:hover { background: var(--bg-soft); color: var(--text-main); }
+
+.search-hint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 8px;
+  min-height: 1em;
+}
+.search-hint a {
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABS (Block 1 prompt categories)
+   ═══════════════════════════════════════════════════════════════ */
+.block-label {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-strong);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 14px;
+  border-left: 3px solid var(--accent);
+}
+.block-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 3rem 0;
 }
 
 #prompts-tabs {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-  background: var(--bg-card); border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl); box-shadow: var(--card-shadow);
-  margin-bottom: 2rem; overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
 }
 .tab-group {
-  margin-bottom: 0; padding: 14px 18px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
 }
-.tab-group:nth-child(odd) { border-right: 1px solid var(--border-color); }
-.tab-group:nth-last-child(-n+2) { border-bottom: none; }
+.tab-group:last-child { border-right: none; }
+@media (max-width: 720px) {
+  .tab-group { border-right: none !important; }
+}
 .tab-group:has(.tab-btn.active) { background: var(--bg-accent); }
 .tab-group-label {
-  font-size: 11px; font-weight: 700; color: var(--text-main);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  margin-bottom: 8px; padding-left: 2px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--text-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  padding-left: 2px;
 }
-
-.top-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(248, 250, 252, 0.85); /* Matches --bg-main with opacity */
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  padding: 12px 0; margin-bottom: 2rem;
-  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 4px 10px -4px rgba(0,0,0,0.05);
+.tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
-.top-nav-link {
-  text-decoration: none; font-size: 14px; font-weight: 500;
-  color: var(--text-muted); background: var(--bg-card);
-  padding: 8px 16px; border-radius: var(--radius-sm);
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  font-size: var(--fs-md);
+  font-weight: 500;
+  font-family: inherit;
+  border-radius: 20px;
   border: 1px solid var(--border-color);
-  transition: all 0.2s;
+  background: var(--bg-main);
+  color: var(--text-muted);
+  transition: all 0.18s ease;
+  white-space: nowrap;
 }
-.top-nav-link:hover {
-  background: #e2e8f0; color: var(--text-main); transform: translateY(-1px); box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
+.tab-btn:hover {
+  background: var(--bg-soft);
+  color: var(--text-main);
+  transform: translateY(-1px);
 }
-.top-nav-link.active {
-  background: var(--text-main); color: #ffffff;
-  border-color: var(--text-main); box-shadow: 0 2px 8px rgba(26, 71, 138, 0.2);
+.tab-btn.active {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(26, 71, 138, 0.25);
+}
+.tab-btn .badge-count {
+  background: rgba(255, 255, 255, 0.22);
+  color: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 99px;
+}
+.tab-btn:not(.active) .badge-count {
+  background: var(--bg-accent);
+  color: var(--accent);
 }
 
-.section { display: none; animation: fadeIn 0.4s ease; }
+/* ═══════════════════════════════════════════════════════════════
+   SECTIONS & CARDS
+   ═══════════════════════════════════════════════════════════════ */
+.section { display: none; animation: fadeIn 0.35s ease; }
 .section.visible { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-.section-header { margin-bottom: 1.5rem; }
-.section-header h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-.section-header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+.section-header { margin-bottom: 1.25rem; }
+.section-header h2 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  color: var(--text-strong);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-header p {
+  font-size: var(--fs-base);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
 
-.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
 .card {
-  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);
-  padding: 1.25rem; transition: all 0.2s ease; position: relative; display: flex; flex-direction: column; height: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.1rem 0.9rem;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: var(--card-shadow);
 }
-.card:hover { box-shadow: var(--hover-shadow); transform: translateY(-2px); border-color: #cbd5e1; }
+.card:hover {
+  box-shadow: var(--hover-shadow);
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+.card.highlight-deeplink {
+  animation: highlightPulse 1.8s ease;
+}
+@keyframes highlightPulse {
+  0%, 100% { box-shadow: var(--card-shadow); }
+  20%, 70% { box-shadow: 0 0 0 3px var(--accent), var(--hover-shadow); }
+}
 
-.card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px; }
-.purple { color: var(--color-purple); } .teal { color: var(--color-teal); } .coral { color: var(--color-coral); }
-.blue { color: var(--color-blue); } .amber { color: var(--color-amber); } .green { color: var(--color-green); }
-.pink { color: var(--color-pink); } .red { color: var(--color-red); }
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 0.75rem;
+}
+.card-label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-fav {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.card-fav:hover { color: #f5a623; border-color: #f5a623; }
+.card-fav.is-fav {
+  background: #fff7e0;
+  border-color: #f5a623;
+  color: #d18402;
+}
+[data-theme="dark"] .card-fav.is-fav {
+  background: #3a2a06;
+  color: #f7c97a;
+}
 
-.prompt-box-wrap { display: flex; flex-direction: column; flex-grow: 1; margin-bottom: 12px; }
+.purple { color: var(--color-purple); }
+.teal   { color: var(--color-teal); }
+.coral  { color: var(--color-coral); }
+.blue   { color: var(--color-blue); }
+.amber  { color: var(--color-amber); }
+.green  { color: var(--color-green); }
+.pink   { color: var(--color-pink); }
+.red    { color: var(--color-red); }
+
 .prompt-box {
-  background: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);
-  padding: 12px 14px; font-size: 14px; color: var(--text-main); line-height: 1.6;
-  font-family: 'Inter', sans-serif; white-space: pre-wrap; height: 100%;
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  padding: 12px 14px;
+  font-size: var(--fs-base);
+  color: var(--text-body);
+  line-height: 1.65;
+  font-family: 'Inter', system-ui, sans-serif;
+  white-space: pre-wrap;
+  margin-bottom: 10px;
+  flex-grow: 1;
 }
-.prompt-box em { color: var(--text-accent); background: #e2e8f0; padding: 2px 4px; border-radius: 4px; font-style: normal; font-size: 13px; }
-.copy-btn {
-  align-self: flex-end; order: 2; margin-top: 6px;
-  background: var(--bg-card); border: 1px solid var(--border-color);
-  border-radius: 20px; padding: 5px 14px; cursor: pointer; color: var(--text-muted);
-  transition: all 0.25s; display: inline-flex; align-items: center;
-  font-size: 12px; font-weight: 600; font-family: inherit;
+.prompt-box em {
+  color: var(--text-strong);
+  background: var(--bg-accent);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-style: normal;
+  font-size: 13px;
 }
-.copy-btn::before { content: "Копировать"; }
-.copy-btn.copied { background: #dcfce7; border-color: #86efac; color: #166534; }
-.copy-btn.copied::before { content: "Скопировано"; }
-.copy-btn:hover { background: var(--bg-accent); color: var(--text-accent); border-color: var(--text-main); }
-.prompt-box { order: 1; }
 
-.tip { font-size: 13px; color: var(--text-muted); padding-top: 12px; border-top: 1px solid var(--border-color); margin-top: auto; }
-.tip strong { color: var(--text-main); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
-
-.block-label {
-  font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--text-main); margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;
-  padding-left: 14px; border-left: 3px solid var(--text-main);
+.card-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
-.block-divider { border: none; border-top: 1px solid var(--border-color); margin: 3rem 0; }
+.copy-btn, .share-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 6px 14px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.copy-btn:hover, .share-btn:hover {
+  background: var(--bg-accent);
+  color: var(--text-main);
+  border-color: var(--accent);
+}
+.copy-btn.copied {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+[data-theme="dark"] .copy-btn.copied {
+  background: #14532d;
+  border-color: #16a34a;
+  color: #bbf7d0;
+}
 
-/* Models List */
-.tier-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem; }
-.tier-header { padding: 8px 16px; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 14px; }
-.tier-header.s-tier { background: var(--bg-accent); color: var(--color-purple); }
-.tier-header.a-tier { background: #e0f2fe; color: var(--color-blue); }
-.tier-header.b-tier { background: #fef3c7; color: var(--color-amber); }
+.tip {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  line-height: 1.55;
+}
+.tip strong {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.empty-results {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-base);
+  background: var(--bg-card);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BLOCK 2 — Models tier list
+   ═══════════════════════════════════════════════════════════════ */
+#tools-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.tier-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: var(--card-shadow);
+}
+.tier-header {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: var(--fs-base);
+}
+.tier-header.s-tier { background: var(--bg-accent); color: var(--accent); }
+.tier-header.a-tier { background: #e0f2fe; color: #0c4a6e; }
+[data-theme="dark"] .tier-header.a-tier { background: #1d3a55; color: #93cdf2; }
+.tier-header.b-tier { background: #fef3c7; color: #854F0B; }
+[data-theme="dark"] .tier-header.b-tier { background: #3a2d10; color: #f5d27a; }
+.tier-rank {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  width: 28px;
+  text-align: center;
+}
+
 .tier-list { padding: 0 16px; }
-.tier-item { display: grid; grid-template-columns: 180px 1fr auto; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border-color); align-items: start; }
+.tier-item {
+  display: grid;
+  grid-template-columns: minmax(140px, 200px) 1fr auto;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-color);
+  align-items: start;
+}
 .tier-item:last-child { border-bottom: none; }
-.model-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-.model-vendor { font-size: 12px; color: var(--text-muted); }
-.model-desc { font-size: 14px; color: var(--text-muted); }
-.model-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 99px; white-space: nowrap; }
-.badge-vpn { background: #fef3c7; color: var(--color-amber); }
-.badge-free { background: #dcfce7; color: var(--color-green); }
+.model-name {
+  font-weight: 600;
+  font-size: var(--fs-lg);
+  margin-bottom: 4px;
+}
+.model-name a { color: var(--text-strong); text-decoration: underline; text-underline-offset: 3px; }
+.model-name a:hover { color: var(--accent); }
+.model-vendor { font-size: var(--fs-sm); color: var(--text-muted); }
+.model-desc { font-size: var(--fs-base); color: var(--text-body); }
+.model-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.badge-vpn { background: #fef3c7; color: #854F0B; }
+[data-theme="dark"] .badge-vpn { background: #3a2d10; color: #f5d27a; }
+.badge-free { background: #dcfce7; color: #15803d; }
+[data-theme="dark"] .badge-free { background: #14532d; color: #bbf7d0; }
+.badge-partial { background: #e0f2fe; color: #0c4a6e; }
+[data-theme="dark"] .badge-partial { background: #1d3a55; color: #93cdf2; }
 
-/* ══════════════════════════════════════════════
-   Mind Map — Block 3 (scoped to .mm-*)
-══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .tier-item { grid-template-columns: 1fr; gap: 6px; }
+}
+
+.special-list {
+  list-style: none;
+  font-size: var(--fs-base);
+  color: var(--text-body);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.special-list li { padding-left: 14px; position: relative; }
+.special-list li::before {
+  content: '▸';
+  color: var(--accent);
+  position: absolute;
+  left: 0;
+}
+.special-list a {
+  color: var(--accent);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BLOCK 3 — Mind map
+   ═══════════════════════════════════════════════════════════════ */
 .mm-block {
   background-color: var(--bg-main);
-  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-image: radial-gradient(var(--mm-bg-dots) 1px, transparent 1px);
   background-size: 26px 26px;
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-color);
   padding: 16px 0 24px;
   margin-bottom: 2rem;
-  box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
 }
-.mm-block * { font-family: 'Inter', system-ui, sans-serif !important; }
+.mm-block * { font-family: 'Inter', system-ui, sans-serif; }
 .mm-block-header { text-align: center; padding: 4px 24px 12px; }
-.mm-block-header p { font-size: 13px; color: var(--text-muted); font-weight: 500; opacity: 0.9; }
+.mm-block-header p { font-size: var(--fs-md); color: var(--text-muted); font-weight: 500; }
 .mm-legend {
-  display: flex; flex-wrap: wrap; gap: 10px 20px;
-  justify-content: center; padding: 0 24px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  justify-content: center;
+  padding: 0 24px 18px;
 }
-.mm-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-main); font-weight: 500; }
-.mm-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-.mm-scroll { overflow-x: auto; padding: 0 20px 8px; scrollbar-width: thin; scrollbar-color: #94a3b8 transparent; }
+.mm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--fs-sm);
+  color: var(--text-body);
+  font-weight: 500;
+}
+.mm-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+.mm-scroll {
+  overflow-x: auto;
+  padding: 0 20px 8px;
+  scrollbar-width: thin;
+}
 #mm-mindmap { position: relative; }
 svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .mm-node {
-  position: absolute; text-align: center; line-height: 1.5;
-  transform: translate(-50%, -50%); cursor: pointer;
-  transition: filter 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 1; user-select: none;
+  position: absolute;
+  text-align: center;
+  line-height: 1.45;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1;
+  user-select: none;
 }
-.mm-node:hover { transform: translate(-50%, -50%) scale(1.05); z-index: 20; filter: drop-shadow(0 8px 24px rgba(26,71,138,0.15)); }
+.mm-node:hover { transform: translate(-50%, -50%) scale(1.05); z-index: 20; }
 .mm-node:active { transform: translate(-50%, -50%) scale(0.98); }
-.mm-node::after {
-  content: ''; position: absolute; top: -4px; right: -4px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #3b82f6; border: 1.5px solid #fff; opacity: 0; transition: opacity 0.2s;
-}
-.mm-node:hover::after { opacity: 1; }
 .mm-node-0 {
-  background: linear-gradient(135deg, var(--color-purple), #2b6cb0); color:#fff;
-  font-size:17px; font-weight:700; padding:13px 28px; border-radius:16px;
-  box-shadow:0 6px 20px rgba(26, 71, 138, .3); letter-spacing:-.025em; white-space:nowrap;
+  background: linear-gradient(135deg, var(--hse-blue), #2b6cb0);
+  color: #fff;
+  font-size: 17px; font-weight: 700;
+  padding: 12px 26px; border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(26, 71, 138, .3);
+  white-space: nowrap;
 }
 .mm-node-1 {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6); color:#fff;
-  font-size:14px; font-weight:600; padding:9px 20px; border-radius:12px;
-  box-shadow:0 3px 12px rgba(59, 130, 246, .25); white-space:nowrap;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: #fff;
+  font-size: 14px; font-weight: 600;
+  padding: 9px 20px; border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(59, 130, 246, .25);
+  white-space: nowrap;
 }
 .mm-node-2 {
-  background:#eff6ff; color:#1e3a8a; border:2px solid #bfdbfe;
-  font-size:13px; font-weight:600; padding:7px 16px; border-radius:10px; white-space:nowrap;
+  background: var(--mm-level2-bg);
+  color: var(--mm-leaf-text);
+  border: 2px solid var(--mm-level2-border);
+  font-size: 13px; font-weight: 600;
+  padding: 7px 14px; border-radius: 10px; white-space: nowrap;
 }
 .mm-node-3 {
-  background:#f8fafc; color:#1e40af; border:1.5px solid #e2e8f0;
-  font-size:12px; font-weight:500; padding:6px 14px; border-radius:9px; max-width:210px;
+  background: var(--mm-level3-bg);
+  color: var(--mm-leaf-text);
+  border: 1.5px solid var(--mm-level3-border);
+  font-size: 12px; font-weight: 500;
+  padding: 6px 12px; border-radius: 9px; max-width: 210px;
 }
 .mm-node-4 {
-  background:#ffffff; color:#2563eb; border:1.5px solid #cbd5e1;
-  font-size:11.5px; font-weight:500; padding:5px 13px; border-radius:8px;
-  box-shadow:0 1px 4px rgba(0,0,0,0.05); max-width:190px;
+  background: var(--mm-leaf-bg);
+  color: var(--mm-leaf-text);
+  border: 1.5px solid var(--mm-leaf-border);
+  font-size: 11.5px; font-weight: 500;
+  padding: 5px 11px; border-radius: 8px;
+  max-width: 190px;
 }
-.mm-sub { font-size:.88em; opacity:.8; font-weight:400; }
+.mm-sub { font-size: .85em; opacity: .8; font-weight: 400; }
+
+/* Mobile fallback for mind map */
+.mm-fallback {
+  display: none;
+  padding: 0 1rem;
+}
+.mm-fallback-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mm-fallback-item:hover {
+  border-color: var(--accent);
+  box-shadow: var(--card-shadow);
+}
+.mm-fallback-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-strong);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mm-fallback-sub {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.mm-fallback-group {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin: 1.25rem 0 0.5rem;
+}
+.mm-fallback-group:first-child { margin-top: 0; }
+
+@media (max-width: 768px) {
+  .mm-scroll { display: none; }
+  .mm-fallback { display: block; }
+}
 
 /* Mind Map Modal */
 .mm-overlay {
-  position:fixed; inset:0; background:rgba(15, 23, 42, .6);
-  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
-  z-index:2000; display:flex; align-items:center; justify-content:center;
-  padding:20px; opacity:0; pointer-events:none; transition:opacity .22s ease;
+  position: fixed; inset: 0;
+  background: var(--modal-overlay);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
 }
-.mm-overlay.open { opacity:1; pointer-events:all; }
+.mm-overlay.open { opacity: 1; pointer-events: all; }
 .mm-modal {
-  background:#fff; border-radius:20px;
-  box-shadow:0 24px 64px rgba(26, 71, 138,.18);
-  max-width:560px; width:100%; max-height:80vh; overflow-y:auto;
-  transform:translateY(16px) scale(.97); transition:transform .22s cubic-bezier(0.34, 1.56, 0.64, 1);
-  scrollbar-width:thin; scrollbar-color:#cbd5e1 transparent;
-  font-family:'Inter',system-ui,sans-serif !important;
+  background: var(--bg-card);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .35);
+  max-width: 560px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(16px) scale(.97);
+  transition: transform .22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Inter', system-ui, sans-serif;
 }
-.mm-overlay.open .mm-modal { transform:translateY(0) scale(1); }
+.mm-overlay.open .mm-modal { transform: translateY(0) scale(1); }
 .mm-modal-header {
-  padding:22px 24px 16px; border-bottom:1px solid var(--border-color);
-  display:flex; align-items:flex-start; gap:14px;
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
 }
-.mm-modal-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-.mm-modal-title-wrap { flex:1; min-width:0; }
-.mm-modal-title { font-size:16px; font-weight:700; color:var(--text-main); line-height:1.3; letter-spacing:-.02em; font-family:'Inter',system-ui,sans-serif !important; }
-.mm-modal-subtitle { font-size:12px; color:var(--text-muted); margin-top:3px; opacity:.9; font-family:'Inter',system-ui,sans-serif !important; font-weight: 500; }
+.mm-modal-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.mm-modal-title-wrap { flex: 1; min-width: 0; }
+.mm-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-strong);
+  line-height: 1.3;
+}
+.mm-modal-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
 .mm-modal-close {
-  width:32px; height:32px; border-radius:8px; border:none;
-  background:#f1f5f9; color:#64748b; font-size:18px; line-height:1;
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; transition:all .2s; outline:none;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--bg-soft);
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
 }
-.mm-modal-close:hover { background:#e2e8f0; color:#0f172a; }
-.mm-modal-body { padding:20px 24px 24px; font-family:'Inter',system-ui,sans-serif !important; }
-.mm-modal-body p { font-size:13.5px; color:#475569; line-height:1.65; margin-bottom:14px; font-family:'Inter',system-ui,sans-serif !important; }
-.mm-modal-body p:last-child { margin-bottom:0; }
-.mm-stitle { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; margin:18px 0 8px; }
-.mm-list { list-style:none; display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
-.mm-list li { font-size:13px; color:#334155; line-height:1.55; display:flex; gap:8px; font-family:'Inter',system-ui,sans-serif !important; }
-.mm-list li::before { content:'▸'; color:#3b82f6; flex-shrink:0; margin-top:1px; }
-.mm-table { width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:14px; }
-.mm-table th { background:#f8fafc; color:var(--text-main); font-weight:600; padding:8px 10px; text-align:left; border-bottom:1px solid var(--border-color); font-family:'Inter',system-ui,sans-serif !important; }
-.mm-table td { padding:8px 10px; color:#475569; border-bottom:1px solid #f1f5f9; vertical-align:top; font-family:'Inter',system-ui,sans-serif !important; }
-.mm-table tr:last-child td { border-bottom:none; }
-.mm-code { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:12px 14px; font-size:12px; line-height:1.6; margin-bottom:14px; white-space:pre-wrap; overflow-x:auto; font-family:'Fira Code',monospace !important; }
-.mm-tag { display:inline-block; background:#e0f2fe; color:#0369a1; border-radius:6px; padding:2px 8px; font-size:11.5px; font-weight:600; margin:2px 2px 2px 0; }
+.mm-modal-close:hover { background: var(--bg-accent); color: var(--text-main); }
+.mm-modal-body { padding: 20px 24px 24px; }
+.mm-modal-body p {
+  font-size: 13.5px;
+  color: var(--text-body);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.mm-modal-body p:last-child { margin-bottom: 0; }
+.mm-stitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: 18px 0 8px;
+}
+.mm-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.mm-list li {
+  font-size: 13px;
+  color: var(--text-body);
+  line-height: 1.55;
+  display: flex;
+  gap: 8px;
+}
+.mm-list li::before { content: '▸'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.mm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin-bottom: 14px;
+}
+.mm-table th {
+  background: var(--bg-soft);
+  color: var(--text-strong);
+  font-weight: 600;
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+.mm-table td {
+  padding: 8px 10px;
+  color: var(--text-body);
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+}
+.mm-table tr:last-child td { border-bottom: none; }
+.mm-code {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+}
+[data-theme="dark"] .mm-code { background: #050a16; color: #cbd5e1; }
+.mm-tag {
+  display: inline-block;
+  background: var(--bg-accent);
+  color: var(--accent);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin: 2px 2px 2px 0;
+}
 
-/* Toast */
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════════ */
 #toast {
-  position: fixed; bottom: 24px; right: 24px; background: #1A478A; color: #fff;
-  padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
-  box-shadow: 0 10px 15px rgba(0,0,0,0.1); transform: translateY(100px); opacity: 0; transition: all 0.3s;
-  display: flex; align-items: center; gap: 8px; z-index: 1000;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, .2);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1500;
 }
 #toast.show { transform: translateY(0); opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  body { padding: 1rem 0.75rem 3rem; }
+  .header-text h1 { font-size: 24px; }
+  .top-nav { padding: 10px 0; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; padding-left: 4px; padding-right: 4px; }
+  .top-nav::-webkit-scrollbar { display: none; }
+  .top-nav-link { padding: 7px 12px; }
+  .search-bar { top: 56px; }
+  .theme-toggle { top: 0.25rem; }
+  .header { padding-top: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+  .header-text h1 { font-size: 22px; }
+  .cards-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <img src="logo.svg" alt="HSE FCS Logo" style="height: 60px;">
+  <button class="theme-toggle" id="theme-toggle" aria-label="Переключить тему">
+    <span class="icon-light">🌙</span><span class="icon-dark">☀️</span>
+  </button>
+  <img src="logo.svg" alt="HSE FCS Logo">
   <div class="header-text">
     <h1>Шпаргалка: работа с ИИ-сервисами</h1>
     <p>НИУ ВШЭ · Факультет компьютерных наук · Административный персонал</p>
   </div>
 </div>
 
-<nav class="top-nav">
-  <a href="#block-1" class="top-nav-link">1. Промты и приёмы</a>
-  <a href="#block-2" class="top-nav-link">2. Инструменты и Модели</a>
+<nav class="top-nav" aria-label="Основная навигация">
+  <a href="#block-1" class="top-nav-link">1. Промпты и приёмы</a>
+  <a href="#block-2" class="top-nav-link">2. Инструменты и модели</a>
   <a href="#block-3" class="top-nav-link">3. Карта промпт-инженерии</a>
 </nav>
 
+<div class="search-bar">
+  <div class="search-input-wrap">
+    <span class="search-icon" aria-hidden="true">🔍</span>
+    <input id="search" class="search-input" type="search" placeholder="Поиск по промптам (например: студент, регламент, Excel)" autocomplete="off" aria-label="Поиск по промптам">
+    <button class="search-clear" id="search-clear" aria-label="Очистить поиск">×</button>
+  </div>
+  <div class="search-hint" id="search-hint" aria-live="polite"></div>
+</div>
+
 <div class="golden-rules">
-  <h2> Золотые правила составления промтов</h2>
+  <h2>Золотые правила составления промптов</h2>
   <div class="rules-grid">
     <div class="rule-chip"><span class="rule-num">1</span>Дайте задаче имя и одно предложение контекста</div>
     <div class="rule-chip"><span class="rule-num">2</span>Опишите структуру, а не объём</div>
     <div class="rule-chip"><span class="rule-num">3</span>Назовите читателя конкретно</div>
-    <div class="rule-chip"><span class="rule-num">4</span>Скажите, чего не надо делать (отрицательные промты)</div>
+    <div class="rule-chip"><span class="rule-num">4</span>Скажите, чего не надо делать</div>
     <div class="rule-chip"><span class="rule-num">5</span>Дайте критерий успеха</div>
     <div class="rule-chip"><span class="rule-num">6</span>Меняйте одну переменную за раз в итерациях</div>
   </div>
 </div>
 
-<div class="block-label" id="block-1" style="scroll-margin-top: 80px;"> Блок 1 — Промты и приёмы работы</div>
-<div id="prompts-tabs">
-  <div class="tab-group">
-    <div class="tab-group-label">✏️ Текст и идеи</div>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showSection('text', this)">📝 Текст</button>
-      <button class="tab-btn" onclick="showSection('brainstorm', this)">💡 Белый лист</button>
-      <button class="tab-btn" onclick="showSection('teacher', this)">🎓 Режим учителя</button>
-      <button class="tab-btn" onclick="showSection('research', this)">🔍 Анализ</button>
-    </div>
-  </div>
-  <div class="tab-group">
-    <div class="tab-group-label">📊 Данные и коммуникации</div>
-    <div class="tabs">
-      <button class="tab-btn" onclick="showSection('data', this)">📊 Данные</button>
-      <button class="tab-btn" onclick="showSection('email', this)">✉️ Рассылки</button>
-      <button class="tab-btn" onclick="showSection('image', this)">🎨 Медиа</button>
-      <button class="tab-btn" onclick="showSection('students', this)">🎒 Студенты</button>
-    </div>
-  </div>
-  <div class="tab-group">
-    <div class="tab-group-label">📋 Администрирование</div>
-    <div class="tabs">
-      <button class="tab-btn" onclick="showSection('docs', this)">📄 Документы</button>
-      <button class="tab-btn" onclick="showSection('events', this)">🎤 Мероприятия</button>
-      <button class="tab-btn" onclick="showSection('planning', this)">📅 Планирование</button>
-      <button class="tab-btn" onclick="showSection('compliance', this)">🔒 Безопасность</button>
-    </div>
-  </div>
-  <div class="tab-group">
-    <div class="tab-group-label">⚡ Дополнительно</div>
-    <div class="tabs">
-      <button class="tab-btn" onclick="showSection('personalize', this)">⚙️ Персонализация</button>
-      <button class="tab-btn" onclick="showSection('bonus', this)">🎁 Бонус</button>
-    </div>
-  </div>
-</div>
-
-<!-- CONTAINER FOR SECTIONS -->
-<div id="sections-container">
-
-<!-- 1. ТЕКСТ -->
-<div id="text" class="section visible prompt-section">
-  <div class="section-header"><h2>Работа с текстом</h2><p>Саммаризация, редактура, стиль, структура</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label purple">Саммаризация</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ты ассистент руководителя факультета. Прочитай текст ниже и сделай краткое резюме на <em>[3 пункта / 5 предложений]</em>. Выдели: главную мысль, ключевые решения, необходимые действия. Не додумывай то, чего нет в тексте. Если данных не хватает — напиши [данных нет].
-
-<em>[Текст здесь]</em></div></div>
-      <div class="tip"><strong> Лайфхак:</strong> добавь «для человека, который не читал источник»</div>
-    </div>
-    <div class="card"><div class="card-label teal">Улучшение структуры</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Перепиши этот текст: сделай логичную структуру с подзаголовками, убери воду, сохрани смысл. Объём — не более <em>[одной страницы A4]</em>. Не меняй факты и цифры.
-
-<em>[Текст здесь]</em></div></div>
-      <div class="tip"><strong> Лайфхак:</strong> укажи «Не меняй факты» — ИИ не будет фантазировать.</div>
-    </div>
-    <div class="card"><div class="card-label blue">Смена тональности</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Перепиши письмо в <em>[официальном / дружелюбном / нейтральном]</em> тоне. Адресат: <em>[студент / партнёр / декан]</em>. Сохрани все факты из оригинала.
-
-<em>[Текст здесь]</em></div></div>
-      <div class="tip"><strong> Лайфхак:</strong> «Тон как у официального документа Минобрнауки»</div>
-    </div>
-  </div>
-</div>
-
-<!-- 2. БЕЛЫЙ ЛИСТ -->
-<div id="brainstorm" class="section prompt-section">
-  <div class="section-header"><h2>Решение проблемы белого листа</h2><p>Мозговой штурм, структура, генерация идей</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label coral">Структура документа</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Мне нужно написать <em>[регламент / отчёт / письмо]</em> на тему <em>[тема]</em>. Предложи 3 варианта структуры с кратким описанием каждого раздела.</div></div>
-    </div>
-    <div class="card"><div class="card-label amber">Мозговой штурм в команде</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Представь, что ты команда из 4 человек: методист, строгий юрист, пиарщик и вечно недовольный студент. Вы обсуждаете задачу: <em>[тема]</em>. Выдай мнение каждого кратко.</div></div>
-    </div>
-    <div class="card"><div class="card-label green">Разбивка на шаги</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Разбей задачу <em>[задача]</em> на пошаговый план действий. Для каждого шага укажи: время выполнения и что может пойти не так (риски). Действуй как experienced Project Manager.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- 3. УЧИТЕЛЬ -->
-<div id="teacher" class="section prompt-section">
-  <div class="section-header"><h2>Режим учителя</h2><p>Обучение, проверка знаний, наставничество</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label purple">Простое объяснение</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Объясни мне <em>[тема]</em> простыми словами, как будто я никогда этим не занимался. Используй аналогии из повседневной жизни. В конце задай 3 проверочных вопроса.</div></div>
-    </div>
-    <div class="card"><div class="card-label blue">Сократовский диалог</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Я хочу разобраться в: <em>[тема]</em>. Задавай мне по одному наводящему вопросу. Не объясняй сразу — помогай мне прийти к правильному ответу самостоятельно.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- 4. ИССЛЕДОВАНИЕ -->
-<div id="research" class="section prompt-section">
-  <div class="section-header"><h2>Поиск и Анализ</h2><p>Research, сравнение, фактчекинг</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label teal">Глубокий анализ</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Проведи исследование по теме: <em>[тема]</em>. Формат вывода:
-1. Суть проблемы
-2. Ключевые факты (bullet-points)
-3. 2 полярные экспертные точки зрения
-Укажи, какие данные могут быть спорными.</div></div>
-    </div>
-    <div class="card"><div class="card-label amber">Сравнительный анализ</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Сравни <em>[вариант А]</em> и <em>[вариант Б]</em> по критериям: <em>[критерий 1, критерий 2]</em>. Оформи результат в Markdown-таблицу. Ниже таблицы напиши обоснованную рекомендацию.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- 5. ДАННЫЕ И EXCEL -->
-<div id="data" class="section prompt-section">
-  <div class="section-header"><h2>Работа с данными и Excel</h2><p>Формулы, выводы из таблиц, очистка</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label green">Генерация Формул</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши формулу Excel. Задача: <em>[опиши своими словами, напр. найти сумму всех з/п больше 50к]</em>. Данные лежат в столбцах <em>[A и B]</em>. Добавь краткое пояснение, как она работает.</div></div>
-    </div>
-    <div class="card"><div class="card-label purple">Анализ выгрузки</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ниже сырые данные из выгрузки. Найди: 1) аномалии/ошибки, 2) главный тренд, 3) 3 вывода для руководителя без перегрузки статистикой. Не интерпретируй пустые ячейки как нули. Если данных недостаточно для вывода — так и напиши.
-
-<em>[Вставьте скопированную таблицу]</em></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- 6. РАССЫЛКИ -->
-<div id="email" class="section prompt-section">
-  <div class="section-header"><h2>Email-рассылки</h2><p>Написание писем, HTML-вёртка, дайджесты</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label coral">HTML-верстка письма</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Сверстай карточку мероприятия для Email. Данные: Дата <em>[дата]</em>, Название <em>[название]</em>. Используй ТОЛЬКО inline-стили (никаких &lt;style&gt; или внешних CSS). Цветовая гамма: корпоративный синий и белый. Сделай код валидным для Outlook.</div></div>
-    </div>
-    <div class="card"><div class="card-label blue">Текст анонса</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши письмо-анонс для <em>[аудитория]</em> о <em>[новость]</em>. Напиши 3 цепляющих темы письма на выбор. Текст письма до 100 слов, в конце — призыв к действию (CTA).</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- 7. МЕДИА -->
-<div id="image" class="section prompt-section">
-  <div class="section-header"><h2>Генерация изображений</h2><p>Промты для Midjourney, DALL-E, и других сетей</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label pink">Формула Промта</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Создай 3 промта на английском для Midjourney v6 / DALL-E 3 по следующей идее: <em>[идея]</em>.
-Учитывай структуру: [Субъект] + [Детали окружения] + [Освещение] + [Палитра] + [Стиль/Камера].</div></div>
-    </div>
-    <div class="card"><div class="card-label teal">Редактура изображений</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box"><em>(Для работы с загруженной картинкой в GPT-4o)</em>
-Опиши, что изображено на картинке в мельчайших деталях, чтобы я мог использовать этот текст как промт для восстановления этой картинки в другой нейросети.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- СТУДЕНТЫ (НОВОЕ) -->
-<div id="students" class="section prompt-section">
-  <div class="section-header"><h2>Коммуникация со студентами</h2><p>Письма должникам, FAQ, анонсы в TG</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label red">Письмо должнику</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Ты куратор ВШЭ. Напиши эмпатичное, но твердое письмо студенту, пропустившему дедлайн. Напомни о правилах ВШЭ, сроках пересдач и предложи форму связи. Тон: поддерживающий, официальный.</div></div>
-    </div>
-    <div class="card"><div class="card-label blue">Анонс в Telegram</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Составь анонс старта сессии для студенческого Telegram-канала. Укажи даты, формат (офлайн/онлайн) и ссылку на расписание. Используй списки и пару уместных эмодзи. Без панибратства.</div></div>
-    </div>
-    <div class="card"><div class="card-label green">Генерация FAQ</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Я собрал сырые вопросы студентов по практике: <em>[вставь текст]</em>. Сгруппируй их по логичным темам и напиши четкий FAQ (Вопрос-Ответ) для публикации в LMS. Пиши понятным языком без канцелярита.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ДОКУМЕНТЫ (НОВОЕ) -->
-<div id="docs" class="section prompt-section">
-  <div class="section-header"><h2>Документы и финансы</h2><p>Регламенты, выжимки, служебки</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label purple">Выжимка из регламента</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Прочитай этот юридический регламент НИУ ВШЭ. Сделай краткую выжимку (буллетами) для преподавателей. Выдели строго: 1) новые обязанности, 2) ключевые сроки, 3) штрафные санкции.
-      
-<em>[Вставь регламент]</em></div></div>
-    </div>
-    <div class="card"><div class="card-label amber">Служебная записка</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши официальную служебную записку на имя декана с обоснованием закупки <em>[название ПО]</em> для образовательной программы. Аргументируй потребность соответствием современным ИТ-стандартам обучения. Не используй слова «в целях», «во исполнение», «настоящим» и другой канцелярит.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- МЕРОПРИЯТИЯ (НОВОЕ) -->
-<div id="events" class="section prompt-section">
-  <div class="section-header"><h2>Мероприятия</h2><p>Программы, приглашения спикеров, чек-листы</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label coral">Программа события</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Сгенерируй тайминг-структуру для научной 1-дневной конференции на тему: <em>[тема]</em>. Время: 10:00 – 18:00. Включи приветственное слово, 2 панели, кофе-брейки (по 30 мин) и обед.</div></div>
-    </div>
-    <div class="card"><div class="card-label teal">Приглашение спикеру</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Составь email-приглашение для отраслевого эксперта выступить на нашем мастер-классе. Опиши аудиторию (студенты 3 курса) и ценность выступления для него (PR, найм). Тон: глубоко уважительный.</div></div>
-    </div>
-    <div class="card"><div class="card-label blue">Чек-лист организатора</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Создай детальный чек-лист координатора за 2 дня до проведения Дня Открытых Дверей на 200 человек (офлайн). Раздели задачи по зонам: техника/IT, кейтеринг, навигация, спикеры.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ПЛАНИРОВАНИЕ (НОВОЕ) -->
-<div id="planning" class="section prompt-section">
-  <div class="section-header"><h2>Нагрузка и планирование</h2><p>Таблицы распределения, графики проектов</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label purple">Распределение часов</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Помоги оптимально распределить 400 часов нагрузки между преподавателями: Профессор (только лекции), Доцент, Ассистент (только семинары). Предложи логику распределения и таблицу в процентах.</div></div>
-    </div>
-    <div class="card"><div class="card-label amber">Календарный план</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Выступи в роли Project-менеджера. Составь календарный план-график проекта по запуску нового ДПО-курса на 4 месяца. Выдели 5 ключевых майлстоунов и ответственные роли.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- БЕЗОПАСНОСТЬ (НОВОЕ) -->
-<div id="compliance" class="section prompt-section">
-  <div class="section-header"><h2>Ограничения и безопасность</h2><p>Персданные, ФЗ, анонимизация</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label green">Деперсонализация</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Очисти этот текст от любых ПДн (ФИО, телефоны, email) и замени их на плейсхолдеры [ДАННЫЕ СКРЫТЫ], сохранив контекст. Сделай текст безопасным для публикации в открытом источнике.
-      
-<em>[Текст здесь]</em></div></div>
-    </div>
-    <div class="card"><div class="card-label red">Генерация NDA памятки</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Составь памятку на 1 страницу для внешних подрядчиков ФКН по правилам обращения с конфиденциальными данными. Включи запрет на передачу данных 3-м лицам и использование публичных нейросетей.</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ПЕРСОНАЛИЗАЦИЯ (НОВОЕ) -->
-<div id="personalize" class="section prompt-section">
-  <div class="section-header"><h2>Персонализация</h2><p>Адаптация ИИ под свой стиль, Custom Instructions</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label blue">Custom Instructions</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Напиши идеальный текст для 'Системного промта' ChatGPT, учитывая мой профиль (администратор ОП НИУ ВШЭ). Я хочу, чтобы ИИ всегда отвечал структурированно, академично и без расшаркиваний.</div></div>
-    </div>
-    <div class="card"><div class="card-label pink">Повтори мой стиль</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Проанализируй мои 3 прошлых ответа на письма (ниже). Выдели мой индивидуальный 'tone of voice', словарный запас и уровень формальности. Следующий ответ (опишу ниже) напиши точно в таком же стиле.</div></div>
-    </div>
-  </div>
-</div>
-
-<div id="bonus" class="section prompt-section">
-  <div class="section-header"><h2>Бонус: полезные макро-промты</h2><p>Итерация и улучшение</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label teal">Итерации (Улучшения)</div>
-      <div class="prompt-box-wrap"><button class="copy-btn"></button><div class="prompt-box">Используйте короткие команды для доработки ответа:
-• «Сделай более формальным и добавь вводные конструкции»
-• «Убери всё, что ты додумал сверх исходника»
-• «Перепиши так, чтобы это звучало как живой человек, а не нейросеть»
-• «Сыграй адвоката дьявола и раскритикуй этот текст»</div></div>
-    </div>
-  </div>
-</div>
-
-</div> <!-- /sections-container -->
+<div class="block-label" id="block-1" style="scroll-margin-top: 130px;">Блок 1 — Промпты и приёмы работы</div>
+<div id="prompts-tabs" role="tablist"></div>
+<div id="sections-container"></div>
 
 <hr class="block-divider">
 
-<div class="block-label" id="block-2" style="scroll-margin-top: 80px;"> Блок 2 — Инструменты и Модели</div>
-<div class="tabs" id="tools-tabs">
-  <button class="tab-btn active" onclick="showTierSection('tierlist', this)">Тир-лист LLM</button>
-  <button class="tab-btn" onclick="showTierSection('specialtools', this)">Спец-инструменты</button>
+<div class="block-label" id="block-2" style="scroll-margin-top: 130px;">Блок 2 — Инструменты и модели</div>
+<div id="tools-tabs" role="tablist">
+  <button class="tab-btn active" data-tier="tierlist">Тир-лист LLM</button>
+  <button class="tab-btn" data-tier="specialtools">Спец-инструменты</button>
 </div>
-
-<!-- TIER LIST -->
-<div id="tierlist" class="section visible tier-section">
-  <div class="section-header">
-    <h2>Тир-лист нейросетей</h2>
-    <p style="margin-top:8px;">Актуально: 2026 год. <br><strong>Общий принцип:</strong> проверяйте рейтинг на <a href="https://lmarena.ai" target="_blank" rel="noopener" style="color: var(--color-blue); text-decoration: underline;">lmarena.ai</a> — там живое голосование по качеству ответов.</p>
-  </div>
-
-  <!-- S-Tier -->
-  <div class="tier-box">
-    <div class="tier-header s-tier"><span style="font-size:20px;font-weight:700;">S</span> Универсальные флагманы</div>
-    <div class="tier-list">
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://chatgpt.com" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">ChatGPT</a></div><div class="model-vendor">OpenAI</div></div>
-        <div class="model-desc">Универсальный инструмент для большинства офисных задач. Сильный русский язык, логика, структура.</div>
-        <div><span class="model-badge badge-vpn">VPN / Агрегатор</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://chat.deepseek.com" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">DeepSeek</a></div><div class="model-vendor">DeepSeek</div></div>
-        <div class="model-desc">Лучший выбор для Excel-формул, логических и аналитических задач. Бесплатен, без VPN.</div>
-        <div><span class="model-badge badge-free">Без VPN</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://chat.qwenlm.ai" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Qwen</a></div><div class="model-vendor">Alibaba</div></div>
-        <div class="model-desc">Силён в длинных документах, таблицах и глубинном поиске по теме. Без VPN, бесплатно.</div>
-        <div><span class="model-badge badge-free">Без VPN</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://claude.ai" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Claude</a></div><div class="model-vendor">Anthropic</div></div>
-        <div class="model-desc">Оптимален для работы с большими документами и академическими текстами. Минимум выдуманных фактов.</div>
-        <div><span class="model-badge badge-vpn">VPN / Агрегатор</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://gemini.google.com" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Gemini</a></div><div class="model-vendor">Google</div></div>
-        <div class="model-desc">Рекордный контекст (целая книга за раз), глубокий анализ PDF-файлов и изображений. Частично без VPN.</div>
-        <div><span class="model-badge badge-vpn">VPN / Частично без</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://www.perplexity.ai" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Perplexity</a></div><div class="model-vendor">Perplexity AI</div></div>
-        <div class="model-desc">ИИ-поисковик. Незаменим для быстрого поиска свежей информации и фактчекинга со ссылками на первоисточники.</div>
-        <div><span class="model-badge badge-vpn">Частично без VPN</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- A-Tier -->
-  <div class="tier-box">
-    <div class="tier-header a-tier"><span style="font-size:20px;font-weight:700;">A</span> Мощные альтернативы (Работают в РФ)</div>
-    <div class="tier-list">
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://ya.ru/alice_pro" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">YandexGPT</a></div><div class="model-vendor">Яндекс</div></div>
-        <div class="model-desc">Российская модель. Понимает специфику отечественного документооборота и ФЗ РФ.</div>
-        <div><span class="model-badge badge-free">Встроено в сервисы Яндекса</span></div>
-      </div>
-      <div class="tier-item">
-        <div><div class="model-name"><a href="https://giga.chat" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">GigaChat</a></div><div class="model-vendor">Сбер</div></div>
-        <div class="model-desc">Российская модель. Понимает специфику отечественного документооборота и ФЗ РФ. Рисует изображения.</div>
-        <div><span class="model-badge badge-free">Без VPN</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SPECIAL TOOLS -->
-<div id="specialtools" class="section tier-section">
-  <div class="section-header"><h2>Спец-инструменты</h2><p>Нишевые ИИ под конкретные задачи</p></div>
-  <div class="cards-grid">
-    <div class="card"><div class="card-label purple">Академический Research</div>
-      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
-        <li><a href="https://consensus.app" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Consensus.app</a> — поисковик исключительно по базам научных статей. Дает ИИ-выжимки из abstracts.</li>
-        <li><a href="https://typeset.io" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">SciSpace (typeset.io)</a> — загрузка PDF статей, ИИ-копайлот, сравнение источников и методологий.</li>
-        <li><a href="https://elicit.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Elicit.com</a> — анализ и поиск по научным базам (есть бесплатная и платная версия).</li>
-      </ul>
-    </div>
-    <div class="card"><div class="card-label blue">Презентации</div>
-      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
-        <li><a href="https://gamma.app" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Gamma.app</a> — генерация стильных веб-презентаций и отчетов с красивым форматированием (добавлен ИИ-ассистент).</li>
-        <li><a href="https://www.kimi.com/slides" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Kimi slides</a> — отличный генератор презентаций (3 презентации бесплатно, далее за оплату).</li>
-      </ul>
-    </div>
-    <div class="card"><div class="card-label amber">Музыка и Видео</div>
-      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
-        <li><a href="https://udio.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Udio</a> / <a href="https://suno.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Suno.com</a> — генерация профессиональной музыки/песен с вокалом для видеороликов или мероприятий.</li>
-        <li><a href="https://klingai.com" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Kling AI</a> / <a href="https://openai.com/sora" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Sora</a> — генерация реалистичного видео по текстовому промту (b-roll, фоны).</li>
-      </ul>
-    </div>
-    <div class="card"><div class="card-label green">Агрегаторы</div>
-      <ul style="font-size:14px; color:var(--text-main); margin-left:16px;">
-        <li style="margin-bottom:6px;"><a href="https://gptunnel.ru" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">GPTunnel</a>, <a href="https://study24.ai" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Study AI</a>, <a href="https://mashagpt.ru" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">MashaGPT</a> — российские агрегаторы с доступом к платным нейросетям без VPN. <strong style="color:var(--color-green);">Оплата картой РФ доступна.</strong></li>
-        <li><a href="https://higgsfield.ai" target="_blank" style="color: var(--color-blue); text-decoration: underline; font-weight: 600;">Higgsfield</a> — продвинутый генератор видео. <strong style="color:var(--color-red);">Оплата из РФ напрямую недоступна (нужна иностр. карта).</strong></li>
-      </ul>
-    </div>
-  </div>
-</div>
+<div id="tier-container"></div>
 
 <hr class="block-divider">
-<div class="block-label" id="block-3" style="scroll-margin-top: 80px;">🗺 Блок 3 — Карта промпт-инженерии</div>
+
+<div class="block-label" id="block-3" style="scroll-margin-top: 130px;">🗺 Блок 3 — Карта промпт-инженерии</div>
 <div class="mm-block">
   <div class="mm-block-header">
     <p>Нажмите на любой узел, чтобы увидеть пояснение</p>
   </div>
   <div class="mm-legend">
-    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:linear-gradient(135deg, var(--color-purple), #2b6cb0)"></div>Корень</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:linear-gradient(135deg, var(--hse-blue), #2b6cb0)"></div>Корень</div>
     <div class="mm-legend-item"><div class="mm-legend-dot" style="background:linear-gradient(135deg, #1d4ed8, #3b82f6)"></div>Раздел 1-го уровня</div>
-    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:#eff6ff;border:2px solid #bfdbfe"></div>Раздел 2-го уровня</div>
-    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:#f8fafc;border:1.5px solid #e2e8f0"></div>Раздел 3-го уровня</div>
-    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:#ffffff;border:1.5px solid #cbd5e1"></div>Раздел 4-го уровня</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:var(--mm-level2-bg);border:2px solid var(--mm-level2-border)"></div>Раздел 2-го уровня</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:var(--mm-level3-bg);border:1.5px solid var(--mm-level3-border)"></div>Раздел 3-го уровня</div>
+    <div class="mm-legend-item"><div class="mm-legend-dot" style="background:var(--mm-leaf-bg);border:1.5px solid var(--mm-leaf-border)"></div>Раздел 4-го уровня</div>
   </div>
   <div class="mm-scroll">
     <div id="mm-mindmap"><svg id="mm-svg-lines"></svg></div>
   </div>
+  <div class="mm-fallback" id="mm-fallback"></div>
 </div>
 
-<!-- Mind Map Modal -->
-<div class="mm-overlay" id="mm-overlay">
-  <div class="mm-modal" id="mm-modal">
+<div class="mm-overlay" id="mm-overlay" role="dialog" aria-modal="true" aria-labelledby="mm-title">
+  <div class="mm-modal">
     <div class="mm-modal-header">
       <div class="mm-modal-icon" id="mm-icon"></div>
       <div class="mm-modal-title-wrap">
@@ -709,189 +1196,528 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
   </div>
 </div>
 
-<!-- TOAST -->
-<div id="toast">Промт скопирован в буфер!</div>
+<div id="toast" role="status" aria-live="polite">Скопировано</div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     DATA — Prompt groups and prompts
+     ═══════════════════════════════════════════════════════════════ -->
 <script>
-function showSection(id, btn) {
-  document.querySelectorAll('.prompt-section').forEach(el => el.classList.remove('visible'));
-  document.getElementById(id).classList.add('visible');
-  document.querySelectorAll('#prompts-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-function showTierSection(id, btn) {
-  document.querySelectorAll('.tier-section').forEach(el => el.classList.remove('visible'));
-  document.getElementById(id).classList.add('visible');
-  document.getElementById('tools-tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-document.querySelectorAll('.copy-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const text = btn.nextElementSibling.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.classList.add('copied');
-      setTimeout(() => btn.classList.remove('copied'), 2000);
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
-    });
-  });
-});
+window.PROMPT_GROUPS = [
+  {
+    label: '✏️ Текст и идеи',
+    tabs: [
+      { id: 'text',       icon: '📝', name: 'Текст' },
+      { id: 'brainstorm', icon: '💡', name: 'Белый лист' },
+      { id: 'teacher',    icon: '🎓', name: 'Учитель' },
+      { id: 'research',   icon: '🔍', name: 'Анализ' }
+    ]
+  },
+  {
+    label: '📊 Данные и медиа',
+    tabs: [
+      { id: 'data',  icon: '📊', name: 'Excel-данные' },
+      { id: 'excel', icon: '🧮', name: 'Формулы' },
+      { id: 'pdf',   icon: '📑', name: 'PDF / сканы' },
+      { id: 'image', icon: '🎨', name: 'Изображения' }
+    ]
+  },
+  {
+    label: '📋 Администрирование',
+    tabs: [
+      { id: 'docs',       icon: '📄', name: 'Документы' },
+      { id: 'meeting',    icon: '🎙', name: 'Протоколы' },
+      { id: 'events',     icon: '🎤', name: 'Мероприятия' },
+      { id: 'planning',   icon: '📅', name: 'Планирование' },
+      { id: 'compliance', icon: '🔒', name: 'Безопасность' }
+    ]
+  },
+  {
+    label: '💬 Коммуникации и личное',
+    tabs: [
+      { id: 'email',       icon: '✉️', name: 'Рассылки' },
+      { id: 'students',    icon: '🎒', name: 'Студенты' },
+      { id: 'personalize', icon: '⚙️', name: 'Персонализация' },
+      { id: 'bonus',       icon: '🎁', name: 'Бонус' },
+      { id: 'favorites',   icon: '⭐', name: 'Избранное', virtual: true }
+    ]
+  }
+];
 
-/* ── INTERSECTION OBSERVER FOR NAV ── */
-(function() {
-  const navLinks = document.querySelectorAll('.top-nav-link');
-  const sections = document.querySelectorAll('[id^="block-"]');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        navLinks.forEach(l => l.classList.remove('active'));
-        const link = document.querySelector('.top-nav-link[href="#' + entry.target.id + '"]');
-        if (link) link.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-100px 0px -60% 0px', threshold: 0 });
-  sections.forEach(s => observer.observe(s));
-})();
+window.SECTION_META = {
+  text:        { title: 'Работа с текстом',          sub: 'Саммаризация, редактура, стиль, структура' },
+  brainstorm:  { title: 'Решение проблемы белого листа', sub: 'Мозговой штурм, структура, генерация идей' },
+  teacher:     { title: 'Режим учителя',              sub: 'Обучение, проверка знаний, наставничество' },
+  research:    { title: 'Поиск и анализ',             sub: 'Research, сравнение, фактчекинг' },
+  data:        { title: 'Анализ данных и таблиц',     sub: 'Выводы из выгрузок, очистка, аномалии' },
+  excel:       { title: 'Excel: формулы и расчёты',   sub: 'Генерация формул, разбор существующих, чистка датасета' },
+  pdf:         { title: 'Работа с PDF и сканами',     sub: 'Извлечение данных, перевод в таблицу, длинные документы' },
+  email:       { title: 'Email-рассылки',             sub: 'Письма, HTML-вёрстка, дайджесты' },
+  image:       { title: 'Изображения и медиа',        sub: 'Промпты для Midjourney, DALL-E и видеогенераторов' },
+  students:    { title: 'Коммуникация со студентами', sub: 'Письма, FAQ, анонсы в Telegram' },
+  docs:        { title: 'Документы и финансы',        sub: 'Регламенты, выжимки, служебные записки' },
+  meeting:     { title: 'Совещания и протоколы',      sub: 'Протокол из стенограммы, summary, action items' },
+  events:      { title: 'Мероприятия',                sub: 'Программы, приглашения спикеров, чек-листы' },
+  planning:    { title: 'Нагрузка и планирование',    sub: 'Распределение часов, графики проектов' },
+  compliance:  { title: 'Ограничения и безопасность', sub: 'Персональные данные, ФЗ, анонимизация' },
+  personalize: { title: 'Персонализация',             sub: 'Custom Instructions, адаптация под свой стиль' },
+  bonus:       { title: 'Бонус: макро-промпты',       sub: 'Итерация и улучшение результата' },
+  favorites:   { title: 'Избранное',                  sub: 'Промпты, которые вы отметили звездой' }
+};
+
+window.PROMPTS = [
+  // ─── Текст ───
+  { id: 'summary', section: 'text', color: 'purple', label: 'Саммаризация',
+    prompt: `Ты — ассистент руководителя факультета. Прочитай текст ниже и сделай краткое резюме на <em>[3 пункта / 5 предложений]</em>. Выдели: главную мысль, ключевые решения, необходимые действия. Не додумывай то, чего нет в тексте. Если данных не хватает — напиши «данных нет».
+
+<em>[Текст здесь]</em>`,
+    tip: '<strong>Лайфхак:</strong> добавь «для человека, который не читал источник» — модель убирает отсылки на «выше».' },
+
+  { id: 'restructure', section: 'text', color: 'teal', label: 'Улучшение структуры',
+    prompt: `Перепиши этот текст: сделай логичную структуру с подзаголовками, убери воду, сохрани смысл. Объём — не более <em>[одной страницы A4]</em>. Не меняй факты и цифры.
+
+<em>[Текст здесь]</em>`,
+    tip: '<strong>Лайфхак:</strong> укажи «Не меняй факты» — модель не будет фантазировать.' },
+
+  { id: 'tone', section: 'text', color: 'blue', label: 'Смена тональности',
+    prompt: `Перепиши письмо в <em>[официальном / дружелюбном / нейтральном]</em> тоне. Адресат: <em>[студент / партнёр / декан]</em>. Сохрани все факты из оригинала.
+
+<em>[Текст здесь]</em>`,
+    tip: '<strong>Лайфхак:</strong> «Тон как у официального документа Минобрнауки».' },
+
+  // ─── Брейншторм ───
+  { id: 'doc-structure', section: 'brainstorm', color: 'coral', label: 'Структура документа',
+    prompt: `Мне нужно написать <em>[регламент / отчёт / письмо]</em> на тему <em>[тема]</em>. Предложи 3 варианта структуры с кратким описанием каждого раздела.`,
+    tip: '' },
+
+  { id: 'team-brainstorm', section: 'brainstorm', color: 'amber', label: 'Мозговой штурм в команде',
+    prompt: `Представь, что ты — команда из 4 человек: методист, строгий юрист, пиарщик и недовольный студент. Вы обсуждаете задачу: <em>[тема]</em>. Выдай мнение каждого кратко (1–2 предложения), затем общий вывод.`,
+    tip: '' },
+
+  { id: 'task-breakdown', section: 'brainstorm', color: 'green', label: 'Разбивка на шаги',
+    prompt: `Разбей задачу <em>[задача]</em> на пошаговый план действий. Для каждого шага укажи: время выполнения и что может пойти не так (риски). Действуй как опытный project-менеджер.`,
+    tip: '' },
+
+  // ─── Учитель ───
+  { id: 'simple-explain', section: 'teacher', color: 'purple', label: 'Простое объяснение',
+    prompt: `Объясни мне <em>[тема]</em> простыми словами, как будто я никогда этим не занимался. Используй аналогии из повседневной жизни. В конце задай 3 проверочных вопроса.`,
+    tip: '<strong>Лайфхак:</strong> добавь «как для пятиклассника» — заставит избегать терминов.' },
+
+  { id: 'socratic', section: 'teacher', color: 'blue', label: 'Сократовский диалог',
+    prompt: `Я хочу разобраться в: <em>[тема]</em>. Задавай мне по одному наводящему вопросу. Не объясняй сразу — помогай мне прийти к правильному ответу самостоятельно.`,
+    tip: '' },
+
+  // ─── Анализ ───
+  { id: 'deep-analysis', section: 'research', color: 'teal', label: 'Глубокий анализ',
+    prompt: `Проведи исследование по теме: <em>[тема]</em>. Формат вывода:
+1. Суть проблемы
+2. Ключевые факты (bullet-points)
+3. 2 полярные экспертные точки зрения
+
+Укажи, какие данные могут быть спорными.`,
+    tip: '' },
+
+  { id: 'comparison', section: 'research', color: 'amber', label: 'Сравнительный анализ',
+    prompt: `Сравни <em>[вариант А]</em> и <em>[вариант Б]</em> по критериям: <em>[критерий 1, критерий 2]</em>. Оформи результат в Markdown-таблицу. Ниже таблицы напиши обоснованную рекомендацию.`,
+    tip: '' },
+
+  // ─── Data / Excel выгрузка ───
+  { id: 'data-anomalies', section: 'data', color: 'purple', label: 'Анализ выгрузки',
+    prompt: `Ниже сырые данные из выгрузки. Найди: 1) аномалии/ошибки, 2) главный тренд, 3) 3 вывода для руководителя без перегрузки статистикой. Не интерпретируй пустые ячейки как нули. Если данных недостаточно для вывода — так и напиши.
+
+<em>[Вставьте скопированную таблицу]</em>`,
+    tip: '<strong>Лайфхак:</strong> для большой выгрузки скажи «работай только с первыми 100 строками для проверки гипотезы».' },
+
+  { id: 'data-clean', section: 'data', color: 'green', label: 'Очистка датасета',
+    prompt: `Ниже таблица. Найди и опиши проблемы: дубликаты, пустые значения, опечатки в названиях, выбросы. Предложи правила очистки в виде списка действий (не выполняй автоматически — нужен мой контроль).
+
+<em>[Вставьте таблицу]</em>`,
+    tip: '' },
+
+  // ─── Excel formulas ───
+  { id: 'formula-gen', section: 'excel', color: 'green', label: 'Генерация формулы',
+    prompt: `Напиши формулу Excel. Задача: <em>[опиши своими словами, напр. «найти сумму всех з/п больше 50к»]</em>. Данные лежат в столбцах <em>[A и B, начиная со строки 2]</em>. Дай 2 варианта (классическая формула и через современную функцию вроде LET/LAMBDA) и краткое пояснение каждой.`,
+    tip: '<strong>Лайфхак:</strong> укажи версию Excel — «Microsoft 365» / «Excel 2019».' },
+
+  { id: 'formula-explain', section: 'excel', color: 'purple', label: 'Разбор формулы',
+    prompt: `Объясни мне, что делает эта формула, шаг за шагом. Выдели потенциальные ошибки и edge-cases (пустые ячейки, тексты вместо чисел). Предложи более читаемую версию.
+
+<em>=ВПР(... вставь формулу ...)</em>`,
+    tip: '' },
+
+  { id: 'pivot-help', section: 'excel', color: 'teal', label: 'Сводная таблица',
+    prompt: `Опиши, как из этих данных <em>[опиши столбцы]</em> построить сводную таблицу, которая покажет <em>[что именно — например, нагрузку по преподавателям по месяцам]</em>. Дай пошаговую инструкцию для Excel и альтернативу через формулу =ЗАПРОС/QUERY (Google Sheets).`,
+    tip: '' },
+
+  // ─── PDF / сканы ───
+  { id: 'pdf-extract', section: 'pdf', color: 'blue', label: 'Извлечение данных из PDF',
+    prompt: `Я прикреплю PDF-документ <em>[описание: договор / отчёт / справка]</em>. Извлеки в виде Markdown-таблицы: <em>[ФИО, дата, сумма, номер договора]</em>. Если поля нет — оставь пустую ячейку, не выдумывай. После таблицы перечисли страницы, с которых брал данные.`,
+    tip: '<strong>Лайфхак:</strong> работает в ChatGPT, Claude, Gemini, Qwen — везде, где есть загрузка PDF.' },
+
+  { id: 'scan-table', section: 'pdf', color: 'amber', label: 'Скан в таблицу',
+    prompt: `На скане ниже — рукописная/печатная таблица. Распознай её и верни в формате Markdown. Если символ нечитаем — поставь «?». В конце оцени долю уверенно распознанных ячеек в процентах.
+
+<em>[Прикрепи изображение или PDF-скан]</em>`,
+    tip: '' },
+
+  { id: 'long-pdf', section: 'pdf', color: 'green', label: 'Конспект длинного PDF',
+    prompt: `Прочитай PDF целиком и сделай конспект для занятого руководителя:
+1. О чём документ в 2 предложениях.
+2. 5–7 ключевых тезисов с указанием страницы.
+3. 3 риска / вопроса, на которые нужно ответить.
+
+Не пересказывай оглавление — нужны выводы.`,
+    tip: '<strong>Лайфхак:</strong> для документов 100+ страниц лучше всего Gemini (большой контекст) или Claude.' },
+
+  // ─── Email ───
+  { id: 'email-html', section: 'email', color: 'coral', label: 'HTML-вёрстка письма',
+    prompt: `Свёрстай карточку мероприятия для email. Данные: дата <em>[дата]</em>, название <em>[название]</em>, регистрация <em>[ссылка]</em>. Используй ТОЛЬКО inline-стили (никаких &lt;style&gt; или внешних CSS). Цветовая гамма: HSE-синий #1A478A и белый. Сделай код валидным для Outlook (таблицы вместо flex).`,
+    tip: '' },
+
+  { id: 'email-announce', section: 'email', color: 'blue', label: 'Текст анонса',
+    prompt: `Напиши письмо-анонс для <em>[аудитория]</em> о <em>[новость]</em>. Сначала — 3 цепляющие темы письма на выбор. Затем — текст до 100 слов с призывом к действию (CTA) в конце.`,
+    tip: '' },
+
+  // ─── Image / media ───
+  { id: 'image-formula', section: 'image', color: 'pink', label: 'Формула промпта',
+    prompt: `Создай 3 промпта на английском для Midjourney v6 / DALL-E 3 по идее: <em>[идея]</em>. Структура каждого: [Субъект] + [Окружение] + [Освещение] + [Палитра] + [Стиль/Камера]. Без переводов и комментариев — только готовые строки.`,
+    tip: '' },
+
+  { id: 'image-reverse', section: 'image', color: 'teal', label: 'Описание изображения',
+    prompt: `<em>(Прикрепи картинку)</em>
+
+Опиши, что изображено на картинке в мельчайших деталях, чтобы я мог использовать этот текст как промпт для воссоздания этой картинки в другой нейросети. Структурируй: композиция → объекты → стиль → свет → палитра.`,
+    tip: '' },
+
+  // ─── Студенты ───
+  { id: 'student-debt', section: 'students', color: 'red', label: 'Письмо должнику',
+    prompt: `Ты — куратор НИУ ВШЭ. Напиши эмпатичное, но твёрдое письмо студенту, пропустившему дедлайн. Напомни о правилах ВШЭ, сроках пересдач и предложи форму связи. Тон: поддерживающий, официальный. Без обвинений и угроз.`,
+    tip: '' },
+
+  { id: 'tg-announce', section: 'students', color: 'blue', label: 'Анонс в Telegram',
+    prompt: `Составь анонс старта сессии для студенческого Telegram-канала. Укажи даты, формат (офлайн/онлайн) и ссылку на расписание. Используй короткие списки и 2–3 уместных эмодзи. Без панибратства и без жирного текста на каждой строке.`,
+    tip: '' },
+
+  { id: 'student-faq', section: 'students', color: 'green', label: 'Генерация FAQ',
+    prompt: `Я собрал сырые вопросы студентов по практике: <em>[вставь текст]</em>. Сгруппируй их по логичным темам и напиши чёткий FAQ (Вопрос → Ответ) для публикации в LMS. Пиши понятным языком без канцелярита.`,
+    tip: '' },
+
+  // ─── Документы ───
+  { id: 'reg-summary', section: 'docs', color: 'purple', label: 'Выжимка из регламента',
+    prompt: `Прочитай этот регламент НИУ ВШЭ. Сделай краткую выжимку (буллетами) для преподавателей. Выдели строго: 1) новые обязанности, 2) ключевые сроки, 3) штрафные санкции. Не интерпретируй, только пересказывай.
+
+<em>[Вставь регламент]</em>`,
+    tip: '' },
+
+  { id: 'memo', section: 'docs', color: 'amber', label: 'Служебная записка',
+    prompt: `Напиши официальную служебную записку на имя декана с обоснованием закупки <em>[название ПО / оборудования]</em> для образовательной программы. Аргументируй потребность соответствием современным ИТ-стандартам обучения. Не используй «в целях», «во исполнение», «настоящим» и другой канцелярит.`,
+    tip: '' },
+
+  // ─── Совещания / протоколы ───
+  { id: 'protocol', section: 'meeting', color: 'purple', label: 'Протокол из стенограммы',
+    prompt: `Ниже расшифровка совещания. Сформируй структурированный протокол:
+1. Дата, участники (только те, кто говорил).
+2. Повестка (восстанови из обсуждения).
+3. Ключевые решения — нумерованным списком.
+4. Открытые вопросы — отдельно.
+
+Не цитируй дословно, переформулируй кратко. Если что-то неясно из текста — отметь «требует уточнения».
+
+<em>[Вставь стенограмму]</em>`,
+    tip: '<strong>Лайфхак:</strong> стенограмму удобно делать через Яндекс Нейро/SaluteSpeech, потом скармливать модели.' },
+
+  { id: 'meeting-summary', section: 'meeting', color: 'blue', label: 'Краткое summary встречи',
+    prompt: `Сделай TL;DR встречи в 3 предложениях для тех, кто не присутствовал. Затем — 5 пунктов «что обсудили». В конце — 1 фраза «что дальше».
+
+<em>[Вставь заметки или стенограмму]</em>`,
+    tip: '' },
+
+  { id: 'action-items', section: 'meeting', color: 'green', label: 'Action items с дедлайнами',
+    prompt: `Извлеки из текста совещания все договорённости о действиях. Верни Markdown-таблицу со столбцами: «Задача | Ответственный | Срок | Зависимости». Если срок не назван — поставь «не указан», не выдумывай. В конце — список договорённостей без явного ответственного (нужно назначить).
+
+<em>[Вставь стенограмму]</em>`,
+    tip: '' },
+
+  // ─── Мероприятия ───
+  { id: 'event-program', section: 'events', color: 'coral', label: 'Программа события',
+    prompt: `Сгенерируй тайминг-структуру для научной 1-дневной конференции на тему: <em>[тема]</em>. Время: 10:00 – 18:00. Включи приветственное слово, 2 панели, кофе-брейки (по 30 мин) и обед. Дай вариант таймлайна в виде таблицы.`,
+    tip: '' },
+
+  { id: 'speaker-invite', section: 'events', color: 'teal', label: 'Приглашение спикеру',
+    prompt: `Составь email-приглашение для отраслевого эксперта выступить на нашем мастер-классе. Опиши аудиторию (студенты 3 курса ФКН ВШЭ) и ценность выступления для него (PR, найм, нетворкинг). Тон: глубоко уважительный, без лести.`,
+    tip: '' },
+
+  { id: 'event-checklist', section: 'events', color: 'blue', label: 'Чек-лист организатора',
+    prompt: `Создай детальный чек-лист координатора за 2 дня до Дня открытых дверей на 200 человек (офлайн). Раздели задачи по зонам: техника/IT, кейтеринг, навигация, спикеры, регистрация. Для каждой — приоритет (must / nice-to-have) и ответственный.`,
+    tip: '' },
+
+  // ─── Планирование ───
+  { id: 'hours-distribution', section: 'planning', color: 'purple', label: 'Распределение часов',
+    prompt: `Помоги оптимально распределить 400 часов нагрузки между преподавателями: профессор (только лекции), доцент, ассистент (только семинары). Предложи логику распределения и таблицу в процентах. Учитывай, что лекции стоят дороже семинаров.`,
+    tip: '' },
+
+  { id: 'project-plan', section: 'planning', color: 'amber', label: 'Календарный план',
+    prompt: `Выступи в роли project-менеджера. Составь календарный план-график проекта по запуску нового ДПО-курса на 4 месяца. Выдели 5 ключевых майлстоунов и ответственные роли. Покажи зависимости задач (что без чего нельзя начать).`,
+    tip: '' },
+
+  // ─── Безопасность ───
+  { id: 'depersonalize', section: 'compliance', color: 'green', label: 'Деперсонализация',
+    prompt: `Очисти этот текст от любых персональных данных (ФИО, телефоны, email, паспорта, СНИЛС) и замени их на плейсхолдеры [ДАННЫЕ СКРЫТЫ], сохранив контекст. Сделай текст безопасным для публикации в открытом источнике. В конце перечисли, что было замаскировано (количество ФИО, email и т.д.).
+
+<em>[Текст здесь]</em>`,
+    tip: '<strong>Важно:</strong> для реальных ПДн используй только on-premise решения (YandexGPT / GigaChat) или внутреннюю инфраструктуру.' },
+
+  { id: 'nda-memo', section: 'compliance', color: 'red', label: 'Памятка по NDA',
+    prompt: `Составь памятку на 1 страницу для внешних подрядчиков ФКН по правилам обращения с конфиденциальными данными. Включи: запрет на передачу данных 3-м лицам, запрет на использование публичных нейросетей, требования к каналам передачи (защищённая почта/Я.Диск). Тон: деловой, без юридического жаргона.`,
+    tip: '' },
+
+  // ─── Персонализация ───
+  { id: 'custom-instructions', section: 'personalize', color: 'blue', label: 'Custom Instructions',
+    prompt: `Напиши идеальный текст для системного промпта ChatGPT/Claude, учитывая мой профиль (администратор ОП НИУ ВШЭ). Я хочу, чтобы модель всегда:
+— отвечала структурированно и академично, без расшаркиваний,
+— использовала русский язык по умолчанию,
+— уточняла недостающий контекст одним вопросом,
+— проставляла ссылки на источники, если использует внешние данные.`,
+    tip: '' },
+
+  { id: 'tone-mirror', section: 'personalize', color: 'pink', label: 'Повтори мой стиль',
+    prompt: `Проанализируй мои 3 прошлых ответа на письма (ниже). Выдели мой индивидуальный tone-of-voice, словарный запас и уровень формальности. Следующий ответ (опишу ниже) напиши точно в таком же стиле.
+
+ОТВЕТ 1: <em>[…]</em>
+ОТВЕТ 2: <em>[…]</em>
+ОТВЕТ 3: <em>[…]</em>
+
+ЗАДАЧА: <em>[опиши новое письмо]</em>`,
+    tip: '' },
+
+  // ─── Бонус ───
+  { id: 'iterations', section: 'bonus', color: 'teal', label: 'Итерации (улучшения)',
+    prompt: `Используйте короткие команды для доработки ответа:
+• «Сделай более формальным, добавь вводные конструкции»
+• «Убери всё, что ты додумал сверх исходника»
+• «Перепиши так, чтобы это звучало как живой человек, а не нейросеть»
+• «Сыграй адвоката дьявола и раскритикуй этот текст»
+• «Сократи в 2 раза, сохрани все цифры и имена»`,
+    tip: '' }
+];
 </script>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     DATA — Models tier list & special tools
+     ═══════════════════════════════════════════════════════════════ -->
 <script>
-(function() {
-  /* ── INFO ─────────────────────────────────────────────────── */
-  const INFO = {
-    root: { icon:'🧠', title:'Промпт-инженерия', subtitle:'Что это и зачем нужно',
-      body:`<p>Промпт-инжиниринг — искусство составлять промпты так, чтобы получать стабильно ожидаемый результат. Превращает случайное угадывание в <strong>осознанное проектирование инструкции</strong>.</p>
-      <div class="mm-stitle">Что даёт</div>
-      <ul class="mm-list"><li><strong>Предсказуемость</strong> — одинаковые промпты дают стабильные результаты</li><li><strong>Эффективность</strong> — меньше итераций уточнения</li><li><strong>Воспроизводимость</strong> — решения можно тиражировать</li><li><strong>Экономию токенов</strong> — правильная техника снижает потребление</li></ul>`
-    },
-    why: { icon:'💡', title:'Зачем нужен промпт-инжиниринг', subtitle:'Ценность системного подхода',
-      body:`<p>Без системного подхода модель достраивает недостающие элементы самостоятельно — это приводит к вариативности ответов.</p>
-      <div class="mm-stitle">Проблемы без него</div>
-      <ul class="mm-list"><li>Непредсказуемость результата от запроса к запросу</li><li>Множество итераций для получения нужного ответа</li><li>Невозможность тиражировать удачные решения</li><li>Перерасход токенов на уточнения</li></ul>`
-    },
-    howformat: { icon:'📐', title:'Как оформлять', subtitle:'Форматирование и структура промпта',
-      body:`<p>Оформление промпта влияет на качество ответа не меньше, чем содержание. Хорошо оформленный промпт снижает вероятность пропуска важных требований.</p>
-      <div class="mm-stitle">Два ключевых аспекта</div>
-      <ul class="mm-list"><li><strong>Форматирование</strong> — Markdown для визуальной структуры</li><li><strong>Структура</strong> — логическое деление на части: задача, роль, контекст, формат, ограничения</li></ul>`
-    },
-    formatting: { icon:'✍️', title:'Форматирование', subtitle:'Markdown как инструмент промпта',
-      body:`<p>Markdown — основной инструмент форматирования промптов. Поддерживается большинством моделей.</p>
-      <div class="mm-stitle">Основные элементы</div>
-      <table class="mm-table"><tr><th>Элемент</th><th>Применение</th></tr>
-      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px"># Заголовок</code></td><td>Разделение роли, задачи, контекста</td></tr>
-      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">**жирный**</code></td><td>Ключевые термины, важные требования</td></tr>
-      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">\`код\`</code></td><td>Функции, команды, технологии</td></tr>
-      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">- список</code></td><td>Требования, шаги, критерии</td></tr>
-      <tr><td><code style="background:#ede9fe;border-radius:4px;padding:1px 5px">| таблица |</code></td><td>Сравнение вариантов, спецификации</td></tr></table>`
-    },
-    structure: { icon:'🧱', title:'Структура промпта', subtitle:'Базовые принципы составления',
-      body:`<p>Без структуры модель вынуждена достраивать недостающие элементы самостоятельно, что приводит к вариативности ответов.</p>
-      <div class="mm-stitle">Части промпта</div>
-      <table class="mm-table"><tr><th>Часть</th><th>Обязательность</th><th>Назначение</th></tr>
-      <tr><td><strong>Задача</strong></td><td>✅ Обязательно</td><td>Конкретное действие или результат</td></tr>
-      <tr><td>Роль</td><td>Опционально</td><td>Позиция, экспертиза, стиль ответа</td></tr>
-      <tr><td>Контекст</td><td>Опционально</td><td>Условия, входные данные, среда</td></tr>
-      <tr><td>Формат вывода</td><td>Опционально</td><td>Структура и форма ответа</td></tr>
-      <tr><td>Ограничения</td><td>Опционально</td><td>Запреты и границы решения</td></tr></table>`
-    },
-    role: { icon:'🎭', title:'Роль', subtitle:'Компонент промпта',
-      body:`<p>Роль задаёт позицию, с которой модель отвечает: стиль, глубину экспертизы и терминологию. Без роли — нейтральная позиция для широкой аудитории.</p>
-      <div class="mm-stitle">Три функции</div>
-      <ul class="mm-list"><li><strong>Экспертная фильтрация</strong> — модель использует релевантные знания</li><li><strong>Стилевая настройка</strong> — уровень детализации и форма подачи</li><li><strong>Терминологическая фокусировка</strong> — профессиональный или общий язык</li></ul>
-      <div class="mm-stitle">Формат указания</div>
-      <div class="mm-code">Ты — [роль]
+window.MODELS = {
+  s: [
+    { name: 'ChatGPT',    vendor: 'OpenAI',     url: 'https://chatgpt.com',
+      desc: 'Универсальный инструмент для большинства офисных задач. Сильный русский язык, логика, мультимодальность (GPT-5 семейство).',
+      badge: { type: 'vpn', text: 'VPN / агрегатор' } },
+    { name: 'Claude',     vendor: 'Anthropic',  url: 'https://claude.ai',
+      desc: 'Лучший выбор для длинных документов и академических текстов. Минимум выдуманных фактов. Линейка Opus 4.x / Sonnet 4.x / Haiku.',
+      badge: { type: 'vpn', text: 'VPN / агрегатор' } },
+    { name: 'Gemini',     vendor: 'Google',     url: 'https://gemini.google.com',
+      desc: 'Рекордный контекст (книга за раз), глубокий разбор PDF, изображений и видео. Версии 2.5 Pro / Flash.',
+      badge: { type: 'partial', text: 'Частично без VPN' } },
+    { name: 'DeepSeek',   vendor: 'DeepSeek',   url: 'https://chat.deepseek.com',
+      desc: 'Сильна в логике, аналитике и Excel-формулах. Reasoning-режим бесплатно. Открытые веса.',
+      badge: { type: 'free', text: 'Без VPN' } },
+    { name: 'Qwen',       vendor: 'Alibaba',    url: 'https://chat.qwen.ai',
+      desc: 'Длинные документы, таблицы, рассуждения. Большой выбор моделей, открытые веса. Без VPN, бесплатно.',
+      badge: { type: 'free', text: 'Без VPN' } },
+    { name: 'Perplexity', vendor: 'Perplexity', url: 'https://www.perplexity.ai',
+      desc: 'ИИ-поисковик со ссылками на источники. Незаменим для свежей информации и фактчекинга.',
+      badge: { type: 'partial', text: 'Частично без VPN' } }
+  ],
+  a: [
+    { name: 'YandexGPT',  vendor: 'Яндекс',     url: 'https://ya.ru/alice_pro',
+      desc: 'Российская модель. Понимает специфику отечественного документооборота и ФЗ РФ. Интегрирована в Алису и Я.Браузер.',
+      badge: { type: 'free', text: 'Встроено в сервисы Яндекса' } },
+    { name: 'GigaChat',   vendor: 'Сбер',       url: 'https://giga.chat',
+      desc: 'Российская модель (линейка MAX). Документооборот, ФЗ, генерация изображений. Подходит для работы с ПДн.',
+      badge: { type: 'free', text: 'Без VPN' } },
+    { name: 'Mistral Large', vendor: 'Mistral AI', url: 'https://chat.mistral.ai',
+      desc: 'Европейская модель — хороша для строгого следования инструкциям и работы с кодом. Открытые веса у младших моделей.',
+      badge: { type: 'vpn', text: 'VPN' } }
+  ]
+};
+
+window.SPECIAL_TOOLS = [
+  {
+    label: 'Академический research', color: 'purple',
+    items: [
+      { name: 'Consensus.app', url: 'https://consensus.app', desc: 'поисковик исключительно по научным статьям с ИИ-выжимками из abstracts.' },
+      { name: 'SciSpace',      url: 'https://typeset.io',    desc: 'загрузка PDF статей, ИИ-копайлот, сравнение источников и методологий.' },
+      { name: 'Elicit',        url: 'https://elicit.com',    desc: 'анализ и поиск по научным базам (есть бесплатная и платная версии).' },
+      { name: 'NotebookLM',    url: 'https://notebooklm.google',  desc: 'загружаешь до 50 источников, получаешь конспекты, FAQ и даже подкаст по теме.' }
+    ]
+  },
+  {
+    label: 'Презентации и документы', color: 'blue',
+    items: [
+      { name: 'Gamma.app',  url: 'https://gamma.app',  desc: 'генерация стильных веб-презентаций и отчётов с ИИ-ассистентом.' },
+      { name: 'Kimi Slides', url: 'https://www.kimi.com/slides', desc: 'генератор презентаций (несколько бесплатных, далее платно).' },
+      { name: 'Tome',       url: 'https://tome.app',   desc: 'презентации-сторителлинг с автоматической компоновкой.' }
+    ]
+  },
+  {
+    label: 'Музыка, видео, голос', color: 'amber',
+    items: [
+      { name: 'Suno',       url: 'https://suno.com',     desc: 'генерация музыки и песен с вокалом для роликов и мероприятий.' },
+      { name: 'Udio',       url: 'https://udio.com',     desc: 'альтернатива Suno с более тонкой настройкой стиля.' },
+      { name: 'Kling AI',   url: 'https://klingai.com',  desc: 'генерация реалистичного видео по тексту (b-roll, фоны).' },
+      { name: 'Sora',       url: 'https://openai.com/sora', desc: 'видеогенерация от OpenAI — длинные сцены, согласованность кадров.' },
+      { name: 'Runway',     url: 'https://runwayml.com', desc: 'видеоредактор с ИИ: outpainting, удаление объектов, motion brush.' },
+      { name: 'ElevenLabs', url: 'https://elevenlabs.io', desc: 'клонирование и синтез голоса для озвучки видео и подкастов.' }
+    ]
+  },
+  {
+    label: 'Агрегаторы и доступ из РФ', color: 'green',
+    items: [
+      { name: 'GPTunnel',  url: 'https://gptunnel.ru',  desc: 'российский агрегатор с доступом к платным нейросетям без VPN. Оплата картой РФ.' },
+      { name: 'Study AI',  url: 'https://study24.ai',   desc: 'агрегатор моделей с фокусом на учебные задачи.' },
+      { name: 'MashaGPT',  url: 'https://mashagpt.ru',  desc: 'агрегатор с дружелюбным интерфейсом, оплата картой РФ.' },
+      { name: 'Higgsfield', url: 'https://higgsfield.ai', desc: 'продвинутый генератор видео. Оплата из РФ напрямую недоступна.' }
+    ]
+  }
+];
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DATA — Mind map content and tree
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+window.MM_INFO = {
+  root: { icon:'🧠', title:'Промпт-инженерия', subtitle:'Что это и зачем нужно', group: 'Корень',
+    body:`<p>Промпт-инжиниринг — искусство составлять промпты так, чтобы получать стабильно ожидаемый результат. Превращает случайное угадывание в <strong>осознанное проектирование инструкции</strong>.</p>
+    <div class="mm-stitle">Что даёт</div>
+    <ul class="mm-list"><li><strong>Предсказуемость</strong> — одинаковые промпты дают стабильные результаты</li><li><strong>Эффективность</strong> — меньше итераций уточнения</li><li><strong>Воспроизводимость</strong> — решения можно тиражировать</li><li><strong>Экономию токенов</strong> — правильная техника снижает потребление</li></ul>`
+  },
+  why: { icon:'💡', title:'Зачем нужен промпт-инжиниринг', subtitle:'Ценность системного подхода', group: '1-й уровень',
+    body:`<p>Без системного подхода модель достраивает недостающие элементы самостоятельно — это приводит к вариативности ответов.</p>
+    <div class="mm-stitle">Проблемы без него</div>
+    <ul class="mm-list"><li>Непредсказуемость результата от запроса к запросу</li><li>Множество итераций для получения нужного ответа</li><li>Невозможность тиражировать удачные решения</li><li>Перерасход токенов на уточнения</li></ul>`
+  },
+  howformat: { icon:'📐', title:'Как оформлять', subtitle:'Форматирование и структура промпта', group: '1-й уровень',
+    body:`<p>Оформление промпта влияет на качество ответа не меньше, чем содержание. Хорошо оформленный промпт снижает вероятность пропуска важных требований.</p>
+    <div class="mm-stitle">Два ключевых аспекта</div>
+    <ul class="mm-list"><li><strong>Форматирование</strong> — Markdown для визуальной структуры</li><li><strong>Структура</strong> — логическое деление на части: задача, роль, контекст, формат, ограничения</li></ul>`
+  },
+  formatting: { icon:'✍️', title:'Форматирование', subtitle:'Markdown как инструмент промпта', group: '2-й уровень',
+    body:`<p>Markdown — основной инструмент форматирования промптов. Поддерживается большинством моделей.</p>
+    <div class="mm-stitle">Основные элементы</div>
+    <table class="mm-table"><tr><th>Элемент</th><th>Применение</th></tr>
+    <tr><td><code>#&nbsp;Заголовок</code></td><td>Разделение роли, задачи, контекста</td></tr>
+    <tr><td><code>**жирный**</code></td><td>Ключевые термины, важные требования</td></tr>
+    <tr><td><code>\`код\`</code></td><td>Функции, команды, технологии</td></tr>
+    <tr><td><code>-&nbsp;список</code></td><td>Требования, шаги, критерии</td></tr>
+    <tr><td><code>|&nbsp;таблица&nbsp;|</code></td><td>Сравнение вариантов, спецификации</td></tr></table>`
+  },
+  structure: { icon:'🧱', title:'Структура промпта', subtitle:'Базовые принципы составления', group: '2-й уровень',
+    body:`<p>Без структуры модель вынуждена достраивать недостающие элементы самостоятельно, что приводит к вариативности ответов.</p>
+    <div class="mm-stitle">Части промпта</div>
+    <table class="mm-table"><tr><th>Часть</th><th>Обязательность</th><th>Назначение</th></tr>
+    <tr><td><strong>Задача</strong></td><td>✅ Обязательно</td><td>Конкретное действие или результат</td></tr>
+    <tr><td>Роль</td><td>Опционально</td><td>Позиция, экспертиза, стиль ответа</td></tr>
+    <tr><td>Контекст</td><td>Опционально</td><td>Условия, входные данные, среда</td></tr>
+    <tr><td>Формат вывода</td><td>Опционально</td><td>Структура и форма ответа</td></tr>
+    <tr><td>Ограничения</td><td>Опционально</td><td>Запреты и границы решения</td></tr></table>`
+  },
+  role: { icon:'🎭', title:'Роль', subtitle:'Компонент промпта', group: '3-й уровень',
+    body:`<p>Роль задаёт позицию, с которой модель отвечает: стиль, глубину экспертизы и терминологию. Без роли — нейтральная позиция для широкой аудитории.</p>
+    <div class="mm-stitle">Три функции</div>
+    <ul class="mm-list"><li><strong>Экспертная фильтрация</strong> — модель использует релевантные знания</li><li><strong>Стилевая настройка</strong> — уровень детализации и форма подачи</li><li><strong>Терминологическая фокусировка</strong> — профессиональный или общий язык</li></ul>
+    <div class="mm-stitle">Формат указания</div>
+    <div class="mm-code">Ты — [роль]
 Действуй как [роль]
 Твоя роль: [роль]</div>
-      <p>Принцип специфичности: «Senior SRE с фокусом на надёжность» лучше, чем «инженер».</p>`
-    },
-    task: { icon:'🎯', title:'Задача', subtitle:'Единственный обязательный компонент',
-      body:`<p>Задача — центральный компонент промпта. Единственный обязательный элемент. Все остальные компоненты лишь уточняют пространство решений.</p>
-      <div class="mm-stitle">4 критерия хорошей задачи</div>
-      <table class="mm-table"><tr><th>Критерий</th><th>Плохо</th><th>Хорошо</th></tr>
-      <tr><td><strong>Конкретность</strong></td><td>«Помоги с загрузкой»</td><td>«Напиши скрипт загрузки 850 записей из CSV в PostgreSQL»</td></tr>
-      <tr><td><strong>Измеримость</strong></td><td>«Сделай код лучше»</td><td>«Рефактори: убери дублирование, добавь type hints»</td></tr>
-      <tr><td><strong>Однозначность</strong></td><td>«Обработай данные»</td><td>«Удали строки с пустыми значениями в колонке email»</td></tr>
-      <tr><td><strong>Атомарность</strong></td><td>«Спроектируй, напиши и разверни»</td><td>Отдельные задачи на каждое действие</td></tr></table>`
-    },
-    ctx: { icon:'🌍', title:'Контекст', subtitle:'При каких условиях выполняется задача',
-      body:`<p>Контекст описывает условия выполнения задачи. Без него модель делает предположения о среде, форматах и параметрах.</p>
-      <div class="mm-stitle">Виды контекста</div>
-      <ul class="mm-list"><li><strong>Входные данные</strong> — что именно нужно обработать</li><li><strong>Техническое окружение</strong> — стек, версии, платформа</li><li><strong>Бизнес-ограничения</strong> — бюджет, сроки, SLA</li><li><strong>Существующая архитектура</strong> — уже реализованные компоненты</li><li><strong>Предыстория</strong> — что уже пробовали</li><li><strong>Аудитория</strong> — кто будет читать результат</li></ul>
-      <div class="mm-stitle">Отличие от ограничений</div>
-      <p>Контекст описывает <em>факты</em>. Ограничения задают <em>правила</em>.</p>`
-    },
-    outfmt: { icon:'📄', title:'Формат вывода', subtitle:'Как должен выглядеть ответ',
-      body:`<p>Без явного указания модель выбирает формат на своё усмотрение — ответы неоднородны.</p>
-      <div class="mm-stitle">Виды форматов</div>
-      <table class="mm-table"><tr><th>Вид</th><th>Когда использовать</th></tr>
-      <tr><td><strong>Код</strong></td><td>«Верни Python с type hints»</td></tr>
-      <tr><td><strong>JSON</strong></td><td>Машинная обработка, интеграция</td></tr>
-      <tr><td><strong>Таблица</strong></td><td>Сравнение, метрики</td></tr>
-      <tr><td><strong>Список</strong></td><td>Шаги, требования</td></tr>
-      <tr><td><strong>Mermaid</strong></td><td>Архитектура, схемы</td></tr>
-      <tr><td><strong>Краткий ответ</strong></td><td>«Ответь только числом»</td></tr></table>
-      <div class="mm-stitle">Пример детализации</div>
-      <div class="mm-code">Верни JSON:
+    <p>Принцип специфичности: «Senior SRE с фокусом на надёжность» лучше, чем «инженер».</p>`
+  },
+  task: { icon:'🎯', title:'Задача', subtitle:'Единственный обязательный компонент', group: '3-й уровень',
+    body:`<p>Задача — центральный компонент промпта. Единственный обязательный элемент. Все остальные компоненты лишь уточняют пространство решений.</p>
+    <div class="mm-stitle">4 критерия хорошей задачи</div>
+    <table class="mm-table"><tr><th>Критерий</th><th>Плохо</th><th>Хорошо</th></tr>
+    <tr><td><strong>Конкретность</strong></td><td>«Помоги с загрузкой»</td><td>«Напиши скрипт загрузки 850 записей из CSV в PostgreSQL»</td></tr>
+    <tr><td><strong>Измеримость</strong></td><td>«Сделай код лучше»</td><td>«Рефактори: убери дублирование, добавь type hints»</td></tr>
+    <tr><td><strong>Однозначность</strong></td><td>«Обработай данные»</td><td>«Удали строки с пустыми значениями в колонке email»</td></tr>
+    <tr><td><strong>Атомарность</strong></td><td>«Спроектируй, напиши и разверни»</td><td>Отдельные задачи на каждое действие</td></tr></table>`
+  },
+  ctx: { icon:'🌍', title:'Контекст', subtitle:'При каких условиях выполняется задача', group: '3-й уровень',
+    body:`<p>Контекст описывает условия выполнения задачи. Без него модель делает предположения о среде, форматах и параметрах.</p>
+    <div class="mm-stitle">Виды контекста</div>
+    <ul class="mm-list"><li><strong>Входные данные</strong> — что именно нужно обработать</li><li><strong>Техническое окружение</strong> — стек, версии, платформа</li><li><strong>Бизнес-ограничения</strong> — бюджет, сроки, SLA</li><li><strong>Существующая архитектура</strong> — уже реализованные компоненты</li><li><strong>Предыстория</strong> — что уже пробовали</li><li><strong>Аудитория</strong> — кто будет читать результат</li></ul>
+    <div class="mm-stitle">Отличие от ограничений</div>
+    <p>Контекст описывает <em>факты</em>. Ограничения задают <em>правила</em>.</p>`
+  },
+  outfmt: { icon:'📄', title:'Формат вывода', subtitle:'Как должен выглядеть ответ', group: '3-й уровень',
+    body:`<p>Без явного указания модель выбирает формат на своё усмотрение — ответы неоднородны.</p>
+    <div class="mm-stitle">Виды форматов</div>
+    <table class="mm-table"><tr><th>Вид</th><th>Когда использовать</th></tr>
+    <tr><td><strong>Код</strong></td><td>«Верни Python с type hints»</td></tr>
+    <tr><td><strong>JSON</strong></td><td>Машинная обработка, интеграция</td></tr>
+    <tr><td><strong>Таблица</strong></td><td>Сравнение, метрики</td></tr>
+    <tr><td><strong>Список</strong></td><td>Шаги, требования</td></tr>
+    <tr><td><strong>Mermaid</strong></td><td>Архитектура, схемы</td></tr>
+    <tr><td><strong>Краткий ответ</strong></td><td>«Ответь только числом»</td></tr></table>
+    <div class="mm-stitle">Пример детализации</div>
+    <div class="mm-code">Верни JSON:
 { "total": число, "processed": число,
   "errors": [{"id": строка, "reason": строка}] }</div>`
-    },
-    limits: { icon:'⛔', title:'Ограничения', subtitle:'Чего нельзя делать',
-      body:`<p>Ограничения сужают пространство решений, исключая недопустимые варианты.</p>
-      <div class="mm-stitle">Виды ограничений</div>
-      <ul class="mm-list"><li><strong>Технологические</strong> — запрет/требование конкретных библиотек</li><li><strong>Ресурсные</strong> — время выполнения, потребление памяти</li><li><strong>Архитектурные</strong> — паттерны, структура кода</li><li><strong>Безопасности</strong> — защита данных, обработка секретов</li><li><strong>Бизнес-правила</strong> — логика предметной области</li><li><strong>Стилистические</strong> — код-стайл, нейминг, документация</li></ul>
-      <div class="mm-stitle">Принципы формулировки</div>
-      <ul class="mm-list"><li><strong>Явность</strong> — не «будь аккуратен», а «не более 100 MB»</li><li><strong>Проверяемость</strong> — не «сделай быстро», а «не более 200 мс»</li><li><strong>Непротиворечивость</strong> — ограничения не должны конфликтовать</li></ul>`
-    },
-    howcompose: { icon:'🛠️', title:'Как составлять', subtitle:'Принципы, подходы и техники',
-      body:`<p>Раздел посвящён практике написания промптов: от базовых принципов до специализированных техник рассуждений.</p>
-      <div class="mm-stitle">Что входит</div>
-      <ul class="mm-list"><li><strong>Принципы</strong> — 6 правил качественного промпта</li><li><strong>Подходы</strong> — 7 стратегий составления</li><li><strong>Техники рассуждений</strong> — CoT, PoT, Few-shot и другие</li><li><strong>Пример</strong> — полный промпт со всеми принципами</li></ul>`
-    },
-    principles: { icon:'📏', title:'Принципы', subtitle:'6 правил хорошего промпта',
-      body:`<table class="mm-table"><tr><th>Принцип</th><th>Суть</th><th>Ключевой вопрос</th></tr>
-      <tr><td><strong>Ясность</strong></td><td>Исключить двусмысленность</td><td>Можно ли истолковать иначе?</td></tr>
-      <tr><td><strong>Достаточность</strong></td><td>Оптимальный объём информации</td><td>Каждый ли факт влияет на решение?</td></tr>
-      <tr><td><strong>Структурированность</strong></td><td>Иерархическая организация</td><td>Использованы ли списки и заголовки?</td></tr>
-      <tr><td><strong>Специфичность</strong></td><td>Конкретные, измеримые требования</td><td>Можно ли проверить выполнение?</td></tr>
-      <tr><td><strong>Итеративность</strong></td><td>Постепенное уточнение</td><td>Начинаю ли я с простого?</td></tr>
-      <tr><td><strong>Единообразие</strong></td><td>Согласованность терминов</td><td>Одинаково ли я называю сущности?</td></tr></table>
-      <div class="mm-stitle">Чек-лист перед отправкой</div>
-      <ul class="mm-list"><li>Задача сформулирована явно и стоит первой</li><li>Контекст содержит только релевантные факты</li><li>Формат вывода описан конкретно</li><li>Нет двусмысленных формулировок</li><li>Терминология едина на протяжении промпта</li></ul>`
-    },
-    approaches: { icon:'🗺️', title:'Подходы', subtitle:'7 стратегий составления промптов',
-      body:`<table class="mm-table"><tr><th>Подход</th><th>Когда использовать</th><th>Ключевая фраза</th></tr>
-      <tr><td><strong>Пошаговый</strong></td><td>Логика, математика, отладка</td><td>«Реши пошагово»</td></tr>
-      <tr><td><strong>Ролевой</strong></td><td>Важен стиль, экспертиза</td><td>«Ты — [роль]»</td></tr>
-      <tr><td><strong>Структурированный</strong></td><td>Единообразный ответ, парсинг</td><td>«Оформи в формате:...»</td></tr>
-      <tr><td><strong>Контекстно-ограничивающий</strong></td><td>Жёсткие технические рамки</td><td>«Используй только... Без...»</td></tr>
-      <tr><td><strong>Итеративный</strong></td><td>Сложные, плохо формализуемые задачи</td><td>Начинай с простого</td></tr>
-      <tr><td><strong>Примеро-ориентированный</strong></td><td>Сложно описать словами</td><td>«Вот пример. Следуй формату»</td></tr>
-      <tr><td><strong>Критериальный</strong></td><td>Важна оценка качества</td><td>«Оптимизируй по критериям:...»</td></tr></table>
-      <p>Наиболее эффективные промпты комбинируют несколько подходов одновременно.</p>`
-    },
-    techniques: { icon:'⚙️', title:'Техники рассуждений', subtitle:'Как управлять мышлением модели',
-      body:`<p>Техники управляют тем, <em>как</em> модель думает, а не только <em>что</em> делает. Правильная техника повышает точность и снижает галлюцинации.</p>
-      <div class="mm-stitle">Обзор</div>
-      <ul class="mm-list"><li><strong>Chain of Thought</strong> — пошаговое рассуждение вслух</li><li><strong>Program of Thought</strong> — делегирование вычислений коду</li><li><strong>Zero-shot / Few-shot</strong> — без примеров или с примерами</li><li><strong>Contrastive Reasoning</strong> — анализ ошибочных путей</li><li><strong>Knowledge Tree</strong> — иерархическое дерево рассуждений</li><li><strong>Chain of Draft</strong> — сжатые конспективные заметки</li></ul>`
-    },
-    cot: { icon:'🔗', title:'Цепочка рассуждений', subtitle:'Chain of Thought (CoT)',
-      body:`<p>Просите модель рассуждать пошагово. Повышает точность на сложных задачах — модель «думает вслух» вместо прямого прыжка к ответу.</p>
-      <div class="mm-stitle">Когда использовать</div>
-      <ul class="mm-list"><li>Многошаговые логические задачи</li><li>Математические и алгоритмические проблемы</li><li>Отладка с неочевидной причиной</li></ul>
-      <div class="mm-stitle">Пример</div>
-      <div class="mm-code">Реши задачу пошагово. Для каждого шага
+  },
+  limits: { icon:'⛔', title:'Ограничения', subtitle:'Чего нельзя делать', group: '3-й уровень',
+    body:`<p>Ограничения сужают пространство решений, исключая недопустимые варианты.</p>
+    <div class="mm-stitle">Виды ограничений</div>
+    <ul class="mm-list"><li><strong>Технологические</strong> — запрет/требование конкретных библиотек</li><li><strong>Ресурсные</strong> — время выполнения, потребление памяти</li><li><strong>Архитектурные</strong> — паттерны, структура кода</li><li><strong>Безопасности</strong> — защита данных, обработка секретов</li><li><strong>Бизнес-правила</strong> — логика предметной области</li><li><strong>Стилистические</strong> — код-стайл, нейминг, документация</li></ul>
+    <div class="mm-stitle">Принципы формулировки</div>
+    <ul class="mm-list"><li><strong>Явность</strong> — не «будь аккуратен», а «не более 100 MB»</li><li><strong>Проверяемость</strong> — не «сделай быстро», а «не более 200 мс»</li><li><strong>Непротиворечивость</strong> — ограничения не должны конфликтовать</li></ul>`
+  },
+  howcompose: { icon:'🛠️', title:'Как составлять', subtitle:'Принципы, подходы и техники', group: '1-й уровень',
+    body:`<p>Раздел посвящён практике написания промптов: от базовых принципов до специализированных техник рассуждений.</p>
+    <div class="mm-stitle">Что входит</div>
+    <ul class="mm-list"><li><strong>Принципы</strong> — 6 правил качественного промпта</li><li><strong>Подходы</strong> — 7 стратегий составления</li><li><strong>Техники рассуждений</strong> — CoT, PoT, Few-shot и другие</li><li><strong>Пример</strong> — полный промпт со всеми принципами</li></ul>`
+  },
+  principles: { icon:'📏', title:'Принципы', subtitle:'6 правил хорошего промпта', group: '2-й уровень',
+    body:`<table class="mm-table"><tr><th>Принцип</th><th>Суть</th><th>Ключевой вопрос</th></tr>
+    <tr><td><strong>Ясность</strong></td><td>Исключить двусмысленность</td><td>Можно ли истолковать иначе?</td></tr>
+    <tr><td><strong>Достаточность</strong></td><td>Оптимальный объём информации</td><td>Каждый ли факт влияет на решение?</td></tr>
+    <tr><td><strong>Структурированность</strong></td><td>Иерархическая организация</td><td>Использованы ли списки и заголовки?</td></tr>
+    <tr><td><strong>Специфичность</strong></td><td>Конкретные, измеримые требования</td><td>Можно ли проверить выполнение?</td></tr>
+    <tr><td><strong>Итеративность</strong></td><td>Постепенное уточнение</td><td>Начинаю ли я с простого?</td></tr>
+    <tr><td><strong>Единообразие</strong></td><td>Согласованность терминов</td><td>Одинаково ли я называю сущности?</td></tr></table>
+    <div class="mm-stitle">Чек-лист перед отправкой</div>
+    <ul class="mm-list"><li>Задача сформулирована явно и стоит первой</li><li>Контекст содержит только релевантные факты</li><li>Формат вывода описан конкретно</li><li>Нет двусмысленных формулировок</li><li>Терминология едина на протяжении промпта</li></ul>`
+  },
+  approaches: { icon:'🗺️', title:'Подходы', subtitle:'7 стратегий составления промптов', group: '2-й уровень',
+    body:`<table class="mm-table"><tr><th>Подход</th><th>Когда использовать</th><th>Ключевая фраза</th></tr>
+    <tr><td><strong>Пошаговый</strong></td><td>Логика, математика, отладка</td><td>«Реши пошагово»</td></tr>
+    <tr><td><strong>Ролевой</strong></td><td>Важен стиль, экспертиза</td><td>«Ты — [роль]»</td></tr>
+    <tr><td><strong>Структурированный</strong></td><td>Единообразный ответ, парсинг</td><td>«Оформи в формате:…»</td></tr>
+    <tr><td><strong>Контекстно-ограничивающий</strong></td><td>Жёсткие технические рамки</td><td>«Используй только… Без…»</td></tr>
+    <tr><td><strong>Итеративный</strong></td><td>Сложные, плохо формализуемые задачи</td><td>Начинай с простого</td></tr>
+    <tr><td><strong>Примеро-ориентированный</strong></td><td>Сложно описать словами</td><td>«Вот пример. Следуй формату»</td></tr>
+    <tr><td><strong>Критериальный</strong></td><td>Важна оценка качества</td><td>«Оптимизируй по критериям:…»</td></tr></table>
+    <p>Наиболее эффективные промпты комбинируют несколько подходов одновременно.</p>`
+  },
+  techniques: { icon:'⚙️', title:'Техники рассуждений', subtitle:'Как управлять мышлением модели', group: '2-й уровень',
+    body:`<p>Техники управляют тем, <em>как</em> модель думает, а не только <em>что</em> делает. Правильная техника повышает точность и снижает галлюцинации.</p>
+    <div class="mm-stitle">Обзор</div>
+    <ul class="mm-list"><li><strong>Chain of Thought</strong> — пошаговое рассуждение вслух</li><li><strong>Program of Thought</strong> — делегирование вычислений коду</li><li><strong>Zero-shot / Few-shot</strong> — без примеров или с примерами</li><li><strong>Contrastive Reasoning</strong> — анализ ошибочных путей</li><li><strong>Knowledge Tree</strong> — иерархическое дерево рассуждений</li><li><strong>Chain of Draft</strong> — сжатые конспективные заметки</li></ul>`
+  },
+  cot: { icon:'🔗', title:'Цепочка рассуждений', subtitle:'Chain of Thought (CoT)', group: '3-й уровень',
+    body:`<p>Просите модель рассуждать пошагово. Повышает точность на сложных задачах — модель «думает вслух» вместо прямого прыжка к ответу.</p>
+    <div class="mm-stitle">Когда использовать</div>
+    <ul class="mm-list"><li>Многошаговые логические задачи</li><li>Математические и алгоритмические проблемы</li><li>Отладка с неочевидной причиной</li></ul>
+    <div class="mm-stitle">Пример</div>
+    <div class="mm-code">Реши задачу пошагово. Для каждого шага
 объясни, что ты делаешь и почему.
 
 API с rate limit 100 req/min,
 нужно загрузить 850 записей.</div>
-      <p>Быстрый способ: добавьте <span class="mm-tag">«думай пошагово»</span> или <span class="mm-tag">«рассуждай вслух»</span>.</p>`
-    },
-    pot: { icon:'💻', title:'Рассуждения через код', subtitle:'Program of Thought (PoT)',
-      body:`<p>Модель генерирует исполняемый Python-код для вычислений вместо рассуждения на естественном языке. Делегирует точные вычисления интерпретатору — избегает галлюцинаций в математике.</p>
-      <div class="mm-stitle">Когда использовать</div>
-      <ul class="mm-list"><li>Сложные математические расчёты</li><li>Операции с датами и временем</li><li>Обработка данных (JSON, CSV)</li><li>Задачи, где CoT ошибается в арифметике</li></ul>
-      <div class="mm-stitle">Пример</div>
-      <div class="mm-code">basket = 120
+    <p>Быстрый способ: добавьте <span class="mm-tag">«думай пошагово»</span> или <span class="mm-tag">«рассуждай вслух»</span>.</p>`
+  },
+  pot: { icon:'💻', title:'Рассуждения через код', subtitle:'Program of Thought (PoT)', group: '3-й уровень',
+    body:`<p>Модель генерирует исполняемый Python-код для вычислений вместо рассуждения на естественном языке. Делегирует точные вычисления интерпретатору — избегает галлюцинаций в математике.</p>
+    <div class="mm-stitle">Когда использовать</div>
+    <ul class="mm-list"><li>Сложные математические расчёты</li><li>Операции с датами и временем</li><li>Обработка данных (JSON, CSV)</li><li>Задачи, где CoT ошибается в арифметике</li></ul>
+    <div class="mm-stitle">Пример</div>
+    <div class="mm-code">basket = 120
 minutes = 0
 while basket > 0:
     basket -= 7
@@ -899,109 +1725,574 @@ while basket > 0:
     if basket > 0:
         basket += 3
 print(minutes)  # → 25</div>
-      <p>Быстрый способ: <span class="mm-tag">«Напиши Python-программу для решения и верни результат»</span></p>`
-    },
-    shotex: { icon:'📚', title:'Рассуждения с примерами', subtitle:'Zero-shot / Few-shot',
-      body:`<div class="mm-stitle">Zero-shot</div>
-      <p>Прямой запрос без примеров. Модель использует встроенные знания. Для простых, однозначных задач.</p>
-      <div class="mm-code">Напиши SQL: выбрать пользователей,
+    <p>Быстрый способ: <span class="mm-tag">«Напиши Python-программу для решения и верни результат»</span></p>`
+  },
+  shotex: { icon:'📚', title:'Рассуждения с примерами', subtitle:'Zero-shot / Few-shot', group: '3-й уровень',
+    body:`<div class="mm-stitle">Zero-shot</div>
+    <p>Прямой запрос без примеров. Модель использует встроенные знания. Для простых, однозначных задач.</p>
+    <div class="mm-code">Напиши SQL: выбрать пользователей,
 зарегистрированных после 1 января 2024.</div>
-      <div class="mm-stitle">Few-shot</div>
-      <p>Даёте 2–3 примера входа и выхода — модель улавливает паттерн.</p>
-      <div class="mm-code">Преобразуй в kebab-case:
+    <div class="mm-stitle">Few-shot</div>
+    <p>Даёте 2–3 примера входа и выхода — модель улавливает паттерн.</p>
+    <div class="mm-code">Преобразуй в kebab-case:
 "Hello World"  → "hello-world"
 "My Component" → "my-component"
 "UserProfile"  → ?</div>
-      <p>2–3 примера обычно достаточно. Больше 5 редко улучшает результат, но увеличивает токены.</p>`
-    },
-    contrastive: { icon:'⚖️', title:'Контрастное размышление', subtitle:'Contrastive Reasoning',
-      body:`<p>Модель анализирует ошибочные варианты и сравнивает с верным. Выявляет скрытые допущения и повышает надёжность выводов.</p>
-      <div class="mm-stitle">Когда использовать</div>
-      <ul class="mm-list"><li>Задачи с неоднозначными условиями</li><li>Принятие решений с обоснованием выбора</li><li>Проверка гипотез и верификация логики</li><li>Обучение — показ типичных ошибок</li></ul>
-      <div class="mm-stitle">Структура ответа</div>
-      <div class="mm-code">❌ Неверный подход: [объяснение ошибки]
+    <p>2–3 примера обычно достаточно. Больше 5 редко улучшает результат, но увеличивает токены.</p>`
+  },
+  contrastive: { icon:'⚖️', title:'Контрастное размышление', subtitle:'Contrastive Reasoning', group: '4-й уровень',
+    body:`<p>Модель анализирует ошибочные варианты и сравнивает с верным. Выявляет скрытые допущения и повышает надёжность выводов.</p>
+    <div class="mm-stitle">Когда использовать</div>
+    <ul class="mm-list"><li>Задачи с неоднозначными условиями</li><li>Принятие решений с обоснованием выбора</li><li>Проверка гипотез и верификация логики</li><li>Обучение — показ типичных ошибок</li></ul>
+    <div class="mm-stitle">Структура ответа</div>
+    <div class="mm-code">❌ Неверный подход: [объяснение ошибки]
 ✅ Правильное решение: [решение]
 🔑 Ключевое различие: [в чём разница]</div>
-      <p>Быстрый способ: <span class="mm-tag">«Сначала рассмотри типичную ошибку. Затем — правильное решение»</span></p>`
-    },
-    ktree: { icon:'🌳', title:'Дерево знаний', subtitle:'Knowledge Tree',
-      body:`<p>Структурирует информацию в виде иерархического дерева — от корневой проблемы к подвопросам, фактам и выводам.</p>
-      <div class="mm-stitle">Когда использовать</div>
-      <ul class="mm-list"><li>Сложные аналитические задачи</li><li>Root cause analysis</li><li>Подготовка структуры документов</li><li>Оценка достоверности версий</li></ul>
-      <div class="mm-stitle">Пример структуры</div>
-      <div class="mm-code">Конверсия упала
+    <p>Быстрый способ: <span class="mm-tag">«Сначала рассмотри типичную ошибку. Затем — правильное решение»</span></p>`
+  },
+  ktree: { icon:'🌳', title:'Дерево знаний', subtitle:'Knowledge Tree', group: '4-й уровень',
+    body:`<p>Структурирует информацию в виде иерархического дерева — от корневой проблемы к подвопросам, фактам и выводам.</p>
+    <div class="mm-stitle">Когда использовать</div>
+    <ul class="mm-list"><li>Сложные аналитические задачи</li><li>Root cause analysis</li><li>Подготовка структуры документов</li><li>Оценка достоверности версий</li></ul>
+    <div class="mm-stitle">Пример структуры</div>
+    <div class="mm-code">Конверсия упала
 ├── Технические проблемы
 │   ├── Производительность
 │   └── Баги
 ├── Изменения в продукте
 │   └── A/B-тест
 └── Внешние факторы</div>
-      <p>Быстрый способ: <span class="mm-tag">«Построй дерево знаний: корень → ключевые ветви → подвопросы → факты»</span></p>`
-    },
-    cod: { icon:'📝', title:'Цепочка заметок', subtitle:'Chain of Draft (CoD)',
-      body:`<p>Рассуждение в предельно сжатой форме — ключевые слова, символы, псевдокод вместо развёрнутых предложений. Снижает токен-потребление, сохраняя точность.</p>
-      <div class="mm-stitle">Когда использовать</div>
-      <ul class="mm-list"><li>Ограниченный бюджет токенов</li><li>Real-time приложения — важна скорость</li><li>Промежуточные вычисления без пояснений</li><li>Многошаговые задачи, где CoT избыточен</li></ul>
-      <div class="mm-stitle">Пример (850 записей, 100 req/min)</div>
-      <div class="mm-code">rate: 100/мин → 100 req за 60с
+    <p>Быстрый способ: <span class="mm-tag">«Построй дерево знаний: корень → ключевые ветви → подвопросы → факты»</span></p>`
+  },
+  cod: { icon:'📝', title:'Цепочка заметок', subtitle:'Chain of Draft (CoD)', group: '4-й уровень',
+    body:`<p>Рассуждение в предельно сжатой форме — ключевые слова, символы, псевдокод вместо развёрнутых предложений. Снижает токен-потребление, сохраняя точность.</p>
+    <div class="mm-stitle">Когда использовать</div>
+    <ul class="mm-list"><li>Ограниченный бюджет токенов</li><li>Real-time приложения — важна скорость</li><li>Промежуточные вычисления без пояснений</li><li>Многошаговые задачи, где CoT избыточен</li></ul>
+    <div class="mm-stitle">Пример (850 записей, 100 req/min)</div>
+    <div class="mm-code">rate: 100/мин → 100 req за 60с
 850/100 = ceil(8.5) = 9 мин полных
 остаток: 50 req в 10-ю минуту
 итого: ~10–11 мин → 1 req/0.6с</div>
-      <p>Быстрый способ: <span class="mm-tag">«Рассуждай коротко — ключевыми словами, без развёрнутых предложений»</span></p>`
-    },
-    example: { icon:'🚀', title:'Пример', subtitle:'Полный промпт со всеми принципами',
-      body:`<p>Пример административного промпта — демонстрирует применение всех компонентов одновременно.</p>
-      <div class="mm-stitle">Структура примера</div>
-      <table class="mm-table"><tr><th>Компонент</th><th>Содержание</th></tr>
-      <tr><td>📌 Задача</td><td>Написать email-рассылку и составить блок FAQ по выбору тем курсовых работ</td></tr>
-      <tr><td>🎭 Роль</td><td>Старший методист учебного офиса ФКН НИУ ВШЭ</td></tr>
-      <tr><td>🌍 Контекст</td><td>Студенты 2 и 3 курсов, разные правила подачи заявок, жесткий дедлайн 15 мая</td></tr>
-      <tr><td>📄 Формат</td><td>Письмо для LMS (до 150 слов) и Markdown-таблица с 3 частыми вопросами</td></tr>
-      <tr><td>⛔ Ограничения</td><td>Официально-деловой, но эмпатичный тон. Запрет на «канцелярит» (ввиду, во избежание) и сокращение «курсач»</td></tr>
-      <tr><td>🧠 Техника</td><td>Few-shot — предоставление 2 примеров того, как правильно отвечать на возражения студентов</td></tr></table>
-      <div class="mm-stitle">Почему это хороший промпт</div>
-      <ul class="mm-list"><li>Задача конкретна: четко разделена на письмо и таблицу FAQ</li><li>Роль задаёт необходимый уровень формальности и экспертизы учебного офиса</li><li>Ограничения проверяемы (нет канцелярита и сленга)</li><li>Контекст сужает рамки и избавляет модель от фантазирования дат и дедлайнов</li></ul>`
-    }
-  };
+    <p>Быстрый способ: <span class="mm-tag">«Рассуждай коротко — ключевыми словами, без развёрнутых предложений»</span></p>`
+  },
+  example: { icon:'🚀', title:'Пример', subtitle:'Полный промпт со всеми принципами', group: '2-й уровень',
+    body:`<p>Пример административного промпта — демонстрирует применение всех компонентов одновременно.</p>
+    <div class="mm-stitle">Структура примера</div>
+    <table class="mm-table"><tr><th>Компонент</th><th>Содержание</th></tr>
+    <tr><td>📌 Задача</td><td>Написать email-рассылку и составить блок FAQ по выбору тем курсовых работ</td></tr>
+    <tr><td>🎭 Роль</td><td>Старший методист учебного офиса ФКН НИУ ВШЭ</td></tr>
+    <tr><td>🌍 Контекст</td><td>Студенты 2 и 3 курсов, разные правила подачи заявок, жёсткий дедлайн 15 мая</td></tr>
+    <tr><td>📄 Формат</td><td>Письмо для LMS (до 150 слов) и Markdown-таблица с 3 частыми вопросами</td></tr>
+    <tr><td>⛔ Ограничения</td><td>Официально-деловой, но эмпатичный тон. Запрет на «канцелярит» и сокращение «курсач»</td></tr>
+    <tr><td>🧠 Техника</td><td>Few-shot — 2 примера того, как правильно отвечать на возражения студентов</td></tr></table>
+    <div class="mm-stitle">Почему это хороший промпт</div>
+    <ul class="mm-list"><li>Задача конкретна: чётко разделена на письмо и таблицу FAQ</li><li>Роль задаёт необходимый уровень формальности и экспертизы учебного офиса</li><li>Ограничения проверяемы (нет канцелярита и сленга)</li><li>Контекст сужает рамки и избавляет модель от фантазирования дат и дедлайнов</li></ul>`
+  }
+};
 
-  /* ── TREE ─────────────────────────────────────────────────── */
-  const LEAF_H  = 72;
+window.MM_TREE = {
+  id:'root', label:'Промпт-инженерия', level:0,
+  children:[
+    { id:'why', label:'Зачем нужен<br>промпт-инжиниринг', level:1 },
+    { id:'howformat', label:'Как оформлять', level:1, children:[
+      { id:'formatting', label:'Форматирование', level:2 },
+      { id:'structure', label:'Структура', level:2, children:[
+        { id:'role',   label:'Роль',          level:3 },
+        { id:'task',   label:'Задача',        level:3 },
+        { id:'ctx',    label:'Контекст',      level:3 },
+        { id:'outfmt', label:'Формат вывода', level:3 },
+        { id:'limits', label:'Ограничения',   level:3 }
+      ]}
+    ]},
+    { id:'howcompose', label:'Как составлять', level:1, children:[
+      { id:'principles', label:'Принципы', level:2 },
+      { id:'approaches', label:'Подходы',  level:2 },
+      { id:'techniques', label:'Техники рассуждений', level:2, children:[
+        { id:'cot',    label:'Цепочка рассуждений<br><span class="mm-sub">(Chain of Thought)</span>',     level:3 },
+        { id:'pot',    label:'Рассуждения через код<br><span class="mm-sub">(Program of Thought)</span>', level:3 },
+        { id:'shotex', label:'Рассуждения с примерами<br><span class="mm-sub">(Zero-shot / Few-shot)</span>', level:3, children:[
+          { id:'contrastive', label:'Контрастное<br>размышление',                                        level:4 },
+          { id:'ktree',       label:'Дерево знаний',                                                     level:4 },
+          { id:'cod',         label:'Цепочка заметок<br><span class="mm-sub">(Chain of Draft)</span>',   level:4 }
+        ]}
+      ]},
+      { id:'example', label:'Пример', level:2 }
+    ]}
+  ]
+};
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     APP — Rendering, search, favorites, theme, deep-link
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── storage helpers ───────────────────────────────────────── */
+  const FAV_KEY = 'cheatsheet:favorites';
+  function loadFavs() {
+    try { return new Set(JSON.parse(localStorage.getItem(FAV_KEY) || '[]')); }
+    catch { return new Set(); }
+  }
+  function saveFavs(set) {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify([...set])); } catch {}
+  }
+  let favorites = loadFavs();
+
+  /* ── toast ─────────────────────────────────────────────────── */
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2500);
+  }
+
+  /* ── theme toggle ──────────────────────────────────────────── */
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch {}
+  });
+
+  /* ── render prompt tabs ────────────────────────────────────── */
+  const tabsEl = document.getElementById('prompts-tabs');
+  const sectionsEl = document.getElementById('sections-container');
+
+  // Count prompts per tab
+  function countPrompts(tabId) {
+    if (tabId === 'favorites') return favorites.size;
+    return window.PROMPTS.filter(p => p.section === tabId).length;
+  }
+
+  function renderTabs() {
+    tabsEl.innerHTML = '';
+    window.PROMPT_GROUPS.forEach(group => {
+      const g = document.createElement('div');
+      g.className = 'tab-group';
+      const lbl = document.createElement('div');
+      lbl.className = 'tab-group-label';
+      lbl.textContent = group.label;
+      g.appendChild(lbl);
+      const tabsWrap = document.createElement('div');
+      tabsWrap.className = 'tabs';
+      group.tabs.forEach(tab => {
+        const b = document.createElement('button');
+        b.className = 'tab-btn';
+        b.type = 'button';
+        b.dataset.tab = tab.id;
+        b.setAttribute('role', 'tab');
+        b.innerHTML = `${tab.icon} ${tab.name} <span class="badge-count" data-count="${tab.id}">${countPrompts(tab.id)}</span>`;
+        tabsWrap.appendChild(b);
+      });
+      g.appendChild(tabsWrap);
+      tabsEl.appendChild(g);
+    });
+  }
+
+  function renderSections() {
+    sectionsEl.innerHTML = '';
+    const allTabs = window.PROMPT_GROUPS.flatMap(g => g.tabs);
+    allTabs.forEach(tab => {
+      const sec = document.createElement('div');
+      sec.className = 'section prompt-section';
+      sec.id = tab.id;
+      const meta = window.SECTION_META[tab.id] || { title: tab.name, sub: '' };
+      sec.innerHTML = `
+        <div class="section-header">
+          <h2>${meta.title}</h2>
+          <p>${meta.sub}</p>
+        </div>
+        <div class="cards-grid" data-cards-for="${tab.id}"></div>
+      `;
+      sectionsEl.appendChild(sec);
+      if (tab.id !== 'favorites') {
+        const grid = sec.querySelector('.cards-grid');
+        window.PROMPTS.filter(p => p.section === tab.id).forEach(p => grid.appendChild(buildCard(p)));
+      }
+    });
+  }
+
+  function buildCard(p) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'prompt-' + p.id;
+    card.dataset.id = p.id;
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-label ${p.color}">${p.label}</div>
+        <button class="card-fav" data-action="fav" aria-label="В избранное" title="В избранное">★</button>
+      </div>
+      <div class="prompt-box" data-original>${p.prompt}</div>
+      <div class="card-actions">
+        <button class="copy-btn" data-action="copy" type="button">📋 Копировать</button>
+        <button class="share-btn" data-action="share" type="button" aria-label="Скопировать ссылку">🔗 Ссылка</button>
+      </div>
+      ${p.tip ? `<div class="tip" data-original>${p.tip}</div>` : ''}
+    `;
+    if (favorites.has(p.id)) card.querySelector('.card-fav').classList.add('is-fav');
+    return card;
+  }
+
+  function updateFavTab() {
+    const grid = document.querySelector('[data-cards-for="favorites"]');
+    if (!grid) return;
+    grid.innerHTML = '';
+    if (favorites.size === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-results';
+      empty.textContent = 'Пока пусто. Нажмите ★ на любой карточке, чтобы добавить её сюда.';
+      grid.appendChild(empty);
+    } else {
+      const favPrompts = window.PROMPTS.filter(p => favorites.has(p.id));
+      favPrompts.forEach(p => {
+        const card = buildCard(p);
+        card.id = 'fav-prompt-' + p.id;
+        grid.appendChild(card);
+      });
+    }
+    document.querySelectorAll('[data-count="favorites"]').forEach(el => el.textContent = favorites.size);
+  }
+
+  /* ── tabs interaction ──────────────────────────────────────── */
+  function showTab(tabId, opts = {}) {
+    document.querySelectorAll('.prompt-section').forEach(el => el.classList.remove('visible'));
+    const target = document.getElementById(tabId);
+    if (target) target.classList.add('visible');
+    document.querySelectorAll('#prompts-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+    if (tabId === 'favorites') updateFavTab();
+    if (opts.scroll) {
+      const blockEl = document.getElementById('block-1');
+      if (blockEl) blockEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  tabsEl.addEventListener('click', e => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    showTab(btn.dataset.tab);
+    if (currentQuery) applySearch(currentQuery); // re-apply filter in newly shown tab
+  });
+
+  /* ── card actions (copy, share, fav) ───────────────────────── */
+  sectionsEl.addEventListener('click', async e => {
+    const action = e.target.closest('[data-action]')?.dataset.action;
+    if (!action) return;
+    const card = e.target.closest('.card');
+    const id = card?.dataset.id;
+    if (!id) return;
+    const prompt = window.PROMPTS.find(p => p.id === id);
+    if (!prompt) return;
+
+    if (action === 'copy') {
+      const text = card.querySelector('.prompt-box').innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+        const btn = e.target.closest('.copy-btn');
+        btn.classList.add('copied');
+        const oldText = btn.textContent;
+        btn.textContent = '✓ Скопировано';
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = oldText; }, 1800);
+        toast('Промпт скопирован в буфер');
+      } catch {
+        toast('Не удалось скопировать');
+      }
+    }
+
+    if (action === 'share') {
+      const url = location.origin + location.pathname + '#prompt-' + id;
+      try {
+        await navigator.clipboard.writeText(url);
+        toast('Ссылка на промпт скопирована');
+      } catch {
+        toast('Не удалось скопировать ссылку');
+      }
+    }
+
+    if (action === 'fav') {
+      const btn = e.target.closest('.card-fav');
+      if (favorites.has(id)) {
+        favorites.delete(id);
+        btn.classList.remove('is-fav');
+      } else {
+        favorites.add(id);
+        btn.classList.add('is-fav');
+      }
+      saveFavs(favorites);
+      // sync mirrored card in favorites tab if rendered
+      document.querySelectorAll(`[data-id="${id}"] .card-fav`).forEach(b => {
+        b.classList.toggle('is-fav', favorites.has(id));
+      });
+      document.querySelectorAll('[data-count="favorites"]').forEach(el => el.textContent = favorites.size);
+      const favSec = document.getElementById('favorites');
+      if (favSec && favSec.classList.contains('visible')) updateFavTab();
+    }
+  });
+
+  /* ── search ────────────────────────────────────────────────── */
+  const searchEl = document.getElementById('search');
+  const clearEl = document.getElementById('search-clear');
+  const hintEl = document.getElementById('search-hint');
+  let currentQuery = '';
+
+  function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function escapeHtml(s) { return s.replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+  function highlightInElement(el, query) {
+    const original = el.dataset.originalHtml || el.innerHTML;
+    if (!el.dataset.originalHtml) el.dataset.originalHtml = original;
+    if (!query) { el.innerHTML = original; return; }
+    const re = new RegExp('(' + escapeRegex(query) + ')', 'gi');
+    const walker = document.createElement('div');
+    walker.innerHTML = original;
+    const walk = (node) => {
+      if (node.nodeType === 3) {
+        const txt = node.nodeValue;
+        if (re.test(txt)) {
+          const frag = document.createElement('span');
+          frag.innerHTML = escapeHtml(txt).replace(re, '<mark>$1</mark>');
+          node.replaceWith(...frag.childNodes);
+        }
+      } else if (node.nodeType === 1 && node.tagName !== 'MARK') {
+        [...node.childNodes].forEach(walk);
+      }
+    };
+    [...walker.childNodes].forEach(walk);
+    el.innerHTML = walker.innerHTML;
+  }
+
+  function applySearch(q) {
+    currentQuery = q.trim();
+    const query = currentQuery.toLowerCase();
+    let visibleInActive = 0;
+    let totalMatches = 0;
+    const matchesByTab = {};
+
+    document.querySelectorAll('.prompt-section .card').forEach(card => {
+      const id = card.dataset.id;
+      const prompt = window.PROMPTS.find(p => p.id === id);
+      if (!prompt) return;
+      const haystack = (prompt.label + ' ' + prompt.prompt + ' ' + (prompt.tip || '')).toLowerCase();
+      const isMatch = !query || haystack.includes(query);
+      card.style.display = isMatch ? '' : 'none';
+      if (isMatch) {
+        totalMatches++;
+        matchesByTab[prompt.section] = (matchesByTab[prompt.section] || 0) + 1;
+        const sec = card.closest('.prompt-section');
+        if (sec && sec.classList.contains('visible')) visibleInActive++;
+      }
+      // highlight in shown card
+      const box = card.querySelector('.prompt-box');
+      const label = card.querySelector('.card-label');
+      if (isMatch && query) {
+        highlightInElement(box, currentQuery);
+        highlightInElement(label, currentQuery);
+      } else {
+        if (box.dataset.originalHtml) box.innerHTML = box.dataset.originalHtml;
+        if (label.dataset.originalHtml) label.innerHTML = label.dataset.originalHtml;
+      }
+    });
+
+    // Hint
+    if (!query) {
+      hintEl.innerHTML = '';
+    } else if (totalMatches === 0) {
+      hintEl.textContent = 'Ничего не найдено. Попробуйте другое слово.';
+    } else {
+      const active = document.querySelector('.prompt-section.visible')?.id;
+      const elsewhere = Object.entries(matchesByTab).filter(([s]) => s !== active);
+      if (elsewhere.length === 0) {
+        hintEl.textContent = `Найдено ${totalMatches} в текущей вкладке.`;
+      } else {
+        const links = elsewhere.map(([s, n]) => {
+          const tabName = window.PROMPT_GROUPS.flatMap(g => g.tabs).find(t => t.id === s);
+          return `<a data-jump-tab="${s}">${tabName ? tabName.icon + ' ' + tabName.name : s}</a> (${n})`;
+        }).join(', ');
+        hintEl.innerHTML = `Найдено ${totalMatches} — в этой вкладке ${visibleInActive}. Ещё в: ${links}`;
+      }
+    }
+
+    // Empty placeholder per visible section
+    document.querySelectorAll('.prompt-section.visible .cards-grid').forEach(grid => {
+      const visible = [...grid.querySelectorAll('.card')].filter(c => c.style.display !== 'none').length;
+      let empty = grid.querySelector('.empty-results');
+      if (visible === 0 && query) {
+        if (!empty) {
+          empty = document.createElement('div');
+          empty.className = 'empty-results';
+          grid.appendChild(empty);
+        }
+        empty.textContent = 'В этой вкладке совпадений нет.';
+      } else if (empty && query) {
+        empty.remove();
+      }
+    });
+  }
+
+  let searchTimer = null;
+  searchEl.addEventListener('input', e => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => applySearch(e.target.value), 80);
+  });
+  clearEl.addEventListener('click', () => {
+    searchEl.value = '';
+    applySearch('');
+    searchEl.focus();
+  });
+  hintEl.addEventListener('click', e => {
+    const a = e.target.closest('[data-jump-tab]');
+    if (!a) return;
+    showTab(a.dataset.jumpTab, { scroll: true });
+    applySearch(currentQuery);
+  });
+
+  /* ── render block 2: tier list & special tools ─────────────── */
+  const tierContainer = document.getElementById('tier-container');
+
+  function renderTierList() {
+    const wrap = document.createElement('div');
+    wrap.className = 'section tier-section visible';
+    wrap.id = 'tierlist';
+
+    wrap.innerHTML = `
+      <div class="section-header">
+        <h2>Тир-лист нейросетей</h2>
+        <p>Актуально: май 2026. <strong>Общий принцип:</strong> проверяйте свежий рейтинг на <a href="https://lmarena.ai" target="_blank" rel="noopener">lmarena.ai</a> — там живое голосование по качеству ответов.</p>
+      </div>
+    `;
+
+    const buildTier = (rank, title, models, cls) => {
+      const box = document.createElement('div');
+      box.className = 'tier-box';
+      box.innerHTML = `
+        <div class="tier-header ${cls}"><span class="tier-rank">${rank}</span> ${title}</div>
+        <div class="tier-list"></div>
+      `;
+      const list = box.querySelector('.tier-list');
+      models.forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'tier-item';
+        item.innerHTML = `
+          <div>
+            <div class="model-name"><a href="${m.url}" target="_blank" rel="noopener">${m.name}</a></div>
+            <div class="model-vendor">${m.vendor}</div>
+          </div>
+          <div class="model-desc">${m.desc}</div>
+          <div><span class="model-badge badge-${m.badge.type}">${m.badge.text}</span></div>
+        `;
+        list.appendChild(item);
+      });
+      return box;
+    };
+
+    wrap.appendChild(buildTier('S', 'Универсальные флагманы', window.MODELS.s, 's-tier'));
+    wrap.appendChild(buildTier('A', 'Мощные альтернативы (работают в РФ)', window.MODELS.a, 'a-tier'));
+
+    tierContainer.appendChild(wrap);
+  }
+
+  function renderSpecialTools() {
+    const wrap = document.createElement('div');
+    wrap.className = 'section tier-section';
+    wrap.id = 'specialtools';
+    wrap.innerHTML = `
+      <div class="section-header">
+        <h2>Спец-инструменты</h2>
+        <p>Нишевые ИИ под конкретные задачи</p>
+      </div>
+      <div class="cards-grid" id="special-grid"></div>
+    `;
+    tierContainer.appendChild(wrap);
+    const grid = wrap.querySelector('#special-grid');
+    window.SPECIAL_TOOLS.forEach(group => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const itemsHtml = group.items.map(i =>
+        `<li><a href="${i.url}" target="_blank" rel="noopener">${i.name}</a> — ${i.desc}</li>`
+      ).join('');
+      card.innerHTML = `
+        <div class="card-head"><div class="card-label ${group.color}">${group.label}</div></div>
+        <ul class="special-list">${itemsHtml}</ul>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  renderTierList();
+  renderSpecialTools();
+
+  document.getElementById('tools-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    const tier = btn.dataset.tier;
+    document.querySelectorAll('.tier-section').forEach(s => s.classList.toggle('visible', s.id === tier));
+    document.querySelectorAll('#tools-tabs .tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+  });
+
+  /* ── top-nav active link via IntersectionObserver ──────────── */
+  (function () {
+    const navLinks = document.querySelectorAll('.top-nav-link');
+    const targets = document.querySelectorAll('[id^="block-"]');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + entry.target.id));
+        }
+      });
+    }, { rootMargin: '-130px 0px -60% 0px', threshold: 0 });
+    targets.forEach(t => obs.observe(t));
+  })();
+
+  /* ── initial render of tabs and sections ───────────────────── */
+  renderTabs();
+  renderSections();
+  // Activate first real tab
+  showTab(window.PROMPT_GROUPS[0].tabs[0].id);
+
+  /* ── deep-link handling (#prompt-<id>) ─────────────────────── */
+  function handleDeepLink() {
+    const m = location.hash.match(/^#prompt-([\w-]+)/);
+    if (!m) return;
+    const id = m[1];
+    const prompt = window.PROMPTS.find(p => p.id === id);
+    if (!prompt) return;
+    showTab(prompt.section);
+    const card = document.getElementById('prompt-' + id);
+    if (!card) return;
+    card.classList.remove('highlight-deeplink');
+    void card.offsetWidth;
+    card.classList.add('highlight-deeplink');
+    setTimeout(() => {
+      try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      catch { card.scrollIntoView(); }
+    }, 0);
+  }
+  window.addEventListener('hashchange', handleDeepLink);
+  if (/^#prompt-/.test(location.hash)) {
+    requestAnimationFrame(handleDeepLink);
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     APP — Mind map (Block 3)
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+  const INFO = window.MM_INFO;
+  const tree = window.MM_TREE;
+
+  /* ── desktop tree layout ───────────────────────────────────── */
+  const LEAF_H = 72;
   const LEVEL_X = [90, 360, 620, 910, 1170];
 
-  const tree = {
-    id:'root', label:'Промпт-инженерия', level:0,
-    children:[
-      { id:'why', label:'Зачем нужен<br>промпт-инжиниринг', level:1 },
-      { id:'howformat', label:'Как оформлять', level:1, children:[
-        { id:'formatting', label:'Форматирование', level:2 },
-        { id:'structure', label:'Структура', level:2, children:[
-          { id:'role',   label:'Роль',          level:3 },
-          { id:'task',   label:'Задача',        level:3 },
-          { id:'ctx',    label:'Контекст',      level:3 },
-          { id:'outfmt', label:'Формат вывода', level:3 },
-          { id:'limits', label:'Ограничения',   level:3 },
-        ]},
-      ]},
-      { id:'howcompose', label:'Как составлять', level:1, children:[
-        { id:'principles', label:'Принципы', level:2 },
-        { id:'approaches', label:'Подходы',  level:2 },
-        { id:'techniques', label:'Техники рассуждений', level:2, children:[
-          { id:'cot',    label:'Цепочка рассуждений<br><span class="mm-sub">(Chain of Thought)</span>',     level:3 },
-          { id:'pot',    label:'Рассуждения через код<br><span class="mm-sub">(Program of Thought)</span>', level:3 },
-          { id:'shotex', label:'Рассуждения с примерами<br><span class="mm-sub">(Zero-shot / Few-shot)</span>', level:3, children:[
-            { id:'contrastive', label:'Контрастное<br>размышление',                                        level:4 },
-            { id:'ktree',       label:'Дерево знаний',                                                     level:4 },
-            { id:'cod',         label:'Цепочка заметок<br><span class="mm-sub">(Chain of Draft)</span>',   level:4 },
-          ]},
-        ]},
-        { id:'example', label:'Пример', level:2 },
-      ]},
-    ]
-  };
-
-  /* ── LAYOUT ───────────────────────────────────────────────── */
   function countLeaves(n) {
-    return (!n.children || !n.children.length) ? 1 : n.children.reduce((s,c) => s + countLeaves(c), 0);
+    return (!n.children || !n.children.length) ? 1 : n.children.reduce((s, c) => s + countLeaves(c), 0);
   }
   function assignPos(node, startY) {
     const leaves = countLeaves(node);
@@ -1016,9 +2307,8 @@ print(minutes)  # → 25</div>
   const totalLeaves = countLeaves(tree);
   assignPos(tree, PAD_Y);
 
-  /* ── RENDER ───────────────────────────────────────────────── */
   const wrapper = document.getElementById('mm-mindmap');
-  wrapper.style.width  = (LEVEL_X[4] + 210) + 'px';
+  wrapper.style.width = (LEVEL_X[4] + 210) + 'px';
   wrapper.style.height = (totalLeaves * LEAF_H + PAD_Y * 2) + 'px';
 
   function renderNodes(node) {
@@ -1026,35 +2316,37 @@ print(minutes)  # → 25</div>
     el.className = 'mm-node mm-node-' + node.level;
     el.dataset.id = node.id;
     el.style.left = node.x + 'px';
-    el.style.top  = node.y + 'px';
-    el.innerHTML  = node.label;
+    el.style.top = node.y + 'px';
+    el.innerHTML = node.label;
+    el.tabIndex = 0;
     el.addEventListener('click', () => mmOpenModal(node.id));
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); mmOpenModal(node.id); } });
     wrapper.appendChild(el);
     node._el = el;
     if (node.children) node.children.forEach(renderNodes);
   }
   renderNodes(tree);
 
-  /* ── EDGES ────────────────────────────────────────────────── */
+  /* ── edges ─────────────────────────────────────────────────── */
   const STROKE_C = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'];
   const STROKE_W = [2.5, 2, 1.5, 1.5];
 
   function drawEdges(node) {
     if (!node.children) return;
-    const svg   = document.getElementById('mm-svg-lines');
+    const svg = document.getElementById('mm-svg-lines');
     const wRect = wrapper.getBoundingClientRect();
     const pRect = node._el.getBoundingClientRect();
     const px = pRect.right - wRect.left;
-    const py = pRect.top   - wRect.top + pRect.height / 2;
+    const py = pRect.top - wRect.top + pRect.height / 2;
     node.children.forEach(child => {
       const cRect = child._el.getBoundingClientRect();
       const cx = cRect.left - wRect.left;
-      const cy = cRect.top  - wRect.top + cRect.height / 2;
+      const cy = cRect.top - wRect.top + cRect.height / 2;
       const mx = (px + cx) / 2;
-      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-      path.setAttribute('d',            `M ${px} ${py} C ${mx} ${py}, ${mx} ${cy}, ${cx} ${cy}`);
-      path.setAttribute('fill',         'none');
-      path.setAttribute('stroke',       STROKE_C[node.level] ?? '#e9d5ff');
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M ${px} ${py} C ${mx} ${py}, ${mx} ${cy}, ${cx} ${cy}`);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', STROKE_C[node.level] ?? '#bfdbfe');
       path.setAttribute('stroke-width', STROKE_W[node.level] ?? 1.5);
       svg.appendChild(path);
       drawEdges(child);
@@ -1062,22 +2354,58 @@ print(minutes)  # → 25</div>
   }
   requestAnimationFrame(() => requestAnimationFrame(() => drawEdges(tree)));
 
-  /* ── MODAL ────────────────────────────────────────────────── */
-  const ICON_BG = { root:'#1e40af', why:'#2563eb', howformat:'#3b82f6', formatting:'#3b82f6', structure:'#3b82f6', role:'#60a5fa', task:'#60a5fa', ctx:'#60a5fa', outfmt:'#60a5fa', limits:'#60a5fa', howcompose:'#3b82f6', principles:'#60a5fa', approaches:'#60a5fa', techniques:'#60a5fa', cot:'#93c5fd', pot:'#93c5fd', shotex:'#93c5fd', contrastive:'#bfdbfe', ktree:'#bfdbfe', cod:'#bfdbfe', example:'#3b82f6' };
+  /* ── mobile fallback list ──────────────────────────────────── */
+  const fallback = document.getElementById('mm-fallback');
+  const order = [
+    ['Корень',        ['root']],
+    ['1-й уровень',   ['why', 'howformat', 'howcompose']],
+    ['Как оформлять', ['formatting', 'structure', 'role', 'task', 'ctx', 'outfmt', 'limits']],
+    ['Как составлять', ['principles', 'approaches', 'techniques', 'cot', 'pot', 'shotex', 'contrastive', 'ktree', 'cod', 'example']]
+  ];
+  order.forEach(([groupName, ids]) => {
+    const grp = document.createElement('div');
+    grp.className = 'mm-fallback-group';
+    grp.textContent = groupName;
+    fallback.appendChild(grp);
+    ids.forEach(id => {
+      const info = INFO[id];
+      if (!info) return;
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'mm-fallback-item';
+      item.style.cssText = 'width:100%;text-align:left;font-family:inherit';
+      item.innerHTML = `
+        <div class="mm-fallback-title">${info.icon} ${info.title}</div>
+        <div class="mm-fallback-sub">${info.subtitle || ''}</div>
+      `;
+      item.addEventListener('click', () => mmOpenModal(id));
+      fallback.appendChild(item);
+    });
+  });
 
-  const overlay    = document.getElementById('mm-overlay');
-  const iconEl     = document.getElementById('mm-icon');
-  const titleEl    = document.getElementById('mm-title');
+  /* ── modal ─────────────────────────────────────────────────── */
+  const ICON_BG = {
+    root: '#1e40af', why: '#2563eb', howformat: '#3b82f6', formatting: '#3b82f6',
+    structure: '#3b82f6', role: '#60a5fa', task: '#60a5fa', ctx: '#60a5fa',
+    outfmt: '#60a5fa', limits: '#60a5fa', howcompose: '#3b82f6', principles: '#60a5fa',
+    approaches: '#60a5fa', techniques: '#60a5fa', cot: '#93c5fd', pot: '#93c5fd',
+    shotex: '#93c5fd', contrastive: '#bfdbfe', ktree: '#bfdbfe', cod: '#bfdbfe', example: '#3b82f6'
+  };
+
+  const overlay = document.getElementById('mm-overlay');
+  const iconEl = document.getElementById('mm-icon');
+  const titleEl = document.getElementById('mm-title');
   const subtitleEl = document.getElementById('mm-subtitle');
-  const bodyEl     = document.getElementById('mm-body');
+  const bodyEl = document.getElementById('mm-body');
 
   function mmOpenModal(id) {
-    const info = INFO[id]; if (!info) return;
-    iconEl.textContent      = info.icon;
+    const info = INFO[id];
+    if (!info) return;
+    iconEl.textContent = info.icon;
     iconEl.style.background = (ICON_BG[id] || '#3b82f6') + '20';
-    titleEl.textContent     = info.title;
-    subtitleEl.textContent  = info.subtitle || '';
-    bodyEl.innerHTML        = info.body;
+    titleEl.textContent = info.title;
+    subtitleEl.textContent = info.subtitle || '';
+    bodyEl.innerHTML = info.body;
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -1091,5 +2419,6 @@ print(minutes)  # → 25</div>
   document.addEventListener('keydown', e => { if (e.key === 'Escape') mmCloseModal(); });
 })();
 </script>
+
 </body>
 </html>
