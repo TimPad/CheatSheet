@@ -1030,6 +1030,10 @@ mark {
   display: none;
 }
 
+.local-tools-section {
+  margin-top: 28px;
+}
+
 @media (max-width: 640px) {
   .models-grid {
     grid-template-columns: 1fr;
@@ -2625,6 +2629,44 @@ window.MM_TREE = {
               ✅ Лучший reasoning среди mid-range локальных моделей
             </div>
           </article>
+        </div>
+      </section>
+
+      <section class="local-tools-section">
+        <div class="section-header">
+          <h2>Инструменты для локального запуска</h2>
+          <p>Приложения, через которые удобно скачивать, запускать и подключать локальные модели</p>
+        </div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-head"><div class="card-label purple">⚙️ Ollama — CLI / API</div></div>
+            <div class="local-body">
+              <p><strong>Что это.</strong> Open-source движок, который скачивает и запускает LLM на вашей машине. Работает из терминала и поднимает локальный HTTP-сервер на <code>localhost:11434</code> для интеграций.</p>
+              <p><strong>Как использовать:</strong></p>
+              <ol class="local-list">
+                <li>Скачать с <a href="https://ollama.com" target="_blank" rel="noopener">ollama.com</a> для macOS, Windows или Linux.</li>
+                <li>В терминале выполнить <code>ollama pull qwen3.5:9b</code>, чтобы скачать модель.</li>
+                <li>Запустить чат командой <code>ollama run qwen3.5:9b</code>.</li>
+                <li>Для графического интерфейса поверх Ollama можно использовать <a href="https://openwebui.com" target="_blank" rel="noopener">Open WebUI</a> или <a href="https://msty.app" target="_blank" rel="noopener">Msty</a>.</li>
+              </ol>
+              <p><strong>Кому подходит:</strong> разработчикам, автоматизации, подключению локальных моделей к IDE, скриптам и внутренним сервисам.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-label blue">🖥 LM Studio — GUI</div></div>
+            <div class="local-body">
+              <p><strong>Что это.</strong> Десктопное приложение с интерфейсом в стиле ChatGPT. Внутри есть каталог моделей, чат, история диалогов и локальный OpenAI-compatible API.</p>
+              <p><strong>Как использовать:</strong></p>
+              <ol class="local-list">
+                <li>Скачать с <a href="https://lmstudio.ai" target="_blank" rel="noopener">lmstudio.ai</a> для macOS, Windows или Linux.</li>
+                <li>В каталоге приложения найти GGUF-модель, например Qwen или DeepSeek Distill с квантованием <em>Q4_K_M</em>.</li>
+                <li>Открыть вкладку <em>Chat</em> и пользоваться моделью как обычным чат-ботом.</li>
+                <li>Во вкладке <em>Local Server</em> включить API для подключения внешних приложений.</li>
+              </ol>
+              <p><strong>Кому подходит:</strong> пользователям, которым нужен простой GUI без терминала, и командам, где локальные модели будут запускать нетехнические коллеги.</p>
+            </div>
+          </div>
         </div>
       </section>
     `;
