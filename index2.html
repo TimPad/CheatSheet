@@ -1,0 +1,435 @@
+<style>
+:root{
+  --bg:#0f1117;
+  --card:#1a1d26;
+  --border:#2b3140;
+  --text:#f3f4f6;
+  --muted:#a1a1aa;
+  --accent:#6ea8fe;
+  --success:#22c55e;
+  --warning:#f59e0b;
+  --radius:18px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,sans-serif;
+  line-height:1.5;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.models-section{
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+  padding:40px 20px;
+}
+
+.section-title{
+  font-size:clamp(30px,4vw,48px);
+  font-weight:800;
+  margin-bottom:28px;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.models-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
+  min-width:0;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.model-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+
+  min-width:0;
+  overflow:hidden;
+
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+.model-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.model-title{
+  font-size:24px;
+  font-weight:700;
+  line-height:1.25;
+
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  min-width:0;
+}
+
+/* =========================
+   TAGS
+========================= */
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.tag{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:600;
+  background:rgba(255,255,255,.06);
+
+  overflow-wrap:anywhere;
+}
+
+.tag.reasoning{
+  background:rgba(34,197,94,.15);
+  color:#4ade80;
+}
+
+.tag.coding{
+  background:rgba(110,168,254,.15);
+  color:#93c5fd;
+}
+
+.tag.fast{
+  background:rgba(245,158,11,.15);
+  color:#fbbf24;
+}
+
+.tag.vision{
+  background:rgba(168,85,247,.15);
+  color:#d8b4fe;
+}
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.model-description{
+  color:var(--muted);
+  font-size:15px;
+
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+/* =========================
+   HARDWARE BOX
+========================= */
+
+.hardware-box{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+
+  padding-top:14px;
+  border-top:1px solid var(--border);
+}
+
+/* =========================
+   SPEC ROW
+========================= */
+
+.spec-row{
+  display:grid;
+  grid-template-columns:110px 1fr;
+  gap:12px;
+
+  min-width:0;
+}
+
+.spec-label{
+  color:var(--muted);
+  font-size:14px;
+  font-weight:600;
+}
+
+.spec-value{
+  font-weight:600;
+
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  min-width:0;
+}
+
+/* =========================
+   RECOMMENDATION
+========================= */
+
+.recommendation{
+  margin-top:auto;
+
+  padding:12px 14px;
+  border-radius:14px;
+
+  background:rgba(34,197,94,.08);
+  border:1px solid rgba(34,197,94,.2);
+
+  font-size:14px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width:640px){
+
+  .models-section{
+    padding:24px 14px;
+  }
+
+  .models-grid{
+    grid-template-columns:1fr;
+  }
+
+  .spec-row{
+    grid-template-columns:1fr;
+    gap:4px;
+  }
+
+  .model-card{
+    padding:18px;
+  }
+
+  .model-title{
+    font-size:21px;
+  }
+}
+</style>
+
+<section class="models-section">
+
+  <h2 class="section-title">
+    Локальные модели
+  </h2>
+
+  <div class="models-grid">
+
+    <!-- CARD 1 -->
+
+    <article class="model-card">
+
+      <div class="model-title">
+        Qwen3.5 27B
+      </div>
+
+      <div class="tags">
+        <span class="tag reasoning">🧠 Reasoning</span>
+        <span class="tag coding">💻 Coding</span>
+        <span class="tag fast">⚡ Fast</span>
+      </div>
+
+      <div class="model-description">
+        Один из лучших универсальных локальных LLM-вариантов для reasoning, coding и agentic-задач.
+      </div>
+
+      <div class="hardware-box">
+
+        <div class="spec-row">
+          <div class="spec-label">RAM</div>
+          <div class="spec-value">
+            48–64 GB
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">VRAM</div>
+          <div class="spec-value">
+            RTX 4090 / 24 GB recommended
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">Quant</div>
+          <div class="spec-value">
+            Q4_K_M / Q5_K_M
+          </div>
+        </div>
+
+      </div>
+
+      <div class="recommendation">
+        ✅ Лучший вариант для мощных workstation
+      </div>
+
+    </article>
+
+    <!-- CARD 2 -->
+
+    <article class="model-card">
+
+      <div class="model-title">
+        Gemma 4 12B
+      </div>
+
+      <div class="tags">
+        <span class="tag reasoning">🧠 Reasoning</span>
+        <span class="tag fast">⚡ Fast</span>
+      </div>
+
+      <div class="model-description">
+        Отличный баланс качества, скорости и потребления памяти для повседневного локального использования.
+      </div>
+
+      <div class="hardware-box">
+
+        <div class="spec-row">
+          <div class="spec-label">RAM</div>
+          <div class="spec-value">
+            24–32 GB
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">VRAM</div>
+          <div class="spec-value">
+            12–16 GB
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">Quant</div>
+          <div class="spec-value">
+            Q4_K_M
+          </div>
+        </div>
+
+      </div>
+
+      <div class="recommendation">
+        ✅ Лучший баланс для большинства пользователей
+      </div>
+
+    </article>
+
+    <!-- CARD 3 -->
+
+    <article class="model-card">
+
+      <div class="model-title">
+        DeepSeek-R1-Distill-Qwen-14B
+      </div>
+
+      <div class="tags">
+        <span class="tag reasoning">🧠 Reasoning</span>
+      </div>
+
+      <div class="model-description">
+        Сильная reasoning-модель для аналитики, STEM-задач и сложных цепочек рассуждений.
+      </div>
+
+      <div class="hardware-box">
+
+        <div class="spec-row">
+          <div class="spec-label">RAM</div>
+          <div class="spec-value">
+            32–48 GB
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">VRAM</div>
+          <div class="spec-value">
+            16–24 GB
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">Quant</div>
+          <div class="spec-value">
+            Q5_K_M
+          </div>
+        </div>
+
+      </div>
+
+      <div class="recommendation">
+        ✅ Один из лучших reasoning mid-range вариантов
+      </div>
+
+    </article>
+
+    <!-- CARD 4 -->
+
+    <article class="model-card">
+
+      <div class="model-title">
+        Devstral 24B
+      </div>
+
+      <div class="tags">
+        <span class="tag coding">💻 Coding</span>
+        <span class="tag reasoning">🧠 Agentic</span>
+      </div>
+
+      <div class="model-description">
+        Современная agentic coding-модель для разработки, автоматизации и локальных AI-ассистентов.
+      </div>
+
+      <div class="hardware-box">
+
+        <div class="spec-row">
+          <div class="spec-label">RAM</div>
+          <div class="spec-value">
+            48–64 GB
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">VRAM</div>
+          <div class="spec-value">
+            24–32 GB
+          </div>
+        </div>
+
+        <div class="spec-row">
+          <div class="spec-label">Quant</div>
+          <div class="spec-value">
+            Q4_K_M
+          </div>
+        </div>
+
+      </div>
+
+      <div class="recommendation">
+        ✅ Отличный вариант для локального AI coding-agent
+      </div>
+
+    </article>
+
+  </div>
+
+</section>
