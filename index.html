@@ -790,6 +790,71 @@ mark {
   font-weight: 600;
 }
 
+/* Local tools (Block 2 — third tab) */
+.local-body {
+  font-size: var(--fs-base);
+  color: var(--text-body);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.local-body p { line-height: 1.6; }
+.local-body strong { color: var(--text-strong); font-weight: 600; }
+.local-body a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+}
+.local-list {
+  margin: 0 0 0 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--fs-base);
+}
+.local-list li { line-height: 1.55; }
+.local-body code {
+  background: var(--bg-accent);
+  color: var(--accent);
+  font-family: 'Fira Code', monospace;
+  font-size: 12.5px;
+  padding: 1px 6px;
+  border-radius: 5px;
+}
+.local-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 4px 0 8px;
+}
+.local-table th,
+.local-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+}
+.local-table th {
+  background: var(--bg-soft);
+  color: var(--text-strong);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+.local-table tr:last-child td { border-bottom: none; }
+.local-note {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  padding: 8px 10px;
+  background: var(--bg-soft);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+}
+.local-note strong { color: var(--text-strong); }
+@media (max-width: 520px) {
+  .local-table { font-size: 11.5px; }
+  .local-table th, .local-table td { padding: 6px 7px; }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    BLOCK 3 — Mind map
    ═══════════════════════════════════════════════════════════════ */
@@ -1159,6 +1224,7 @@ svg#mm-svg-lines { position: absolute; inset: 0; overflow: visible; pointer-even
 <div id="tools-tabs" role="tablist">
   <button class="tab-btn active" data-tier="tierlist">Тир-лист LLM</button>
   <button class="tab-btn" data-tier="specialtools">Спец-инструменты</button>
+  <button class="tab-btn" data-tier="localtools">🏠 Локальные</button>
 </div>
 <div id="tier-container"></div>
 
@@ -2222,8 +2288,91 @@ window.MM_TREE = {
     });
   }
 
+  function renderLocalTools() {
+    const wrap = document.createElement('div');
+    wrap.className = 'section tier-section';
+    wrap.id = 'localtools';
+    wrap.innerHTML = `
+      <div class="section-header">
+        <h2>Локальные инструменты</h2>
+        <p>Запуск моделей прямо на своём компьютере — полная приватность, оффлайн, без подписок и VPN</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-head"><div class="card-label purple">⚙️ Ollama — CLI / API</div></div>
+          <div class="local-body">
+            <p><strong>Что это.</strong> Open-source движок, который скачивает и запускает LLM на вашей машине. Команда в терминале + локальный HTTP-сервер на <code>localhost:11434</code> для интеграции с приложениями.</p>
+            <p><strong>Как использовать:</strong></p>
+            <ol class="local-list">
+              <li>Скачать с <a href="https://ollama.com" target="_blank" rel="noopener">ollama.com</a> (macOS, Windows, Linux).</li>
+              <li>В терминале: <code>ollama pull llama3.1:8b</code> — скачает модель.</li>
+              <li><code>ollama run llama3.1:8b</code> — чат прямо в терминале.</li>
+              <li>Для GUI поверх Ollama: <a href="https://openwebui.com" target="_blank" rel="noopener">Open WebUI</a> (Docker) или <a href="https://msty.app" target="_blank" rel="noopener">Msty</a>.</li>
+            </ol>
+            <p><strong>Кому подходит:</strong> разработчикам, для скриптов, интеграции с IDE и автоматизации.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-label blue">🖥 LM Studio — GUI</div></div>
+          <div class="local-body">
+            <p><strong>Что это.</strong> Десктопное приложение с интерфейсом «как ChatGPT». Внутри — поиск моделей по Hugging Face, чат, история, локальный API.</p>
+            <p><strong>Как использовать:</strong></p>
+            <ol class="local-list">
+              <li>Скачать с <a href="https://lmstudio.ai" target="_blank" rel="noopener">lmstudio.ai</a> (macOS, Windows, Linux).</li>
+              <li>В каталоге внутри приложения найти модель (например, <em>Qwen3-8B-Instruct GGUF Q4_K_M</em>) и скачать.</li>
+              <li>Открыть вкладку <em>Chat</em> — пользоваться как привычным чат-ботом.</li>
+              <li>Вкладка <em>Local Server</em> — OpenAI-совместимый API для подключения внешних приложений.</li>
+            </ol>
+            <p><strong>Кому подходит:</strong> тем, кто предпочитает GUI без терминала; для нетехнических коллег.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-label amber">💻 Требования к железу</div></div>
+          <div class="local-body">
+            <table class="local-table">
+              <thead><tr><th>Размер модели</th><th>RAM</th><th>GPU (VRAM)</th><th>Диск</th><th>Для чего хватит</th></tr></thead>
+              <tbody>
+                <tr><td><strong>3–4B</strong> (Llama&nbsp;3.2&nbsp;3B, Phi-4&nbsp;mini)</td><td>8 ГБ</td><td>4 ГБ или CPU</td><td>~3 ГБ</td><td>Короткие тексты, простые ответы</td></tr>
+                <tr><td><strong>7–8B</strong> (Llama&nbsp;3.1&nbsp;8B, Qwen&nbsp;3&nbsp;8B, Mistral)</td><td>16 ГБ</td><td>6–8 ГБ</td><td>~5 ГБ</td><td>Большинство офисных задач</td></tr>
+                <tr><td><strong>13–14B</strong> (Qwen&nbsp;3&nbsp;14B, DeepSeek-V3 Lite)</td><td>32 ГБ</td><td>12 ГБ</td><td>~8 ГБ</td><td>Сложные тексты, код, длинные доки</td></tr>
+                <tr><td><strong>30–32B</strong></td><td>32–64 ГБ</td><td>24 ГБ (RTX 4090 / A6000)</td><td>~20 ГБ</td><td>Качество, близкое к ChatGPT-4-class</td></tr>
+                <tr><td><strong>70B+</strong></td><td>64+ ГБ</td><td>2× 24 ГБ или 48+ ГБ</td><td>~40 ГБ</td><td>Профессиональный уровень</td></tr>
+              </tbody>
+            </table>
+            <p class="local-note"><strong>Apple Silicon (M1/M2/M3/M4):</strong> unified memory считается одновременно как RAM и VRAM. 16 ГБ → 7B, 32 ГБ → 13B, 64 ГБ → 32B, 128 ГБ → 70B. Отлично подходит для локальных LLM.</p>
+            <p class="local-note"><strong>Без GPU тоже работает</strong> — Ollama и LM Studio умеют считать на CPU, но скорость падает в 5–10 раз. Для 7B модели на современном i7/Ryzen 7 — терпимо для коротких ответов.</p>
+            <p class="local-note"><strong>Подсказка:</strong> ищите модели в формате <em>GGUF</em> с квантованием <em>Q4_K_M</em> — лучший баланс качества и размера.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-label green">🎯 Что выбрать админу ФКН</div></div>
+          <div class="local-body">
+            <p><strong>Для административных задач</strong> (письма, регламенты, выжимки, FAQ) достаточно модели <strong>7–8B</strong>: Llama&nbsp;3.1&nbsp;8B, Qwen&nbsp;3&nbsp;8B, Mistral Nemo, GigaChat-Lite. Качество — сравнимо с бесплатными версиями облачных моделей.</p>
+            <p><strong>Когда обязательно локально:</strong></p>
+            <ul class="special-list">
+              <li>работа с персональными данными (ПДн, ФЗ-152) — данные не покидают устройство;</li>
+              <li>документы под NDA, внутренние регламенты, черновики приказов;</li>
+              <li>нет стабильного интернета, командировка, мероприятие вне сети.</li>
+            </ul>
+            <p><strong>Минимальная сборка для старта:</strong></p>
+            <ul class="special-list">
+              <li>MacBook Air M2/M3 16 ГБ — потянет 7–8B без напряжения;</li>
+              <li>или ПК: GeForce RTX 3060 / 4060 (8–12 ГБ VRAM) + 16 ГБ RAM + SSD;</li>
+              <li>ноутбук с iGPU и 16 ГБ RAM — тоже подойдёт для 3–7B на CPU.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `;
+    tierContainer.appendChild(wrap);
+  }
+
   renderTierList();
   renderSpecialTools();
+  renderLocalTools();
 
   document.getElementById('tools-tabs').addEventListener('click', e => {
     const btn = e.target.closest('.tab-btn');
